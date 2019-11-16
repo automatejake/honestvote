@@ -6,7 +6,8 @@ This project was created to explore alternative methods of voting and our curren
 
 Stay tuned for more updates! In a few months, we will have a blog and videos coming.
 
-Join our Slack: https://join.slack.com/t/wcublockvote/shared_invite/enQtNzc3MzAxNzkxMDEzLWZjNTUyZTcxNzRiNTUxYjFkNzQ0ZTJiNjFkNWUwMzdhOGE2YzllNGVhODE2NGYzNzY3ZDVhNDA3N2Q4YWRiZTg
+Join our Slack:
+https://join.slack.com/t/wcublockvote/shared_invite/enQtNzc3MzAxNzkxMDEzLWZjNTUyZTcxNzRiNTUxYjFkNzQ0ZTJiNjFkNWUwMzdhOGE2YzllNGVhODE2NGYzNzY3ZDVhNDA3N2Q4YWRiZTg
 
 Participate in our Daily Scrums at 10:00 PM EST M-F:
 https://meet.google.com/ssp-djge-nmx
