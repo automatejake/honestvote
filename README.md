@@ -1,4 +1,5 @@
-# honestvote.io, an Honest Voting System
+# HonestVote.io
+# Making Elections Decentralized and Transparent
 
 The world is in need of more secure voting and blockchain offers a very vialbe solution as voters can trace back their votes to a candidate. Blockchain offers an extremely transparent ledger to the public that cannot be tampered with.
 
