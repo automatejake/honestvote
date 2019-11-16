@@ -21,13 +21,22 @@ type Peer struct {
 	Socket net.Conn
 }
 
+type Block struct {
+	Index     int
+	Timestamp string
+	Message   string
+	Validator string
+	PrevHash  string
+	Hash      string
+}
+
 type Candidate struct {
 	Name      string
 	PublicKey string
 	Election  string
 }
 
-var nodes = make(map[int]bool)
+var Nodes = make(map[int]bool)
 
 var Peers []Peer
 
@@ -43,6 +52,10 @@ func listenConn() {
 		log.Fatal(err)
 	}
 
+	// r := mux.NewRouter()
+
+	fmt.Println("Starting on port " + portString)
+
 	defer listen.Close()
 
 	for {
@@ -56,12 +69,15 @@ func listenConn() {
 
 func handleConn(conn net.Conn) {
 	defer conn.Close()
-
+	fmt.Println("New TCP Connection")
 	var buf [256]byte
 
 	for {
-		conn.Read(buf[0:])
-		fmt.Println(string(buf[0:]))
+		// conn.Read(buf[0:])
+		msgLength, _ := conn.Read(buf[0:])
+
+		// fmt.Println(string(buf[0:]))
+		fmt.Println(string(buf[0:msgLength]))
 
 		if string(buf[0:14]) == "get candidates" {
 			go getCandidates(conn)
@@ -99,7 +115,7 @@ func main() {
 	}
 
 	// ignore, _ := strconv.Atoi(os.Getenv("PORT"))
-	// nodes[ignore] = true
+	// Nodes[ignore] = true
 
 	listenConn()
 
