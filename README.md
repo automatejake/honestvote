@@ -6,9 +6,9 @@ The world is in need of more secure voting and blockchain offers a very vialbe s
 This project was created to explore alternative methods of voting and our goal is to have West Chester University use our blockchain for student elections in the Spring of 2020.
 
 ## Communication
-Join our Slack [HERE](https://join.slack.com/t/wcublockvote/shared_invite/enQtNzc3MzAxNzkxMDEzLWZjNTUyZTcxNzRiNTUxYjFkNzQ0ZTJiNjFkNWUwMzdhOGE2YzllNGVhODE2NGYzNzY3ZDVhNDA3N2Q4YWRiZTg)
+Join our Slack [Here](https://join.slack.com/t/wcublockvote/shared_invite/enQtNzc3MzAxNzkxMDEzLWZjNTUyZTcxNzRiNTUxYjFkNzQ0ZTJiNjFkNWUwMzdhOGE2YzllNGVhODE2NGYzNzY3ZDVhNDA3N2Q4YWRiZTg)
 
-Participate in our Daily Scrums at 10:00 PM EST Monday-Thursday by joining [HERE](https://meet.google.com/ssp-djge-nmx)
+Participate in our Daily Scrums at 10:00 PM EST Monday-Thursday by joining [Here](https://meet.google.com/ssp-djge-nmx)
 
 Check out our website at [honestvote.io](https://honestvote.io)
 
