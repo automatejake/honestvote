@@ -1,0 +1,5 @@
+package coredb
+
+func dummyFile() {
+
+}
