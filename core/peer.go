@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/jneubaum/honestvote.io/database/models"
+	"github.com/jneubaum/honestvote.io/web"
 	"github.com/joho/godotenv"
 	//"bytes"
 	//"encoding/gob"
@@ -48,7 +49,7 @@ func listenConn() {
 		log.Fatal(err)
 	}
 
-	// r := mux.NewRouter()
+	web.VoterClient()
 
 	fmt.Println("Starting on port " + portString)
 
