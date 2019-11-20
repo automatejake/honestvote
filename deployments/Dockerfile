@@ -9,22 +9,23 @@ LABEL maintainer="Jacob Neubaum <jacob@bizylife.com>"
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
-# Copy go mod and sum files
-#COPY go.mod go.sum ./
-
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
-#RUN go mod download
-
 # Copy the source from the current directory to the Working Directory inside the container
 COPY . .
 
-# Build the Go app
+# Get dependencies
 #RUN go build -o main .
+RUN go get github.com/jneubaum/honestvote.io/core/core-http/src
+RUN go get github.com/jneubaum/honestvote.io/core/core-database/src
+RUN go get github.com/joho/godotenv
+
+# Build main app
+WORKDIR /app/core/core-p2p/src
+RUN go build -o main
 
 # Expose port 7000 and 7001 to host machine
 EXPOSE 7000
 EXPOSE 7001
 
 # Command to run the executable
-# CMD ["./main"]
-CMD while true; do sleep 1000; done
+CMD ["./main"] 
+# CMD while true; do sleep 1000; done
