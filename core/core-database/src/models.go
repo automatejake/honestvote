@@ -16,8 +16,8 @@ type Candidate struct {
 }
 
 type Election struct {
-	Name             string
-	RegisteredVoters int
+	Name             string `json:"name"`
+	RegisteredVoters string `json:"registeredVoters"`
 }
 
 type Peer struct {
