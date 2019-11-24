@@ -22,8 +22,10 @@ var MockElections = []coredb.Election{
 	coredb.Election{Name: "UPenn", RegisteredVoters: "9023"}}
 
 func HandleRoutes() {
-	Router.HandleFunc("/getCandidates", GetCandidatesHandler)
-	Router.HandleFunc("/getElections", GetElectionsHandler)
+	Router.HandleFunc("/getCandidates", GetCandidatesHandler).Methods("GET")
+	Router.HandleFunc("/getElections", GetElectionsHandler).Methods("GET")
+	Router.HandleFunc("/verifyCode", VerifyEmailHandler).Methods("GET")
+	Router.HandleFunc("/registerElection", RegisterHandler).Methods("POST")
 	http.Handle("/", Router)
 }
 
@@ -33,4 +35,13 @@ func GetCandidatesHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(MockElections)
+}
+
+func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	registrant := r.FormValue("email")
+	EmailRegistration(registrant)
+}
+
+func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
+
 }
