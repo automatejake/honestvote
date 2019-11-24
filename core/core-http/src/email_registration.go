@@ -31,7 +31,7 @@ func sendRegistrationCode(email string) {
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
 		"Subject:  " + "HonestVote Registration Code" + "\n\n" +
-		"randomRegistrationCode"
+		"Click this link to register for the election: \n http://portainer.honestvote.io:9001/verifyCode" + random.NextRandomNumber()
 
 	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
 	if err != nil {
