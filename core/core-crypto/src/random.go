@@ -3,6 +3,7 @@ package random
 import (
 	crypto_rand "crypto/rand"
 	"encoding/binary"
+	"encoding/hex"
 	math_rand "math/rand"
 )
 
@@ -15,6 +16,10 @@ func init() {
 	math_rand.Seed(int64(binary.LittleEndian.Uint64(b[:])))
 }
 
-func NextRandomNum() float64 {
-	return math_rand.Float64()
+func RandomHex(n int) (string, error) {
+	bytes := make([]byte, n)
+	if _, err := math_rand.Read(bytes); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
 }

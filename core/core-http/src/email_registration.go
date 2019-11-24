@@ -1,14 +1,17 @@
 package corehttp
 
 import (
-	"log"
-	"net/smtp"
+	"fmt"
+
+	random "github.com/jneubaum/honestvote.io/core/core-crypto/src"
 )
 
 func EmailRegistration(registrantEmail string) {
 	//regex check
 
 	//check if valid election
+
+	//check if registration link has expired (should expire after x time, e.g. 1 hour or less for extra security)
 
 	//send email verification code
 	sendRegistrationCode(registrantEmail)
@@ -24,20 +27,24 @@ func isValidElection(email string) bool {
 
 func sendRegistrationCode(email string) {
 
-	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
-	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
-	to := email
+	code, _ := random.RandomHex(100)
 
-	msg := "From: " + from + "\n" +
-		"To: " + to + "\n" +
-		"Subject:  " + "HonestVote Registration Code" + "\n\n" +
-		"Click this link to register for the election: \n http://portainer.honestvote.io:9001/verifyCode" + random.NextRandomNumber()
+	// from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
+	// pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
+	// to := email
 
-	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
-	if err != nil {
-		log.Printf("smtp error: %s", err)
-		return
-	}
+	// msg := "From: " + from + "\n" +
+	// 	"To: " + to + "\n" +
+	// 	"Subject:  " + "HonestVote Registration Code" + "\n\n" +
+	// 	"Click this link to register for the election: \n http://portainer.honestvote.io:9001/verifyCode" + code
 
-	log.Print("sent mail")
+	// err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
+	// if err != nil {
+	// 	log.Printf("smtp error: %s", err)
+	// 	return
+	// }
+
+	fmt.Println("Click this link to register for the election: \n http://portainer.honestvote.io:9001/verifyCode/" + code)
+
+	// log.Print("sent mail")
 }

@@ -16,6 +16,7 @@ COPY . .
 #RUN go build -o main .
 RUN go get github.com/jneubaum/honestvote.io/core/core-http/src
 RUN go get github.com/jneubaum/honestvote.io/core/core-database/src
+RUN go get github.com/jneubaum/honestvote.io/core/core-crypto/src
 RUN go get github.com/joho/godotenv
 
 # Build main app

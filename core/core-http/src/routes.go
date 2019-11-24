@@ -21,6 +21,18 @@ var MockElections = []coredb.Election{
 	coredb.Election{Name: "Drexel", RegisteredVoters: "6433"},
 	coredb.Election{Name: "UPenn", RegisteredVoters: "9023"}}
 
+var Codes []string
+
+//temporary function for demo data, get rid of when real database implemented
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
 func HandleRoutes() {
 	Router.HandleFunc("/getCandidates", GetCandidatesHandler).Methods("GET")
 	Router.HandleFunc("/getElections", GetElectionsHandler).Methods("GET")
@@ -43,5 +55,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
+
+	//should be with database
+	if contains(Codes, "r.code request") {
+		//distributes vote to public key
+
+	}
 
 }
