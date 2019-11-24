@@ -2,6 +2,8 @@ package corehttp
 
 import (
 	"fmt"
+	"log"
+	"net/smtp"
 
 	random "github.com/jneubaum/honestvote.io/core/core-crypto/src"
 )
@@ -29,20 +31,20 @@ func sendRegistrationCode(email string) {
 
 	code, _ := random.RandomHex(100)
 
-	// from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
-	// pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
-	// to := email
+	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
+	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
+	to := email
 
-	// msg := "From: " + from + "\n" +
-	// 	"To: " + to + "\n" +
-	// 	"Subject:  " + "HonestVote Registration Code" + "\n\n" +
-	// 	"Click this link to register for the election: \n http://portainer.honestvote.io:9001/verifyCode" + code
+	msg := "From: " + from + "\n" +
+		"To: " + to + "\n" +
+		"Subject:  " + "HonestVote Registration Code" + "\n\n" +
+		"Click this link to register for the election: \n http://portainer.honestvote.io:9001/verifyCode/" + code
 
-	// err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
-	// if err != nil {
-	// 	log.Printf("smtp error: %s", err)
-	// 	return
-	// }
+	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
+	if err != nil {
+		log.Printf("smtp error: %s", err)
+		return
+	}
 
 	fmt.Println("Click this link to register for the election: \n http://portainer.honestvote.io:9001/verifyCode/" + code)
 
