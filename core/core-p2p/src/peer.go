@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 
+	coredb "github.com/jneubaum/honestvote.io/core/core-database/src"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -19,7 +20,7 @@ import (
 
 var nodes = make(map[int]bool)
 
-var Peers []Peer
+var Peers []coredb.Peer
 
 var mongoDB *mongo.Client
 
@@ -44,7 +45,10 @@ func main() {
 				conn, _ := net.Dial("tcp", "127.0.0.1:"+sPort)
 				if conn != nil {
 					fmt.Println("Dial Successful!")
-					tmpPeer := Peer{port, conn}
+					tmpPeer := coredb.Peer{
+						Port:   sPort,
+						Socket: conn,
+					}
 					Peers = append(Peers, tmpPeer)
 					nodes[port] = true
 
@@ -93,7 +97,7 @@ func handleConn(conn net.Conn) {
 
 			if err == nil {
 				nodes[port] = true
-				tmpPeer := Peer{port, conn}
+				tmpPeer := coredb.Peer{port, conn}
 				Peers = append(Peers, tmpPeer)
 			}
 		} else if string(buf[0:8]) == "get data" {
@@ -121,8 +125,8 @@ func mongoConnect() *mongo.Client {
 }
 
 //Get all the mongoDB data to send over to a full node or peer node that asked for it
-func gatherMongoData(client *mongo.Client, filter bson.M) []Candidate {
-	var Candidates []Candidate
+func gatherMongoData(client *mongo.Client, filter bson.M) []coredb.Candidate {
+	var Candidates []coredb.Candidate
 	collection := client.Database("test_database").Collection("test_collection")
 
 	cur, err := collection.Find(context.TODO(), filter)
@@ -132,7 +136,7 @@ func gatherMongoData(client *mongo.Client, filter bson.M) []Candidate {
 	}
 
 	for cur.Next(context.TODO()) {
-		var candidate Candidate
+		var candidate coredb.Candidate
 		err = cur.Decode(&candidate)
 		if err != nil {
 			log.Fatal(err)
