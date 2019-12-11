@@ -17,7 +17,11 @@ COPY . .
 RUN go get github.com/jneubaum/honestvote.io/core/core-http/src
 RUN go get github.com/jneubaum/honestvote.io/core/core-database/src
 RUN go get github.com/jneubaum/honestvote.io/core/core-crypto/src
+
 RUN go get github.com/joho/godotenv
+RUN go get go.mongodb.org/mongo-driver/bson
+RUN go get go.mongodb.org/mongo-driver/mongo
+RUN go get go.mongodb.org/mongo-driver/mongo/options
 
 # Build main app
 WORKDIR /app/core/core-p2p/src
