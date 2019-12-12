@@ -46,7 +46,7 @@ func main() {
 				if conn != nil {
 					fmt.Println("Dial Successful!")
 					tmpPeer := coredb.Peer{
-						Port:   sPort,
+						Port:   port,
 						Socket: conn,
 					}
 					Peers = append(Peers, tmpPeer)
@@ -97,7 +97,10 @@ func handleConn(conn net.Conn) {
 
 			if err == nil {
 				nodes[port] = true
-				tmpPeer := coredb.Peer{port, conn}
+				tmpPeer := coredb.Peer{
+					Port:   port,
+					Socket: conn,
+				}
 				Peers = append(Peers, tmpPeer)
 			}
 		} else if string(buf[0:8]) == "get data" {
