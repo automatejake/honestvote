@@ -1,7 +1,10 @@
 package coredb
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -33,4 +36,20 @@ func GatherMongoData(client *mongo.Client, filter bson.M) []Candidate {
 	}
 
 	return Candidates
+}
+
+//Send the data to the full/peer node
+func MoveDocuments(peers []Peer) {
+	MongoDB = MongoConnect()
+	MongoData := GatherMongoData(MongoDB, bson.M{})
+	buffer := new(bytes.Buffer)
+	tmpArray := MongoData
+	js := json.NewEncoder(buffer)
+	err := js.Encode(tmpArray)
+	if err == nil {
+		for _, socket := range peers {
+			fmt.Println("Sending documents.")
+			socket.Socket.Write(append([]byte("recieve data "), buffer.Bytes()...))
+		}
+	}
 }

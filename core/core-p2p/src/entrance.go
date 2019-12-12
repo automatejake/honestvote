@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -12,23 +10,16 @@ import (
 
 	coredb "github.com/jneubaum/honestvote.io/core/core-database/src"
 	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var nodes = make(map[int]bool)
-
 var Peers []coredb.Peer
-
-var mongoDB *mongo.Client
 
 func main() {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Loading ENV Failed")
 	}
-
-	mongoDB = coredb.MongoConnect()
 
 	ignore, _ := strconv.Atoi(os.Getenv("PORT"))
 	nodes[ignore] = true
@@ -104,22 +95,7 @@ func handleConn(conn net.Conn) {
 				Peers = append(Peers, tmpPeer)
 			}
 		} else if string(buf[0:8]) == "get data" {
-			moveDocuments()
-		}
-	}
-}
-
-//Send the data to the full/peer node
-func moveDocuments() {
-	MongoData := coredb.GatherMongoData(mongoDB, bson.M{})
-	buffer := new(bytes.Buffer)
-	tmpArray := MongoData
-	js := json.NewEncoder(buffer)
-	err := js.Encode(tmpArray)
-	if err == nil {
-		for _, socket := range Peers {
-			fmt.Println("Sending documents.")
-			socket.Socket.Write(append([]byte("recieve data "), buffer.Bytes()...))
+			coredb.MoveDocuments(Peers)
 		}
 	}
 }

@@ -8,6 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var MongoDB *mongo.Client
+
 //Connect to MongoDB
 func MongoConnect() *mongo.Client {
 	uri := "mongodb://localhost:27017"
