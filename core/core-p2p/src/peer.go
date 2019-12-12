@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -15,7 +14,6 @@ import (
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var nodes = make(map[int]bool)
@@ -30,7 +28,7 @@ func main() {
 		fmt.Println("Loading ENV Failed")
 	}
 
-	mongoDB = mongoConnect()
+	mongoDB = coredb.MongoConnect()
 
 	ignore, _ := strconv.Atoi(os.Getenv("PORT"))
 	nodes[ignore] = true
@@ -46,8 +44,9 @@ func main() {
 				if conn != nil {
 					fmt.Println("Dial Successful!")
 					tmpPeer := coredb.Peer{
-						Port:   port,
-						Socket: conn,
+						IPAddress: "127.0.0.1",
+						Port:      port,
+						Socket:    conn,
 					}
 					Peers = append(Peers, tmpPeer)
 					nodes[port] = true
@@ -98,8 +97,9 @@ func handleConn(conn net.Conn) {
 			if err == nil {
 				nodes[port] = true
 				tmpPeer := coredb.Peer{
-					Port:   port,
-					Socket: conn,
+					IPAddress: "127.0.0.1",
+					Port:      port,
+					Socket:    conn,
 				}
 				Peers = append(Peers, tmpPeer)
 			}
@@ -109,51 +109,9 @@ func handleConn(conn net.Conn) {
 	}
 }
 
-//Connect to MongoDB
-func mongoConnect() *mongo.Client {
-	uri := "mongodb://localhost:27017"
-	clientOptions := options.Client().ApplyURI(uri)
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = client.Ping(context.TODO(), nil)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return client
-}
-
-//Get all the mongoDB data to send over to a full node or peer node that asked for it
-func gatherMongoData(client *mongo.Client, filter bson.M) []coredb.Candidate {
-	var Candidates []coredb.Candidate
-	collection := client.Database("test_database").Collection("test_collection")
-
-	cur, err := collection.Find(context.TODO(), filter)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for cur.Next(context.TODO()) {
-		var candidate coredb.Candidate
-		err = cur.Decode(&candidate)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		Candidates = append(Candidates, candidate)
-	}
-
-	return Candidates
-}
-
 //Send the data to the full/peer node
 func moveDocuments() {
-	MongoData := gatherMongoData(mongoDB, bson.M{})
+	MongoData := coredb.GatherMongoData(mongoDB, bson.M{})
 	buffer := new(bytes.Buffer)
 	tmpArray := MongoData
 	js := json.NewEncoder(buffer)
