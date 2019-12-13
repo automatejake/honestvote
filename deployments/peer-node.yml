@@ -1,3 +1,6 @@
+# Documentation on version 2 compose files can be found below:
+# https://docs.docker.com/compose/compose-file/compose-file-v2/
+
 version: '2'
 services:
    peer:
