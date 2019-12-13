@@ -53,3 +53,14 @@ func MoveDocuments(peers []Peer) {
 		}
 	}
 }
+
+func UpdateMongo(client *mongo.Client, data []Candidate) {
+	collection := client.Database("new_database").Collection("new_collection")
+
+	var ui []interface{}
+	for _, candidate := range data {
+		ui = append(ui, candidate)
+	}
+
+	collection.InsertMany(context.TODO(), ui)
+}
