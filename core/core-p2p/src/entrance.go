@@ -8,6 +8,7 @@ import (
 	"time"
 
 	coredb "github.com/jneubaum/honestvote.io/core/core-database/src"
+	corehttp "github.com/jneubaum/honestvote.io/core/core-http/src"
 	"github.com/joho/godotenv"
 )
 
@@ -24,6 +25,7 @@ func main() {
 	nodes[ignore] = true
 
 	go ListenConn()
+	go corehttp.CreateServer()
 
 	for {
 		for port := 7000; port <= 7001; port++ {
