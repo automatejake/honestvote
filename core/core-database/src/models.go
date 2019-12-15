@@ -3,12 +3,18 @@ package coredb
 import "net"
 
 type Block struct {
-	Index     int
-	Timestamp string
-	Message   string
-	Validator string
-	PrevHash  string
-	Hash      string
+	Index       int
+	Timestamp   string
+	Transaction Transaction
+	Hash        string
+	PrevHash    string
+	Validator   string
+}
+
+type Transaction struct {
+	Sender   string
+	Vote     int
+	Receiver string
 }
 
 type Election struct {
