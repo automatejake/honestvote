@@ -5,11 +5,11 @@ import (
 	"encoding/base64"
 	"time"
 
-	coredb "github.com/jneubaum/honestvote.io/core/core-database/src"
+	coredb "github.com/jneubaum/honestvote/core/core-database/src"
 )
 
-var Blockchain []Block
-var ProposedBlocks []Block
+var Blockchain []coredb.Block
+var ProposedBlocks []coredb.Block
 
 var Validators []string
 
