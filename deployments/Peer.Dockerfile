@@ -14,9 +14,10 @@ COPY . .
 
 # Get dependencies
 #RUN go build -o main .
-RUN go get github.com/jneubaum/honestvote.io/core/core-http/src
-RUN go get github.com/jneubaum/honestvote.io/core/core-database/src
-RUN go get github.com/jneubaum/honestvote.io/core/core-crypto/src
+RUN go get github.com/jneubaum/honestvote/core/core-http/src
+RUN go get github.com/jneubaum/honestvote/core/core-database/src
+RUN go get github.com/jneubaum/honestvote/core/core-consensus/src
+RUN go get github.com/jneubaum/honestvote/core/core-crypto/src
 
 RUN go get github.com/joho/godotenv
 RUN go get go.mongodb.org/mongo-driver/bson
