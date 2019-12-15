@@ -1,9 +1,8 @@
-package main
+package coredb
 
 import (
 	"crypto/sha256"
 	"encoding/base64"
-	"fmt"
 	"time"
 )
 
@@ -68,22 +67,4 @@ func generateHeader(block Block) string {
 		block.Transaction.Receiver + block.PrevHash + block.Validator
 
 	return header
-}
-
-func main() {
-	Address = calculateHash("PickleEBAke74h")
-
-	genesisBlock := Block{0, time.Now().String(), Transaction{}, "", "", Address}
-	genesisBlock.Hash = calculateHash(generateHeader(genesisBlock))
-
-	Blockchain = append(Blockchain, genesisBlock)
-
-	newBlock := generateBlock(Blockchain[len(Blockchain)-1], Transaction{"0xa", 482, "0xj"})
-	if verifyHash(Blockchain[len(Blockchain)-1], newBlock) {
-		Blockchain = append(Blockchain, newBlock)
-	} else {
-		fmt.Println("New block can't be verified.")
-	}
-
-	fmt.Println(Blockchain)
 }
