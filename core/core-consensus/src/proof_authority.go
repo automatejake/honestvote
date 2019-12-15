@@ -4,22 +4,9 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"time"
+
+	coredb "github.com/jneubaum/honestvote.io/core/core-database/src"
 )
-
-type Block struct {
-	Index       int
-	Timestamp   string
-	Transaction Transaction
-	Hash        string
-	PrevHash    string
-	Validator   string
-}
-
-type Transaction struct {
-	Sender   string
-	Vote     int
-	Receiver string
-}
 
 var Blockchain []Block
 var ProposedBlocks []Block
@@ -35,8 +22,8 @@ func calculateHash(input string) string {
 	return base64.URLEncoding.EncodeToString(sum)
 }
 
-func generateBlock(block Block, transaction Transaction) Block {
-	var newBlock Block
+func generateBlock(block coredb.Block, transaction coredb.Transaction) coredb.Block {
+	var newBlock coredb.Block
 
 	newBlock.Index = block.Index + 1
 	newBlock.Timestamp = time.Now().String()
@@ -51,7 +38,7 @@ func generateBlock(block Block, transaction Transaction) Block {
 	return newBlock
 }
 
-func verifyHash(prevBlock, block Block) bool {
+func verifyHash(prevBlock, block coredb.Block) bool {
 	if prevBlock.Hash != block.PrevHash {
 		return false
 	} else if calculateHash(generateHeader(block)) != block.Hash {
@@ -61,7 +48,7 @@ func verifyHash(prevBlock, block Block) bool {
 	return true
 }
 
-func generateHeader(block Block) string {
+func generateHeader(block coredb.Block) string {
 	header := string(block.Index) + block.Timestamp +
 		block.Transaction.Sender + string(block.Transaction.Vote) +
 		block.Transaction.Receiver + block.PrevHash + block.Validator
