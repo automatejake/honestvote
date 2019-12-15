@@ -1,32 +1,12 @@
 package corehttp
 
 // Elections is example data for elections
-var Elections []Election = []Election{
+var Elections []ElectionInfo = []ElectionInfo{
 	{
 		ID:          "election1",
 		DisplayName: "West Chester University Executive Board",
 		Term:        "Spring 2020",
 		Type:        FirstPastThePost,
-		TicketEntries: []TicketEntry{
-			{
-				ID:                       "ticketentry1",
-				DisplayName:              "Presidential",
-				AllowedElectionPositions: []ElectionPositionID{"position1"},
-				Tickets:                  []TicketID{"ticket1", "ticket2"},
-			}, {
-				ID:                       "ticketentry2",
-				DisplayName:              "Secretorial",
-				AllowedElectionPositions: []ElectionPositionID{"position2"},
-				Tickets:                  []TicketID{"ticket3", "ticket4"},
-			},
-		},
-
-		Options: ElectionOptions{
-			CanHaveMultiTicket:         false,
-			CandidateCanRunForMultiple: false,
-			CandidateCanVote:           true,
-			CandidateCanVoteForSelf:    false,
-		},
 	},
 }
 
