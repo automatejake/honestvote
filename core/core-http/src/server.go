@@ -9,5 +9,5 @@ func CreateServer() {
 	HandleRoutes() // imported from routes
 
 	log.Println("Listening...")
-	http.ListenAndServe(":9001", Router)
+	http.ListenAndServe(":7001", Router)
 }
