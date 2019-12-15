@@ -6,7 +6,7 @@ import (
 	"net"
 	"strconv"
 
-	coredb "github.com/jneubaum/honestvote/core/core-database/src"
+	coredb "github.com/jneubaum/honestvote.io/core/core-database/src"
 )
 
 func HandleConn(conn net.Conn) {
