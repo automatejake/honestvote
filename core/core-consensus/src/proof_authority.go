@@ -1,4 +1,4 @@
-package coredb
+package coreconsensus
 
 import (
 	"crypto/sha256"

@@ -12,6 +12,9 @@ type CandidateID AppID
 // ElectionID is an identifier for an Election
 type ElectionID AppID
 
+// TicketID is an identifier for a Ticket
+type TicketID AppID
+
 // TicketEntryID is an identifier for a TicketEntry
 type TicketEntryID AppID
 
@@ -64,13 +67,14 @@ type TicketEntry struct {
 	ID                       TicketEntryID        `json:"id"`
 	DisplayName              string               `json:"displayName"`
 	AllowedElectionPositions []ElectionPositionID `json:"allowedElectionPositions"`
-	Tickets                  []Ticket             `json:"tickets"`
+	Tickets                  []TicketID           `json:"tickets"`
 }
 
 // Ticket is a specific ticket associated with a list of candidates
 // running for this TicketEntry. For instance, you may have one ElectionPositionEntry
 // for a President, and another ElectionPositionEntry for a Vice-President
 type Ticket struct {
+	ID                      TicketID                `json:"id"`
 	ElectionPositionEntries []ElectionPositionEntry `json:"electionPositionEntries"`
 	Votes                   []Vote                  `json:"votes"`
 }
@@ -90,6 +94,7 @@ type ElectionPosition struct {
 // Vote is a vote that can go toward a particular candidate
 type Vote struct {
 	VoterID      VoterID      `json:"voterId"`
+	TicketID     TicketID     `json:"ticketId"`
 	VotePriority VotePriority `json:"votePriority"` // used in rank based voting. for now always 1
 }
 

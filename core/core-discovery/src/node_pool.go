@@ -1,1 +1,1 @@
-package coreDiscovery
+package corediscovery
