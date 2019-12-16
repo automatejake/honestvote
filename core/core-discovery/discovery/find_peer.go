@@ -24,6 +24,11 @@ func FindPeer(args string) {
 	ignore, _ := strconv.Atoi(args)
 	p2p.Nodes[ignore] = true
 
+	// conn, _ := net.DialUDP("udp", nil, &net.UDPAddr{IP: []byte{127, 0, 0, 1}, Port: 100, Zone: ""})
+	// defer conn.Close()
+	// conn.Write([]byte("hello"))
+	// conn.Read(make([]byte, 1024))
+
 	for {
 		for port := 7000; port <= 7001; port++ {
 			if !p2p.Nodes[port] {
