@@ -27,7 +27,7 @@ func FindPeer(args string) {
 	for {
 		for port := 7000; port <= 7001; port++ {
 			if !p2p.Nodes[port] {
-				// fmt.Println("Checking...")
+				//fmt.Println("Checking...")
 				sPort := strconv.Itoa(port)
 				conn, _ := net.Dial("tcp", "127.0.0.1:"+sPort)
 				if conn != nil {

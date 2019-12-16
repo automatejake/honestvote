@@ -6,7 +6,7 @@ import (
 )
 
 func ListenConn(args string) {
-	portString := args
+	portString := ":" + args
 	listen, err := net.Listen("tcp", portString)
 
 	if err != nil {
