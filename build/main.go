@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/jneubaum/honestvote/core/core-discovery/discovery"
 	"github.com/jneubaum/honestvote/core/core-http/http"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 )
@@ -14,5 +15,5 @@ func main() {
 
 	go p2p.ListenConn()
 
-	p2p.PeerToPeer()
+	discovery.FindPeer()
 }

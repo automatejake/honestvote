@@ -1,1 +1,5 @@
 package discovery
+
+func discover() {
+
+}
