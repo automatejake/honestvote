@@ -1,8 +1,7 @@
 package main
 
 import (
-	"os"
-
+	"github.com/jneubaum/honestvote/core/core-discovery/discovery"
 	"github.com/jneubaum/honestvote/core/core-http/http"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 )
@@ -14,7 +13,10 @@ func main() {
 	// create http server
 	go http.CreateServer()
 
-	go p2p.ListenConn(os.Args[1])
+	// search for connections
+	go discovery.FindPeer()
 
-	p2p.PeerToPeer(os.Args[1])
+	// accept incoming connections and handle p2p
+	p2p.ListenConn()
+
 }
