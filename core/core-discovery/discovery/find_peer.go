@@ -3,7 +3,6 @@ package discovery
 import (
 	"fmt"
 	"net"
-	"os"
 	"strconv"
 	"time"
 
@@ -16,13 +15,13 @@ import (
 * Find Peers in the network
 **/
 
-func FindPeer() {
+func FindPeer(args string) {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Loading ENV Failed")
 	}
 
-	ignore, _ := strconv.Atoi(os.Getenv("PORT"))
+	ignore, _ := strconv.Atoi(args)
 	p2p.Nodes[ignore] = true
 
 	// conn, _ := net.DialUDP("udp", nil, &net.UDPAddr{IP: []byte{127, 0, 0, 1}, Port: 100, Zone: ""})

@@ -3,11 +3,10 @@ package p2p
 import (
 	"log"
 	"net"
-	"os"
 )
 
-func ListenConn() {
-	portString := ":" + os.Getenv("PORT")
+func ListenConn(args string) {
+	portString := args
 	listen, err := net.Listen("tcp", portString)
 
 	if err != nil {
