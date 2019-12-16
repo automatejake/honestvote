@@ -3,7 +3,6 @@ package p2p
 import (
 	"fmt"
 	"net"
-	"os"
 	"strconv"
 	"time"
 
@@ -14,13 +13,13 @@ import (
 var nodes = make(map[int]bool)
 var Peers []database.Peer
 
-func PeerToPeer() {
+func PeerToPeer(args string) {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Loading ENV Failed")
 	}
 
-	ignore, _ := strconv.Atoi(os.Getenv("PORT"))
+	ignore, _ := strconv.Atoi(args)
 	nodes[ignore] = true
 
 	for {
