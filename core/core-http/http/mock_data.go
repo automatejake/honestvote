@@ -1,4 +1,4 @@
-package corehttp
+package http
 
 // Elections is example data for elections
 var Elections []ElectionInfo = []ElectionInfo{

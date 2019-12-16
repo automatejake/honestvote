@@ -1,4 +1,4 @@
-package corehttp
+package http
 
 // AppID is a generic string identifier used throughout the program
 type AppID string

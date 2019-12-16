@@ -1,4 +1,4 @@
-package corehttp
+package http
 
 import (
 	"encoding/json"

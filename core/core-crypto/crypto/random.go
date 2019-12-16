@@ -1,4 +1,4 @@
-package random
+package crypto
 
 import (
 	crypto_rand "crypto/rand"

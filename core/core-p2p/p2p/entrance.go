@@ -1,4 +1,4 @@
-package main
+package p2p
 
 import (
 	"fmt"
@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"time"
 
-	coredb "github.com/jneubaum/honestvote.io/core/core-database/src"
-	corehttp "github.com/jneubaum/honestvote.io/core/core-http/src"
+	database "github.com/jneubaum/honestvote/core/core-database/database"
+	http "github.com/jneubaum/honestvote/core/core-http/http"
 	"github.com/joho/godotenv"
 )
 
 var nodes = make(map[int]bool)
-var Peers []coredb.Peer
+var Peers []database.Peer
 
 func main() {
 	err := godotenv.Load()
@@ -25,7 +25,7 @@ func main() {
 	nodes[ignore] = true
 
 	go ListenConn()
-	go corehttp.CreateServer()
+	go http.CreateServer()
 
 	for {
 		for port := 7000; port <= 7001; port++ {
@@ -35,7 +35,7 @@ func main() {
 				conn, _ := net.Dial("tcp", "127.0.0.1:"+sPort)
 				if conn != nil {
 					fmt.Println("Dial Successful!")
-					tmpPeer := coredb.Peer{
+					tmpPeer := database.Peer{
 						IPAddress: "127.0.0.1",
 						Port:      port,
 						Socket:    conn,

@@ -1,4 +1,4 @@
-package coreconsensus
+package consensus
 
 import (
 	"crypto/sha256"

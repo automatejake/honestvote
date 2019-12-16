@@ -1,11 +1,11 @@
-package corehttp
+package http
 
 import (
 	"fmt"
 	"log"
 	"net/smtp"
 
-	random "github.com/jneubaum/honestvote.io/core/core-crypto/src"
+	random "github.com/jneubaum/honestvote.io/core/core-crypto/crypto"
 )
 
 func EmailRegistration(registrantEmail string) {

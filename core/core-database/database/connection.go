@@ -1,4 +1,4 @@
-package coredb
+package database
 
 import (
 	"context"
