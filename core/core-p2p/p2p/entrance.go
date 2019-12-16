@@ -8,14 +8,13 @@ import (
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
-	"github.com/jneubaum/honestvote/core/core-http/http"
 	"github.com/joho/godotenv"
 )
 
 var nodes = make(map[int]bool)
 var Peers []database.Peer
 
-func main() {
+func PeerToPeer() {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Loading ENV Failed")
@@ -23,9 +22,6 @@ func main() {
 
 	ignore, _ := strconv.Atoi(os.Getenv("PORT"))
 	nodes[ignore] = true
-
-	go ListenConn()
-	go http.CreateServer()
 
 	for {
 		for port := 7000; port <= 7001; port++ {
