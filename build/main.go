@@ -11,8 +11,8 @@ import (
 )
 
 //defaults
-var PEER_SERVICE string = "7000"
-var HTTP_SERVICE string = "7001"
+var PEER_SERVICE string = ":7000"
+var HTTP_SERVICE string = ":7001"
 
 //this file will be responsible for deploying the app
 func main() {
@@ -23,13 +23,13 @@ func main() {
 	}
 
 	// environmental variables override defaults
-	PEER_SERVICE = os.Getenv("PEER_SERVICE")
-	HTTP_SERVICE = os.Getenv("HTTP_SERVICE")
+	PEER_SERVICE = ":" + os.Getenv("PEER_SERVICE")
+	HTTP_SERVICE = ":" + os.Getenv("HTTP_SERVICE")
 
 	// accept optional flags that overrid environmental variables
 
 	// create http server
-	go http.CreateServer()
+	go http.CreateServer(HTTP_SERVICE)
 
 	// search for connections
 	go discovery.FindPeer(PEER_SERVICE)

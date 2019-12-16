@@ -5,10 +5,8 @@ import (
 	"net"
 )
 
-func ListenConn(args string) {
-	portString := args
-	listen, err := net.Listen("tcp", portString)
-
+func ListenConn(port string) {
+	listen, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatal(err)
 	}

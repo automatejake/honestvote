@@ -5,9 +5,9 @@ import (
 	"net/http"
 )
 
-func CreateServer() {
+func CreateServer(port string) {
 	HandleRoutes() // imported from routes
 
 	log.Println("Listening...")
-	http.ListenAndServe(":7001", Router)
+	http.ListenAndServe(port, Router)
 }
