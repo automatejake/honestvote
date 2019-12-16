@@ -13,7 +13,10 @@ func main() {
 	// create http server
 	go http.CreateServer()
 
-	go p2p.ListenConn()
+	// search for connections
+	go discovery.FindPeer()
 
-	discovery.FindPeer()
+	// accept incoming connections and handle p2p
+	p2p.ListenConn()
+
 }
