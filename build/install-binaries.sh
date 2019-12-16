@@ -17,6 +17,6 @@ go install
 cd ../../core-http/http
 go install
 
-# cd ../../core-p2p/src
-# go install
+cd ../../core-p2p/p2p
+go install
 
