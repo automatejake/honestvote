@@ -6,7 +6,7 @@ import (
 	"net"
 	"strconv"
 
-	coredb "github.com/jneubaum/honestvote.io/core/core-database/src"
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
 func HandleConn(conn net.Conn) {
@@ -26,7 +26,7 @@ func HandleConn(conn net.Conn) {
 
 			if err == nil {
 				nodes[port] = true
-				tmpPeer := coredb.Peer{
+				tmpPeer := database.Peer{
 					IPAddress: "127.0.0.1",
 					Port:      port,
 					Socket:    conn,
@@ -35,14 +35,14 @@ func HandleConn(conn net.Conn) {
 			}
 		} else if string(buf[0:12]) == "recieve data" {
 			buffer := bytes.NewBuffer(buf[13:length])
-			tmpArray := new([]coredb.Candidate)
+			tmpArray := new([]database.Candidate)
 			js := json.NewDecoder(buffer)
 			err := js.Decode(tmpArray)
 			if err == nil {
-				coredb.UpdateMongo(coredb.MongoDB, *tmpArray)
+				database.UpdateMongo(database.MongoDB, *tmpArray)
 			}
 		} else if string(buf[0:8]) == "get data" {
-			coredb.MoveDocuments(Peers)
+			database.MoveDocuments(Peers)
 		}
 	}
 }

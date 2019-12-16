@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/smtp"
 
-	random "github.com/jneubaum/honestvote.io/core/core-crypto/crypto"
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 )
 
 func EmailRegistration(registrantEmail string) {
@@ -29,7 +29,7 @@ func isValidElection(email string) bool {
 
 func sendRegistrationCode(email string) {
 
-	code, _ := random.RandomHex(100)
+	code, _ := crypto.RandomHex(100)
 
 	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
 	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator

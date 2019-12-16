@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	database "github.com/jneubaum/honestvote/core/core-database/database"
-	http "github.com/jneubaum/honestvote/core/core-http/http"
+	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-http/http"
 	"github.com/joho/godotenv"
 )
 

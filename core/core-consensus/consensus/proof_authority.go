@@ -5,11 +5,11 @@ import (
 	"encoding/base64"
 	"time"
 
-	coredb "github.com/jneubaum/honestvote/core/core-database/src"
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-var Blockchain []coredb.Block
-var ProposedBlocks []coredb.Block
+var Blockchain []database.Block
+var ProposedBlocks []database.Block
 
 var Validators []string
 
@@ -22,8 +22,8 @@ func calculateHash(input string) string {
 	return base64.URLEncoding.EncodeToString(sum)
 }
 
-func generateBlock(block coredb.Block, transaction coredb.Transaction) coredb.Block {
-	var newBlock coredb.Block
+func generateBlock(block database.Block, transaction database.Transaction) database.Block {
+	var newBlock database.Block
 
 	newBlock.Index = block.Index + 1
 	newBlock.Timestamp = time.Now().String()
@@ -38,7 +38,7 @@ func generateBlock(block coredb.Block, transaction coredb.Transaction) coredb.Bl
 	return newBlock
 }
 
-func verifyHash(prevBlock, block coredb.Block) bool {
+func verifyHash(prevBlock, block database.Block) bool {
 	if prevBlock.Hash != block.PrevHash {
 		return false
 	} else if calculateHash(generateHeader(block)) != block.Hash {
@@ -48,7 +48,7 @@ func verifyHash(prevBlock, block coredb.Block) bool {
 	return true
 }
 
-func generateHeader(block coredb.Block) string {
+func generateHeader(block database.Block) string {
 	header := string(block.Index) + block.Timestamp +
 		block.Transaction.Sender + string(block.Transaction.Vote) +
 		block.Transaction.Receiver + block.PrevHash + block.Validator
