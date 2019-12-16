@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/jneubaum/honestvote/core/core-http/http"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 )
@@ -12,7 +14,7 @@ func main() {
 	// create http server
 	go http.CreateServer()
 
-	go p2p.ListenConn()
+	go p2p.ListenConn(os.Args[1])
 
-	p2p.PeerToPeer()
+	p2p.PeerToPeer(os.Args[1])
 }
