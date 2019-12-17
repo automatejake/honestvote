@@ -44,5 +44,5 @@ func main() {
 	go discovery.FindPeer(PEER_SERVICE)
 
 	// accept incoming connections and handle p2p
-	p2p.ListenConn(os.Args[1])
+	p2p.ListenConn(PEER_SERVICE)
 }
