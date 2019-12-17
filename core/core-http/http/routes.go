@@ -20,11 +20,11 @@ func contains(s []string, e string) bool {
 }
 
 func HandleRoutes() {
-	Router.HandleFunc("/getCandidates", GetCandidatesHandler).Methods("GET")
-	Router.HandleFunc("/getElections", GetElectionsHandler).Methods("GET")
-	Router.HandleFunc("/getVoters", GetVotersHandler).Methods("GET")
-	Router.HandleFunc("/getPositions", GetPositionsHandler).Methods("GET")
-	Router.HandleFunc("/getTickets", GetTicketsHandler).Methods("GET")
+	Router.HandleFunc("/candidates", GetCandidatesHandler).Methods("GET")
+	Router.HandleFunc("/elections", GetElectionsHandler).Methods("GET")
+	Router.HandleFunc("/voters", GetVotersHandler).Methods("GET")
+	Router.HandleFunc("/positions", GetPositionsHandler).Methods("GET")
+	Router.HandleFunc("/tickets", GetTicketsHandler).Methods("GET")
 	Router.HandleFunc("/verifyCode", VerifyEmailHandler).Methods("GET")
 	Router.HandleFunc("/registerElection", RegisterHandler).Methods("POST")
 	http.Handle("/", Router)

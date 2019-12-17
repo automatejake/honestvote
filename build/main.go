@@ -13,7 +13,7 @@ import (
 //defaults
 var PEER_SERVICE string = ":9000"
 var HTTP_SERVICE string = ":9001"
-var ROLE string = "PEER" //options PEER || FULL || REGISTRY
+var ROLE string = "PEER" //options peer || full || registry
 
 //this file will be responsible for deploying the app
 func main() {
@@ -31,22 +31,23 @@ func main() {
 	// accept optional flags that override environmental variables
 	for index, element := range os.Args {
 		switch element {
-		case "--peer": //Set the peer service
+		case "--peer": //Set the default port for peer tcp service
 			PEER_SERVICE = ":" + os.Args[index+1]
-		case "--http":
+		case "--http": //Set the default port for http service
 			HTTP_SERVICE = ":" + os.Args[index+1]
-		case "--role":
+		case "--role": //Set the role of the node options PEER || FULL || REGISTRY
 			ROLE = os.Args[index+1]
 		}
 
 	}
 
-	// create http server
-	go http.CreateServer(HTTP_SERVICE)
+	if ROLE == "full" {
+		go http.CreateServer(HTTP_SERVICE) // create http server for light clients to get information from
+	} else if ROLE == "peer" {
+		p2p.ListenConn(PEER_SERVICE) // accept incoming connections and handle p2p
+	}
 
 	// search for connections
 	go discovery.FindPeer(PEER_SERVICE)
 
-	// accept incoming connections and handle p2p
-	p2p.ListenConn(PEER_SERVICE)
 }
