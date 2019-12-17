@@ -13,6 +13,7 @@ import (
 //defaults
 var PEER_SERVICE string = ":9000"
 var HTTP_SERVICE string = ":9001"
+var ROLE string = "PEER" //options PEER || FULL || REGISTRY
 
 //this file will be responsible for deploying the app
 func main() {
@@ -25,6 +26,7 @@ func main() {
 	// environmental variables override defaults
 	PEER_SERVICE = ":" + os.Getenv("PEER_SERVICE")
 	HTTP_SERVICE = ":" + os.Getenv("HTTP_SERVICE")
+	ROLE = os.Getenv("ROLE")
 
 	// accept optional flags that override environmental variables
 	for index, element := range os.Args {
@@ -33,6 +35,8 @@ func main() {
 			PEER_SERVICE = ":" + os.Args[index+1]
 		case "--http":
 			HTTP_SERVICE = ":" + os.Args[index+1]
+		case "--role":
+			ROLE = os.Args[index+1]
 		}
 
 	}
