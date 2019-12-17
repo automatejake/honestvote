@@ -42,10 +42,10 @@ func HandleConn(conn net.Conn) {
 			js := json.NewDecoder(buffer)
 			err := js.Decode(tmpArray)
 			if err == nil {
-				database.UpdateMongo(database.MongoDB, *tmpArray)
+				database.UpdateMongo(database.MongoDB, *tmpArray, "test_database", "test_collection")
 			}
 		} else if string(buf[0:8]) == "get data" {
-			database.MoveDocuments(Peers)
+			database.MoveDocuments(Peers, "test_database", "test_collection")
 		} else if string(buf[0:4]) == "vote" {
 			//TODO: Input a vote and send it to peer to verify
 			vote, err := strconv.Atoi(string(buf[5:length]))

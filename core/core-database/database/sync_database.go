@@ -12,12 +12,9 @@ import (
 )
 
 //Get all the mongoDB data to send over to a full node or peer node that asked for it
-func GatherMongoData(client *mongo.Client, filter bson.M) []Candidate {
-	//mongodump on peer, send created file to remote node.
-
-	//mongo restore on remote node
+func GatherMongoData(client *mongo.Client, filter bson.M, database_name string, collection_name string) []Candidate {
 	var Candidates []Candidate
-	collection := client.Database("test_database").Collection("test_collection")
+	collection := client.Database(database_name).Collection(collection_name)
 
 	cur, err := collection.Find(context.TODO(), filter)
 
@@ -39,9 +36,9 @@ func GatherMongoData(client *mongo.Client, filter bson.M) []Candidate {
 }
 
 //Send the data to the full/peer node
-func MoveDocuments(peers []Peer) {
+func MoveDocuments(peers []Peer, database_name string, collection_name string) {
 	MongoDB = MongoConnect()
-	MongoData := GatherMongoData(MongoDB, bson.M{})
+	MongoData := GatherMongoData(MongoDB, bson.M{}, database_name, collection_name)
 	buffer := new(bytes.Buffer)
 	tmpArray := MongoData
 	js := json.NewEncoder(buffer)
@@ -54,8 +51,8 @@ func MoveDocuments(peers []Peer) {
 	}
 }
 
-func UpdateMongo(client *mongo.Client, data []Candidate) {
-	collection := client.Database("new_database").Collection("new_collection")
+func UpdateMongo(client *mongo.Client, data []Candidate, database_name string, collection_name string) {
+	collection := client.Database(database_name).Collection(collection_name)
 
 	var ui []interface{}
 	for _, candidate := range data {
