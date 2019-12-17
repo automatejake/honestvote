@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"strings"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 
@@ -48,9 +49,10 @@ func HandleConn(conn net.Conn) {
 		} else if string(buf[0:8]) == "get data" {
 			database.MoveDocuments(Peers)
 		} else if string(buf[0:4]) == "vote" {
-			fmt.Println(string(buf[5:length]))
 			//TODO: Input a vote and send it to peer to verify
-			vote, err := strconv.Atoi(string(buf[5:length]))
+			sVote := string(buf[5:length])
+			sVote = strings.TrimSuffix(sVote, "\n")
+			vote, err := strconv.Atoi(sVote)
 			if err == nil {
 				block := consensus.GenerateBlock(database.Block{}, database.Transaction{
 					Sender:   "",
