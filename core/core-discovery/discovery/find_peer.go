@@ -8,7 +8,6 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
-	"github.com/joho/godotenv"
 )
 
 /***
@@ -16,18 +15,28 @@ import (
 **/
 
 func FindPeer(args string) {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("Loading ENV Failed")
-	}
+
+	// buffer := make([]byte, 2048)
+
+	// // Dial Connection
+	// conn, err := net.Dial("udp", "127.0.0.1:7700")
+	// if err != nil {
+	// 	fmt.Printf("Some error %v", err)
+	// 	return
+	// }
+
+	// // Read Connection
+	// fmt.Fprintf(conn, "hello")
+	// _, err = bufio.NewReader(conn).Read(buffer)
+	// if err == nil {
+	// 	fmt.Printf("%s\n", buffer)
+	// } else {
+	// 	fmt.Printf("Some error %v\n", err)
+	// }
+	// conn.Close()
 
 	ignore, _ := strconv.Atoi(args)
 	p2p.Nodes[ignore] = true
-
-	// conn, _ := net.DialUDP("udp", nil, &net.UDPAddr{IP: []byte{127, 0, 0, 1}, Port: 100, Zone: ""})
-	// defer conn.Close()
-	// conn.Write([]byte("hello"))
-	// conn.Read(make([]byte, 1024))
 
 	for {
 		for port := 7000; port <= 7001; port++ {
