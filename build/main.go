@@ -26,7 +26,7 @@ func main() {
 	PEER_SERVICE = ":" + os.Getenv("PEER_SERVICE")
 	HTTP_SERVICE = ":" + os.Getenv("HTTP_SERVICE")
 
-	// accept optional flags that overrid environmental variables
+	// accept optional flags that override environmental variables
 
 	// create http server
 	go http.CreateServer(HTTP_SERVICE)
