@@ -48,7 +48,7 @@ func HandleConn(conn net.Conn) {
 		} else if string(buf[0:8]) == "get data" {
 			database.MoveDocuments(Peers)
 		} else if string(buf[0:4]) == "vote" {
-			fmt.Println("Block created!")
+			fmt.Println(string(buf[5:length]))
 			//TODO: Input a vote and send it to peer to verify
 			vote, err := strconv.Atoi(string(buf[5:length]))
 			if err == nil {
