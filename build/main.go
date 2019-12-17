@@ -14,6 +14,7 @@ import (
 var PEER_SERVICE string = ":9000"
 var HTTP_SERVICE string = ":9001"
 var ROLE string = "PEER" //options peer || full || registry
+var DATABASE_PREFIX string = ""
 
 //this file will be responsible for deploying the app
 func main() {
@@ -27,6 +28,7 @@ func main() {
 	PEER_SERVICE = ":" + os.Getenv("PEER_SERVICE")
 	HTTP_SERVICE = ":" + os.Getenv("HTTP_SERVICE")
 	ROLE = os.Getenv("ROLE")
+	DATABASE_PREFIX = os.Getenv("DATABASE_PREFIX")
 
 	// accept optional flags that override environmental variables
 	for index, element := range os.Args {
@@ -37,17 +39,22 @@ func main() {
 			HTTP_SERVICE = ":" + os.Args[index+1]
 		case "--role": //Set the role of the node options PEER || FULL || REGISTRY
 			ROLE = os.Args[index+1]
+		case "--db-prefix": //Collection prefix (useful for starting up multiple nodes with same database)
+			DATABASE_PREFIX = os.Args[index+1]
 		}
 
 	}
 
+	// create http server for light clients to get information from
 	if ROLE == "full" {
-		go http.CreateServer(HTTP_SERVICE) // create http server for light clients to get information from
-	} else if ROLE == "peer" {
-		p2p.ListenConn(PEER_SERVICE) // accept incoming connections and handle p2p
+		go http.CreateServer(HTTP_SERVICE)
 	}
 
 	// search for connections
-	go discovery.FindPeer(PEER_SERVICE)
+	if ROLE == "full" || ROLE == "peer" {
+		go discovery.FindPeer(PEER_SERVICE)
+	}
+
+	p2p.ListenConn(PEER_SERVICE) // accept incoming connections and handle p2p
 
 }
