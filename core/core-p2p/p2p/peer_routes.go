@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"strings"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 
@@ -48,14 +49,18 @@ func HandleConn(conn net.Conn) {
 			database.MoveDocuments(Peers, "test_database", "test_collection")
 		} else if string(buf[0:4]) == "vote" {
 			//TODO: Input a vote and send it to peer to verify
-			vote, err := strconv.Atoi(string(buf[5:length]))
+			//Error was occuring due to \n being apart of buffer
+			//Remove the \n with TrimSuffix
+			sVote := string(buf[5:length])
+			sVote = strings.TrimSuffix(sVote, "\n")
+			vote, err := strconv.Atoi(sVote)
 			if err == nil {
 				block := consensus.GenerateBlock(database.Block{}, database.Transaction{
 					Sender:   "",
 					Vote:     vote,
 					Receiver: "",
 				})
-				fmt.Print(block)
+				fmt.Println(block)
 			}
 		}
 	}
