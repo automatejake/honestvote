@@ -27,14 +27,23 @@ func main() {
 	HTTP_SERVICE = ":" + os.Getenv("HTTP_SERVICE")
 
 	// accept optional flags that override environmental variables
+	for index, element := range os.Args {
+		switch element {
+		case "--peer": //Set the peer service
+			PEER_SERVICE = ":" + os.Args[index+1]
+		case "--http":
+			HTTP_SERVICE = ":" + os.Args[index+1]
+		}
+
+	}
 
 	// create http server
 	go http.CreateServer(HTTP_SERVICE)
 
 	// search for connections
-	go discovery.FindPeer(os.Args[1])
+	go discovery.FindPeer(PEER_SERVICE)
 
 	// accept incoming connections and handle p2p
-	p2p.ListenConn(os.Args[1])
+	p2p.ListenConn(PEER_SERVICE)
 
 }
