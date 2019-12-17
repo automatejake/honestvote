@@ -36,5 +36,4 @@ func main() {
 
 	// accept incoming connections and handle p2p
 	p2p.ListenConn(os.Args[1])
-
 }
