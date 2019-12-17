@@ -7,6 +7,8 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
+
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
@@ -48,7 +50,8 @@ func HandleConn(conn net.Conn) {
 			//TODO: Input a vote and send it to peer to verify
 			vote, err := strconv.Atoi(string(buf[5:length]))
 			if err == nil {
-				fmt.Print(vote)
+				block := consensus.GenerateBlock(database.Block{}, database.Transaction{"", vote, ""})
+				fmt.Print(block)
 			}
 		}
 	}

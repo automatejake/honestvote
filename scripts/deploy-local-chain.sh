@@ -1,2 +1,2 @@
 cd ../build
-go run main.go :9000
+go run main.go --peer 9000
