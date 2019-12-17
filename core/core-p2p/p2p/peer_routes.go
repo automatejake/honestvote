@@ -53,7 +53,11 @@ func HandleConn(conn net.Conn) {
 			//TODO: Input a vote and send it to peer to verify
 			vote, err := strconv.Atoi(string(buf[5:length]))
 			if err == nil {
-				block := consensus.GenerateBlock(database.Block{}, database.Transaction{"", vote, ""})
+				block := consensus.GenerateBlock(database.Block{}, database.Transaction{
+					Sender:   "",
+					Vote:     vote,
+					Receiver: "",
+				})
 				fmt.Print(block)
 			}
 		}
