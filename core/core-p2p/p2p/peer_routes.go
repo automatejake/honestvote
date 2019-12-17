@@ -56,7 +56,8 @@ func HandleConn(conn net.Conn) {
 					Vote:     vote,
 					Receiver: "",
 				})
-				fmt.Print(block)
+				fmt.Println("Block created!")
+				fmt.Println(block)
 			}
 		}
 	}
