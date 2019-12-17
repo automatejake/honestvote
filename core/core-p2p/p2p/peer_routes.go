@@ -20,7 +20,6 @@ func HandleConn(conn net.Conn) {
 
 	for {
 		length, err := conn.Read(buf[0:])
-		fmt.Println(string(buf[0:length]))
 
 		if err != nil {
 			return
@@ -50,6 +49,8 @@ func HandleConn(conn net.Conn) {
 			database.MoveDocuments(Peers)
 		} else if string(buf[0:4]) == "vote" {
 			//TODO: Input a vote and send it to peer to verify
+			//Error was occuring due to \n being apart of buffer
+			//Remove the \n with TrimSuffix
 			sVote := string(buf[5:length])
 			sVote = strings.TrimSuffix(sVote, "\n")
 			vote, err := strconv.Atoi(sVote)
