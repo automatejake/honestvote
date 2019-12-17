@@ -1,2 +1,2 @@
 cd ../build
-go run main.go 7000
+go run main.go :9084

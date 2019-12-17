@@ -1,10 +1,7 @@
 package main
 
 import (
-<<<<<<< HEAD
-=======
 	"fmt"
->>>>>>> 7d7e46143029a19e3b5a657fca370736af2ead58
 	"os"
 
 	"github.com/jneubaum/honestvote/core/core-discovery/discovery"
@@ -14,8 +11,8 @@ import (
 )
 
 //defaults
-var PEER_SERVICE string = ":7000"
-var HTTP_SERVICE string = ":7001"
+var PEER_SERVICE string = ":9000"
+var HTTP_SERVICE string = ":9001"
 
 //this file will be responsible for deploying the app
 func main() {
@@ -35,16 +32,9 @@ func main() {
 	go http.CreateServer(HTTP_SERVICE)
 
 	// search for connections
-<<<<<<< HEAD
 	go discovery.FindPeer(os.Args[1])
 
 	// accept incoming connections and handle p2p
 	p2p.ListenConn(os.Args[1])
-=======
-	go discovery.FindPeer(PEER_SERVICE)
-
-	// accept incoming connections and handle p2p
-	p2p.ListenConn(PEER_SERVICE)
->>>>>>> 7d7e46143029a19e3b5a657fca370736af2ead58
 
 }
