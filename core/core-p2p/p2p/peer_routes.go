@@ -18,16 +18,14 @@ func HandleConn(conn net.Conn) {
 	var buf [256]byte
 
 	for {
-		fmt.Println("Hello")
-
 		length, err := conn.Read(buf[0:])
+		fmt.Println(string(buf[0:length]))
 
 		if err != nil {
 			return
 		}
 
 		if string(buf[0:7]) == "connect" {
-			fmt.Println("Connecting")
 			port, err := strconv.Atoi(string(buf[8:length]))
 
 			if err == nil {
