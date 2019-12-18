@@ -2,6 +2,15 @@ package database
 
 import "net"
 
+// Multiple nodes can work on the same host using different collection prefixes
+var CollectionPrefix string = ""
+
+// Database is the same for all nodes even for a test net
+var DatabaseName string = "honestvote"
+
+// Elections
+var ElectionHistory string = "election"
+
 type Block struct {
 	Index       int
 	Timestamp   string
@@ -30,8 +39,9 @@ type Candidate struct {
 }
 
 type Peer struct {
-	IPAddress string
-	Port      int
-	Socket    net.Conn
-	Role      string
+	IPAddress         string
+	Port              int
+	Socket            net.Conn
+	Role              string
+	NumberConnections int
 }

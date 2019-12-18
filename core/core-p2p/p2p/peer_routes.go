@@ -42,10 +42,10 @@ func HandleConn(conn net.Conn, collection_prefix string) {
 			js := json.NewDecoder(buffer)
 			err := js.Decode(tmpArray)
 			if err == nil {
-				database.UpdateMongo(database.MongoDB, *tmpArray, "honestvote", collection_prefix+"election")
+				database.UpdateMongo(database.MongoDB, *tmpArray, database.DatabaseName, collection_prefix+database.ElectionHistory)
 			}
 		} else if string(buf[0:8]) == "get data" {
-			database.MoveDocuments(Peers, "honestvote", collection_prefix+"election")
+			database.MoveDocuments(Peers, database.DatabaseName, collection_prefix+database.ElectionHistory)
 		} else if string(buf[0:4]) == "vote" {
 			//TODO: Input a vote and send it to peer to verify
 			//Error was occuring due to \n being apart of buffer

@@ -6,10 +6,10 @@ import (
 	"net"
 )
 
-func ExistsInTable(ipaddr string, port int, database_name string, collection_name string) bool {
+func ExistsInTable(ipaddr string, port string, collection_prefix string) bool {
 	// data, err := ioutil.ReadFile("routingtable.txt")
 
-	collection := MongoDB.Database(database_name).Collection(collection_name)
+	collection := MongoDB.Database(DatabaseName).Collection(collection_prefix + ElectionHistory)
 
 	var result Peer
 	err := collection.FindOne(context.TODO(), ipaddr).Decode(&result)

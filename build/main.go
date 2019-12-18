@@ -82,9 +82,9 @@ func main() {
 			REGISTRY_PORT = os.Args[index+1]
 		}
 	}
-	fmt.Println("Peer Running on port: "+PEER_SERVICE, "\nHTTP Service Running on port: "+
-		HTTP_SERVICE, "\nNode type: ", ROLE, "\nRegistry service running on port: ", REGISTRY_SERVICE,
-		"\nRegistry Server IP: ", REGISTRY_IP, "\nRegistry Server Port: ", REGISTRY_PORT, "\nDatabase Prefix: ", COLLECTION_PREFIX)
+	fmt.Println("Peer Running on port: "+PEER_SERVICE, "\nRegistry service running on port: ", REGISTRY_SERVICE,
+		"\nHTTP Service Running on port: "+HTTP_SERVICE, "\nNode type: ", ROLE, "\nRegistry Server IP: ", REGISTRY_IP,
+		"\nRegistry Server Port: ", REGISTRY_PORT, "\nDatabase Prefix: ", COLLECTION_PREFIX)
 
 	// create http server for light clients to get information from
 	if ROLE == "full" {
@@ -93,7 +93,7 @@ func main() {
 
 	// udp service that sends connected peers to other peers
 	if ROLE == "registry" || ROLE == "peer" {
-		go registry.ListenConnections(REGISTRY_SERVICE)
+		go registry.ListenConnections(REGISTRY_SERVICE, COLLECTION_PREFIX)
 	}
 
 	// find peers to talk to from registry node
