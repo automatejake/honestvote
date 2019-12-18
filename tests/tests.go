@@ -1,15 +1,24 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 )
 
 func main() {
-	addr, err := net.LookupIP("registry.honestvote.io")
+	p := make([]byte, 2048)
+	conn, err := net.Dial("udp", "127.0.0.1:7001")
 	if err != nil {
-		fmt.Println("Unknown host")
-	} else {
-		fmt.Println("IP address: ", addr)
+		fmt.Printf("Some error %v", err)
+		return
 	}
+	fmt.Fprintf(conn, "hello")
+	_, err = bufio.NewReader(conn).Read(p)
+	if err == nil {
+		fmt.Printf("%s\n", p)
+	} else {
+		fmt.Printf("Some error %v\n", err)
+	}
+	conn.Close()
 }

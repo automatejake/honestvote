@@ -10,7 +10,7 @@ import (
 var Nodes = make(map[int]bool)
 var Peers []database.Peer
 
-func ListenConn(port string, collection_prefix string) {
+func ListenConn(port string) {
 	listen, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatal(err)
@@ -25,6 +25,6 @@ func ListenConn(port string, collection_prefix string) {
 		}
 
 		// defined in peer_routes.go
-		go HandleConn(conn, collection_prefix)
+		go HandleConn(conn)
 	}
 }

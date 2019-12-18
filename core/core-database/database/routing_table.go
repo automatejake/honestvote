@@ -3,13 +3,12 @@ package database
 import (
 	"context"
 	"log"
-	"net"
 )
 
-func ExistsInTable(ipaddr string, port string, collection_prefix string) bool {
+func ExistsInTable(ipaddr string, port string) bool {
 	// data, err := ioutil.ReadFile("routingtable.txt")
 
-	collection := MongoDB.Database(DatabaseName).Collection(collection_prefix + ElectionHistory)
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + ElectionHistory)
 
 	var result Peer
 	err := collection.FindOne(context.TODO(), ipaddr).Decode(&result)
@@ -21,16 +20,16 @@ func ExistsInTable(ipaddr string, port string, collection_prefix string) bool {
 	return true
 }
 
-func AddToTable(ipaddr string, port int, socket net.Conn, role string, database_name string, collection_name string) {
+func AddToTable(ipaddr string, port int, role string, connections int) {
 
 	newPeer := Peer{
-		IPAddress: ipaddr,
-		Port:      port,
-		Socket:    socket,
-		Role:      role,
+		IPAddress:         ipaddr,
+		Port:              port,
+		Role:              role,
+		NumberConnections: connections,
 	}
 
-	collection := MongoDB.Database(database_name).Collection(collection_name)
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 	_, err := collection.InsertOne(context.TODO(), newPeer)
 	if err != nil {
 		log.Fatal(err)

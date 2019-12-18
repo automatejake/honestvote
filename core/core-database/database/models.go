@@ -11,6 +11,9 @@ var DatabaseName string = "honestvote"
 // Elections
 var ElectionHistory string = "election"
 
+//Peers on network
+var Connections string = "connections"
+
 type Block struct {
 	Index       int
 	Timestamp   string
@@ -41,7 +44,7 @@ type Candidate struct {
 type Peer struct {
 	IPAddress         string
 	Port              int
-	Socket            net.Conn
 	Role              string
 	NumberConnections int
+	Socket            net.Conn
 }

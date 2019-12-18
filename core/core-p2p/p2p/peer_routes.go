@@ -12,7 +12,7 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func HandleConn(conn net.Conn, collection_prefix string) {
+func HandleConn(conn net.Conn) {
 	defer conn.Close()
 
 	var buf [256]byte
@@ -42,10 +42,10 @@ func HandleConn(conn net.Conn, collection_prefix string) {
 			js := json.NewDecoder(buffer)
 			err := js.Decode(tmpArray)
 			if err == nil {
-				database.UpdateMongo(database.MongoDB, *tmpArray, database.DatabaseName, collection_prefix+database.ElectionHistory)
+				database.UpdateMongo(database.MongoDB, *tmpArray, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 			}
 		} else if string(buf[0:8]) == "get data" {
-			database.MoveDocuments(Peers, database.DatabaseName, collection_prefix+database.ElectionHistory)
+			database.MoveDocuments(Peers, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		} else if string(buf[0:4]) == "vote" {
 			//TODO: Input a vote and send it to peer to verify
 			//Error was occuring due to \n being apart of buffer
