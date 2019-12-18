@@ -96,7 +96,7 @@ func main() {
 	}
 
 	// udp service that sends connected peers to other peers
-	if ROLE == "registry" || ROLE == "peer" {
+	if ROLE == "registry" {
 		go registry.ListenConnections(UDP_SERVICE, TCP_SERVICE)
 	}
 

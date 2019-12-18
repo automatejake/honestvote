@@ -31,26 +31,32 @@ func HandleRoutes() {
 }
 
 func GetCandidatesHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
 	json.NewEncoder(w).Encode(Candidates)
 }
 
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
 	json.NewEncoder(w).Encode(Elections)
 }
 
 func GetVotersHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
 	json.NewEncoder(w).Encode(Voters)
 }
 
 func GetPositionsHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
 	json.NewEncoder(w).Encode(Positions)
 }
 
 func GetTicketsHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
 	json.NewEncoder(w).Encode(Tickets)
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
 	registrant := r.FormValue("email")
 	EmailRegistration(registrant)
 }
@@ -63,4 +69,8 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 
 	// }
 
+}
+
+func EnableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
