@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-func ListenConnections() {
+func ListenConnections(port string) {
 
 	buffer := make([]byte, 2048)
 	addr := net.UDPAddr{

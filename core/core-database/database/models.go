@@ -33,4 +33,5 @@ type Peer struct {
 	IPAddress string
 	Port      int
 	Socket    net.Conn
+	Role      string
 }

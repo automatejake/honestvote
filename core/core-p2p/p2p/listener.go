@@ -3,9 +3,14 @@ package p2p
 import (
 	"log"
 	"net"
+
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func ListenConn(port string) {
+var Nodes = make(map[int]bool)
+var Peers []database.Peer
+
+func ListenConn(port string, collection_prefix string) {
 	listen, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatal(err)
@@ -18,6 +23,8 @@ func ListenConn(port string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		go HandleConn(conn)
+
+		// defined in peer_routes.go
+		go HandleConn(conn, collection_prefix)
 	}
 }

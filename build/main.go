@@ -2,19 +2,25 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"os"
 
 	"github.com/jneubaum/honestvote/core/core-discovery/discovery"
 	"github.com/jneubaum/honestvote/core/core-http/http"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
+	"github.com/jneubaum/honestvote/core/core-registry/registry"
 	"github.com/joho/godotenv"
 )
 
 //defaults
-var PEER_SERVICE string = ":9000"
-var HTTP_SERVICE string = ":9001"
-var ROLE string = "PEER" //options peer || full || registry
-var DATABASE_PREFIX string = ""
+var PEER_SERVICE string = ":7000"     //tcp service for peer to peer routes
+var REGISTRY_SERVICE string = ":7001" //udp service for node discovery
+var HTTP_SERVICE string = ":7002"     //tcp service for light nodes to http routes
+
+var ROLE string = "peer" //options peer || full || registry
+var COLLECTION_PREFIX string = ""
+var REGISTRY_IP string
+var REGISTRY_PORT string = ":7002"
 
 //this file will be responsible for deploying the app
 func main() {
@@ -25,36 +31,77 @@ func main() {
 	}
 
 	// environmental variables override defaults
-	PEER_SERVICE = ":" + os.Getenv("PEER_SERVICE")
-	HTTP_SERVICE = ":" + os.Getenv("HTTP_SERVICE")
-	ROLE = os.Getenv("ROLE")
-	DATABASE_PREFIX = os.Getenv("DATABASE_PREFIX")
+	if os.Getenv("PEER_SERVICE") != "" {
+		PEER_SERVICE = ":" + os.Getenv("PEER_SERVICE")
+	}
+	if os.Getenv("REGISTRY_SERVICE") != "" {
+		REGISTRY_SERVICE = ":" + os.Getenv("DISCOVERY_SERVICE")
+	}
+	if os.Getenv("HTTP_SERVICE") != "" {
+		HTTP_SERVICE = ":" + os.Getenv("HTTP_SERVICE")
+	}
+	if os.Getenv("ROLE") != "" {
+		ROLE = os.Getenv("ROLE")
+	}
+	if os.Getenv("COLLECTION_PREFIX") != "" {
+		COLLECTION_PREFIX = os.Getenv("COLLECTION_PREFIX")
+	}
+	if os.Getenv("REGISTRY_IP") != "" {
+		REGISTRY_IP = os.Getenv("REGISTRY_IP")
+	}
+	if os.Getenv("REGISTRY_PORT") != "" {
+		REGISTRY_PORT = os.Getenv("REGISTRY_PORT")
+	}
+
+	//this domain is the default host to resolve traffic
+	if REGISTRY_IP == "" {
+		registry_ip, err := net.LookupIP("registry.honestvote.io")
+		if err != nil {
+			fmt.Println("Unknown host")
+		} else {
+			REGISTRY_IP = registry_ip[0].String()
+		}
+	}
 
 	// accept optional flags that override environmental variables
 	for index, element := range os.Args {
 		switch element {
-		case "--peer": //Set the default port for peer tcp service
+		case "--tcp": //Set the default port for peer tcp service
 			PEER_SERVICE = ":" + os.Args[index+1]
+		case "--udp":
+			REGISTRY_SERVICE = ":" + os.Args[index+1]
 		case "--http": //Set the default port for http service
 			HTTP_SERVICE = ":" + os.Args[index+1]
 		case "--role": //Set the role of the node options PEER || FULL || REGISTRY
 			ROLE = os.Args[index+1]
 		case "--db-prefix": //Collection prefix (useful for starting up multiple nodes with same database)
-			DATABASE_PREFIX = os.Args[index+1]
+			COLLECTION_PREFIX = os.Args[index+1]
+		case "--registry-host": //Sets the registry node
+			REGISTRY_IP = os.Args[index+1]
+		case "--registry-port": //Sets the registry node port
+			REGISTRY_PORT = os.Args[index+1]
 		}
-
 	}
+	fmt.Println("Peer Running on port: "+PEER_SERVICE, "\nHTTP Service Running on port: "+
+		HTTP_SERVICE, "\nNode type: ", ROLE, "\nRegistry service running on port: ", REGISTRY_SERVICE,
+		"\nRegistry Server IP: ", REGISTRY_IP, "\nRegistry Server Port: ", REGISTRY_PORT, "\nDatabase Prefix: ", COLLECTION_PREFIX)
 
 	// create http server for light clients to get information from
 	if ROLE == "full" {
 		go http.CreateServer(HTTP_SERVICE)
 	}
 
-	// search for connections
-	if ROLE == "full" || ROLE == "peer" {
-		go discovery.FindPeer(PEER_SERVICE)
+	// udp service that sends connected peers to other peers
+	if ROLE == "registry" || ROLE == "peer" {
+		go registry.ListenConnections(REGISTRY_SERVICE)
 	}
 
-	p2p.ListenConn(PEER_SERVICE) // accept incoming connections and handle p2p
+	// find peers to talk to from registry node
+	if ROLE == "full" || ROLE == "peer" {
+		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT)
+	}
+
+	// accept incoming connections and handle p2p
+	p2p.ListenConn(PEER_SERVICE, COLLECTION_PREFIX)
 
 }

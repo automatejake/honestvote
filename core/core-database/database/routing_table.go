@@ -1,35 +1,39 @@
 package database
 
 import (
-	"bufio"
-	"fmt"
+	"context"
 	"log"
-	"os"
-	"strings"
+	"net"
 )
 
-func ExistsInTable(ipaddr string) (bool, string) {
+func ExistsInTable(ipaddr string, port int, database_name string, collection_name string) bool {
 	// data, err := ioutil.ReadFile("routingtable.txt")
-	file, err := os.Open("routingtable.txt")
+
+	collection := MongoDB.Database(database_name).Collection(collection_name)
+
+	var result Peer
+	err := collection.FindOne(context.TODO(), ipaddr).Decode(&result)
+	if err != nil {
+		log.Print(err)
+		return false
+	}
+
+	return true
+}
+
+func AddToTable(ipaddr string, port int, socket net.Conn, role string, database_name string, collection_name string) {
+
+	newPeer := Peer{
+		IPAddress: ipaddr,
+		Port:      port,
+		Socket:    socket,
+		Role:      role,
+	}
+
+	collection := MongoDB.Database(database_name).Collection(collection_name)
+	_, err := collection.InsertOne(context.TODO(), newPeer)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		words := strings.Fields(scanner.Text())
-		if words[0] == ipaddr {
-			fmt.Println("Same")
-		} else {
-			fmt.Println(words[0], "\n", ipaddr)
-		}
-
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	return false, "ipaddress"
 }
