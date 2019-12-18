@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func ListenConnections(udp_service string) {
+func ListenConnections(udp_service string, tcp_service string) {
 
 	port, err := strconv.Atoi(udp_service)
 	if err != nil {
@@ -33,10 +33,9 @@ func ListenConnections(udp_service string) {
 			fmt.Printf("Some error  %v", err)
 			continue
 		}
-		fmt.Println(string(buffer[0:n]))
 
-		if string(buffer[0:n]) == "hello" {
-			go RegisterNode(ser, remoteaddr)
+		if string(buffer[0:8]) == "findpeer" {
+			go RegisterNode(ser, remoteaddr, string(buffer[8:n]))
 		}
 
 	}

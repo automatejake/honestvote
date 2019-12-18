@@ -10,7 +10,7 @@ import (
 * Find Peers in the network
 **/
 
-func FindPeer(registry_ip string, registry_port string) {
+func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 
 	new_peer := make([]byte, 2048)
 
@@ -22,7 +22,7 @@ func FindPeer(registry_ip string, registry_port string) {
 	}
 
 	// Read Connection
-	fmt.Fprintf(conn, "hello")
+	fmt.Fprintf(conn, "findpeer"+tcp_port)
 	_, err = bufio.NewReader(conn).Read(new_peer)
 	if err == nil {
 		fmt.Printf("%s\n", new_peer)

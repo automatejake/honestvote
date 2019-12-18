@@ -1,5 +1,0 @@
-package discovery
-
-func discover() {
-
-}

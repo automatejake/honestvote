@@ -42,9 +42,15 @@ type Candidate struct {
 }
 
 type Peer struct {
-	IPAddress         string
-	Port              int
-	Role              string
-	NumberConnections int
-	Socket            net.Conn
+	IPAddress   string
+	Port        int
+	Role        string
+	Connections []Peer
+}
+
+type TempPeer struct {
+	IPAddress string
+	Port      int
+	Role      string
+	Socket    net.Conn
 }

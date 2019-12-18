@@ -36,8 +36,8 @@ func GatherMongoData(client *mongo.Client, filter bson.M, database_name string, 
 }
 
 //Send the data to the full/peer node
-func MoveDocuments(peers []Peer, database_name string, collection_name string) {
-	MongoDB = MongoConnect()
+func MoveDocuments(peers []TempPeer, database_name string, collection_name string) {
+
 	MongoData := GatherMongoData(MongoDB, bson.M{}, database_name, collection_name)
 	buffer := new(bytes.Buffer)
 	tmpArray := MongoData

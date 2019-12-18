@@ -25,11 +25,14 @@ func HandleConn(conn net.Conn) {
 		}
 
 		if string(buf[0:7]) == "connect" {
+
+			//ADD TO DATABASE AS WELL
+
 			port, err := strconv.Atoi(string(buf[8:length]))
 
 			if err == nil {
 				Nodes[port] = true
-				tmpPeer := database.Peer{
+				tmpPeer := database.TempPeer{
 					IPAddress: "127.0.0.1",
 					Port:      port,
 					Socket:    conn,

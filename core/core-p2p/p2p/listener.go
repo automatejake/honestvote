@@ -8,10 +8,10 @@ import (
 )
 
 var Nodes = make(map[int]bool)
-var Peers []database.Peer
+var Peers []database.TempPeer
 
 func ListenConn(port string) {
-	listen, err := net.Listen("tcp", port)
+	listen, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		log.Fatal(err)
 	}
