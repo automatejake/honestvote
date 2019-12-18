@@ -3,7 +3,12 @@ package discovery
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"net"
+	"strconv"
+
+	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 )
 
 /***
@@ -26,9 +31,35 @@ func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 	_, err = bufio.NewReader(conn).Read(new_peer)
 	if err == nil {
 		fmt.Printf("%s\n", new_peer)
+		DialPeer(string(new_peer))
+
 	} else {
 		fmt.Printf("Some error %v\n", err)
 	}
 	conn.Close()
+
+}
+
+func DialPeer(peer string) {
+	fmt.Println(peer)
+	conn, err := net.Dial("tcp", "127.0.0.1:"+peer)
+	if err != nil {
+		log.Print(err)
+	}
+
+	port, _ := strconv.Atoi(peer)
+
+	if conn != nil {
+		fmt.Println("Dial Successful!")
+		tmpPeer := database.TempPeer{
+			IPAddress: "127.0.0.1",
+			Port:      port,
+			Socket:    conn,
+		}
+		p2p.Peers = append(p2p.Peers, tmpPeer)
+
+		conn.Write([]byte("connect " + peer))
+		go p2p.HandleConn(conn)
+	}
 
 }
