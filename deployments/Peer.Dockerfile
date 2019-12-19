@@ -7,18 +7,18 @@ FROM golang:latest
 LABEL maintainer="Jacob Neubaum <jacob@bizylife.com>"
 
 # Set the Current Working Directory inside the container
-WORKDIR /app
+WORKDIR /usr/local/go/src/github.com/jneubaum/honestvote
 
 # Copy the source from the current directory to the Working Directory inside the container
 COPY . .
 
 # Get dependencies
-#RUN go build -o main .
-WORKDIR /app/build
-RUN ./install-binaries.sh
 
-# Build main app
-WORKDIR /app/core/core-p2p/p2p
+
+
+#RUN go build -o main .
+WORKDIR /usr/local/go/src/github.com/jneubaum/honestvote/build
+RUN ./install-binaries.sh
 RUN go build -o main
 
 # Expose port 7000 and 7001 to host machine
