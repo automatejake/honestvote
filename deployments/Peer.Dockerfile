@@ -14,18 +14,11 @@ COPY . .
 
 # Get dependencies
 #RUN go build -o main .
-RUN go get github.com/jneubaum/honestvote/core/core-http/src
-RUN go get github.com/jneubaum/honestvote/core/core-database/src
-RUN go get github.com/jneubaum/honestvote/core/core-consensus/src
-RUN go get github.com/jneubaum/honestvote/core/core-crypto/src
-
-RUN go get github.com/joho/godotenv
-RUN go get go.mongodb.org/mongo-driver/bson
-RUN go get go.mongodb.org/mongo-driver/mongo
-RUN go get go.mongodb.org/mongo-driver/mongo/options
+WORKDIR /app/build
+RUN ./install-binaries.sh
 
 # Build main app
-WORKDIR /app/core/core-p2p/src
+WORKDIR /app/core/core-p2p/p2p
 RUN go build -o main
 
 # Expose port 7000 and 7001 to host machine
