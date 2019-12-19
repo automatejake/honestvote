@@ -52,9 +52,7 @@ func HandleConn(conn net.Conn) {
 		} else if string(buf[0:8]) == "get data" {
 			database.MoveDocuments(Peers, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		} else if string(buf[0:4]) == "vote" {
-			//TODO: Input a vote and send it to peer to verify
 			sVote := string(buf[5:length])
-			//Remove the \n with TrimSuffix
 			sVote = strings.TrimSuffix(sVote, "\n")
 			vote, err := strconv.Atoi(sVote)
 			if err == nil {
@@ -63,8 +61,20 @@ func HandleConn(conn net.Conn) {
 					Vote:     vote,
 					Receiver: "",
 				})
-				fmt.Println(block)
+
+				//Check if there is a proposed block currently, if so, add to the queue
+				if ProposedBlock == (database.Block{}) {
+					fmt.Println("Empty, proposing this block.")
+					ProposedBlock = block
+					ProposeBlock(ProposedBlock, Peers)
+				} else {
+					fmt.Println("Not Empty, sending to queue.")
+					BlockQueue = append(BlockQueue, block)
+				}
 			}
+		} else if string(buf[0:7]) == "propose" {
+			//TODO: Verify the block is correct
+			fmt.Println("Recieved the proposition.")
 		}
 	}
 }

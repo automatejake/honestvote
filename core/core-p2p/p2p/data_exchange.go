@@ -14,8 +14,8 @@ func ProposeBlock(block database.Block, peers []database.TempPeer) {
 	gobobj := gob.NewEncoder(buffer)
 	err := gobobj.Encode(tmpStruct)
 	if err == nil {
+		fmt.Println(len(peers))
 		for _, peer := range peers {
-			fmt.Println("Proposing block!")
 			peer.Socket.Write(append([]byte("propose "), buffer.Bytes()...))
 		}
 	}
