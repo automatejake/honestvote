@@ -38,6 +38,8 @@ func HandleConn(conn net.Conn) {
 					Socket:    conn,
 				}
 				Peers = append(Peers, tmpPeer)
+				// permPeer := database.Peer{}
+				// database.AddToTable(permPeer.IPAddress, permPeer.Port)
 			}
 		} else if string(buf[0:12]) == "recieve data" {
 			buffer := bytes.NewBuffer(buf[13:length])
