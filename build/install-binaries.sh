@@ -1,9 +1,10 @@
+#!/bin/bash
+
 go get github.com/joho/godotenv
 go get go.mongodb.org/mongo-driver/bson
 go get go.mongodb.org/mongo-driver/mongo
-go get go.mongodb.org/mongo-driver
-go mod tidy 
-go mod vendor
+go get github.com/gorilla/mux
+
 
 
 #this script should install binaries with go install
@@ -19,8 +20,7 @@ go install
 cd ../../core-discovery/discovery
 go install
 
-# cd ../../core-election/src
-# go install
+
 
 cd ../../core-http/http
 go install
@@ -31,5 +31,6 @@ go install
 cd ../../core-registry/registry
 go install
 
-go mod tidy 
-go mod vendor
+
+# cd ../../core-election/election
+# go install

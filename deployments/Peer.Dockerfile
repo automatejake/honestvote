@@ -7,8 +7,8 @@ FROM golang:latest
 LABEL maintainer="Jacob Neubaum <jacob@bizylife.com>"
 
 # Set the Current Working Directory inside the container
-WORKDIR /usr/local/go/src/github.com/jneubaum/honestvote
-
+# WORKDIR /usr/local/go/src/github.com/jneubaum/honestvote
+WORKDIR /go/src/github.com/jneubaum/honestvote
 # Copy the source from the current directory to the Working Directory inside the container
 COPY . .
 
@@ -17,14 +17,21 @@ COPY . .
 
 
 #RUN go build -o main .
-WORKDIR /usr/local/go/src/github.com/jneubaum/honestvote/build
-RUN ./install-binaries.sh
-RUN go build -o main
+# WORKDIR /usr/local/go/src/github.com/jneubaum/honestvote/build
+# RUN ./install-binaries.sh
+# RUN go build -o main
 
 # Expose port 7000 and 7001 to host machine
 EXPOSE 7000
 EXPOSE 7001
 
 # Command to run the executable
-CMD ["./main"] 
+# WORKDIR /usr/local/go/src/github.com/jneubaum/honestvote/scripts
+
+WORKDIR /go/src/github.com/jneubaum/honestvote/build
+
+RUN chmod +x install-binaries.sh
+RUN ./install-binaries.sh
+RUN go build -o main
+CMD ["./main --role full --http 7001"] 
 # CMD while true; do sleep 1000; done
