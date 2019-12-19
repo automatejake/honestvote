@@ -28,6 +28,8 @@ func HandleConn(conn net.Conn) {
 
 			//ADD TO DATABASE AS WELL
 
+			fmt.Println("Connecting...")
+
 			port, err := strconv.Atoi(string(buf[8:length]))
 
 			if err == nil {

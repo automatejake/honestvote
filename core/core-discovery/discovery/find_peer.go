@@ -27,8 +27,11 @@ func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 	}
 
 	// Read Connection
-	fmt.Fprintf(conn, "findpeer"+tcp_port)
+	//BREAKS WINDOWS
+	//fmt.Fprintf(conn, "findpeer"+tcp_port)
+	log.Printf("Here Before")
 	_, err = bufio.NewReader(conn).Read(new_peer)
+	log.Printf("Here After")
 	if err == nil {
 		fmt.Printf("%s\n", new_peer)
 		DialPeer(string(new_peer))
