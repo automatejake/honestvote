@@ -1,3 +1,11 @@
+go get github.com/joho/godotenv
+go get go.mongodb.org/mongo-driver/bson
+go get go.mongodb.org/mongo-driver/mongo
+go get go.mongodb.org/mongo-driver
+go mod tidy 
+go mod vendor
+
+
 #this script should install binaries with go install
 cd ../core/core-consensus/consensus
 go install
@@ -23,3 +31,5 @@ go install
 cd ../../core-registry/registry
 go install
 
+go mod tidy 
+go mod vendor

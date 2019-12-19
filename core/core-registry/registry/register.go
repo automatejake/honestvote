@@ -24,7 +24,7 @@ func RegisterNode(conn *net.UDPConn, addr *net.UDPAddr, tcp_port string) {
 		// if err != nil {
 		// 	log.Fatal("encode error:", err)
 		// }
-		fmt.Println("another one")
+		fmt.Println(elem.Port)
 		_, err := conn.WriteToUDP([]byte(strconv.Itoa(elem.Port)), addr)
 		if err != nil {
 			fmt.Printf("Couldn't send response %v", err)
