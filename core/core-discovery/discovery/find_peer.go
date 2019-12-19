@@ -43,14 +43,12 @@ func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 func DialPeer(peer string) {
 	p := strings.Trim(peer, "\x00")
 	fmt.Printf("%q\n", p)
-	log.Printf("Here Before")
 	conn, err := net.Dial("tcp", "127.0.0.1:"+p)
-	log.Printf("Here After")
 	if err != nil {
 		log.Print(err)
 	}
 
-	port, _ := strconv.Atoi(peer)
+	port, _ := strconv.Atoi(p)
 
 	if conn != nil {
 		fmt.Println("Dial Successful!")
@@ -61,7 +59,7 @@ func DialPeer(peer string) {
 		}
 		p2p.Peers = append(p2p.Peers, tmpPeer)
 
-		conn.Write([]byte("connect " + peer))
+		conn.Write([]byte("connect " + p))
 		go p2p.HandleConn(conn)
 	}
 

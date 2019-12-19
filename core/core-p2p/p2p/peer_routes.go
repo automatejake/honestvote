@@ -28,8 +28,6 @@ func HandleConn(conn net.Conn) {
 
 			//ADD TO DATABASE AS WELL
 
-			fmt.Println("Connecting...")
-
 			port, err := strconv.Atoi(string(buf[8:length]))
 
 			if err == nil {
@@ -40,6 +38,7 @@ func HandleConn(conn net.Conn) {
 					Socket:    conn,
 				}
 				Peers = append(Peers, tmpPeer)
+				fmt.Println(Peers)
 				// permPeer := database.Peer{}
 				// database.AddToTable(permPeer.IPAddress, permPeer.Port)
 			}
