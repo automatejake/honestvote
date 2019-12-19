@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"strings"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
@@ -27,13 +28,9 @@ func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 	}
 
 	// Read Connection
-	//BREAKS WINDOWS
-	//fmt.Fprintf(conn, "findpeer"+tcp_port)
-	log.Printf("Here Before")
+	fmt.Fprintf(conn, "findpeer"+tcp_port)
 	_, err = bufio.NewReader(conn).Read(new_peer)
-	log.Printf("Here After")
 	if err == nil {
-		fmt.Printf("%s\n", new_peer)
 		DialPeer(string(new_peer))
 
 	} else {
@@ -44,8 +41,11 @@ func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 }
 
 func DialPeer(peer string) {
-	fmt.Println(peer)
-	conn, err := net.Dial("tcp", "127.0.0.1:"+peer)
+	p := strings.Trim(peer, "\x00")
+	fmt.Printf("%q\n", p)
+	log.Printf("Here Before")
+	conn, err := net.Dial("tcp", "127.0.0.1:"+p)
+	log.Printf("Here After")
 	if err != nil {
 		log.Print(err)
 	}
