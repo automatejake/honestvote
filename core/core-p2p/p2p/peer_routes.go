@@ -51,9 +51,8 @@ func HandleConn(conn net.Conn) {
 			database.MoveDocuments(Peers, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		} else if string(buf[0:4]) == "vote" {
 			//TODO: Input a vote and send it to peer to verify
-			//Error was occuring due to \n being apart of buffer
-			//Remove the \n with TrimSuffix
 			sVote := string(buf[5:length])
+			//Remove the \n with TrimSuffix
 			sVote = strings.TrimSuffix(sVote, "\n")
 			vote, err := strconv.Atoi(sVote)
 			if err == nil {
