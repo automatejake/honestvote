@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net"
 	"strconv"
 	"strings"
@@ -29,6 +30,7 @@ func HandleConn(conn net.Conn) {
 			//ADD TO DATABASE AS WELL
 			port, err := strconv.Atoi(string(buf[8:length]))
 
+			log.Println("Recieved Connect Message")
 			if err == nil {
 				// Nodes[port] = true
 				tmpPeer := database.TempPeer{

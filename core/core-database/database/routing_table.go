@@ -8,8 +8,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+/**
+* Exist in table - Simple Process
+*
+* 1) Checks to see if the given connection exists in the table of connections
+*
+**/
 func ExistsInTable(ipaddr string, port int) bool {
-	// data, err := ioutil.ReadFile("routingtable.txt")
 
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
@@ -29,6 +34,11 @@ func ExistsInTable(ipaddr string, port int) bool {
 	return true
 }
 
+/**
+* Add to Table - Simple Process
+*
+* 1) Adds the node to the database of connections
+**/
 func AddToTable(ipaddr string, port int) {
 
 	newPeer := Peer{
@@ -46,12 +56,23 @@ func AddToTable(ipaddr string, port int) {
 
 }
 
-func FindPeers(exclude_requesting_peer Peer) []Peer {
+/**
+* Find Peers - 2 Step Process
+*
+* 1) Query database for all peers besides requesting peer
+* 2) Return list of peers to the requesting peer
+*
+**/
+func FindPeers(requesting_peer Peer) []Peer {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
 	var peers []Peer
 
-	result, err := collection.Find(context.TODO(), bson.M{})
+	// Mongo shell format:
+	// {$or: [ { ipaddress: { $ne: "127.0.0.1" } },{ port: { $ne: 7002 } }]}
+	query := bson.M{"$or": bson.A{bson.M{"ipaddress": bson.M{"$ne": requesting_peer.IPAddress}}, bson.M{"port": bson.M{"$ne": requesting_peer.Port}}}}
+
+	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
 		log.Fatal(err)
 	}
