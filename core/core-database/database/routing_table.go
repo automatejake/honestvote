@@ -41,7 +41,7 @@ func AddToTable(ipaddr string, port int) {
 
 }
 
-func FindPeers() []Peer {
+func FindPeers(exclude_requesting_peer Peer) []Peer {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
 	var peers []Peer
@@ -62,7 +62,7 @@ func FindPeers() []Peer {
 	}
 
 	// Close the cursor once finished
-	// result.Close(context.TODO())
+	result.Close(context.TODO())
 
 	return peers
 }
