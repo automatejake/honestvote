@@ -1,35 +1,37 @@
 package registry
 
 import (
-	"fmt"
+	"encoding/json"
+	"log"
 	"net"
-	"strconv"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func RegisterNode(conn *net.UDPConn, addr *net.UDPAddr, tcp_port string) {
-	// defer conn.Close()
-	fmt.Println(tcp_port)
+/**
+* Register Node - 2 Step Process
+*
+* 1) Adds the node to the database of connections
+* 2) Returns to node the list of nodes to speak with, IP Address and Port contained in a JSON object
+*
+**/
 
+func RegisterNode(conn *net.UDPConn, addr *net.UDPAddr, tcp_port int) {
+
+	// Adds the node to the database of connections as a full node.  Nodes do not become peers until accpetance by the network
 	database.AddToTable(addr.IP.String(), tcp_port)
-	tmp_peers := database.FindPeer()
 
-	// var network bytes.Buffer // Stand-in for a network connection
-	// enc := gob.NewEncoder(&network)
+	// Returns to node the list of nodes to speak with, IP Address and Port contained in a JSON object
+	tmp_peers := database.FindPeers()
 
-	for _, elem := range tmp_peers {
+	peers_json, err := json.Marshal(tmp_peers)
+	if err != nil {
+		log.Println("File: register.go\nFunction:RegisterNode\n", err)
+	}
 
-		// err := enc.Encode(elem)
-		// if err != nil {
-		// 	log.Fatal("encode error:", err)
-		// }
-		fmt.Println(elem.Port)
-		_, err := conn.WriteToUDP([]byte(strconv.Itoa(elem.Port)), addr)
-		if err != nil {
-			fmt.Printf("Couldn't send response %v", err)
-		}
-
+	_, err = conn.WriteToUDP(peers_json, addr)
+	if err != nil {
+		log.Println("File: register.go\nFunction:RegisterNode\n", err)
 	}
 
 }

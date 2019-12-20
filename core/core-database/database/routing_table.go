@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -25,16 +24,11 @@ func ExistsInTable(ipaddr string, port string) bool {
 	return true
 }
 
-func AddToTable(ipaddr string, port string) {
-
-	int_port, err := strconv.Atoi(port)
-	if err != nil {
-		log.Print(err)
-	}
+func AddToTable(ipaddr string, port int) {
 
 	newPeer := Peer{
 		IPAddress: ipaddr,
-		Port:      int_port,
+		Port:      port,
 		// Role:      role,
 	}
 
@@ -47,7 +41,7 @@ func AddToTable(ipaddr string, port string) {
 
 }
 
-func FindPeer() []Peer {
+func FindPeers() []Peer {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
 	var peers []Peer
@@ -71,4 +65,8 @@ func FindPeer() []Peer {
 	// result.Close(context.TODO())
 
 	return peers
+}
+
+func FindFullNode() {
+
 }
