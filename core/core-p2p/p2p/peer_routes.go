@@ -15,7 +15,7 @@ import (
 func HandleConn(conn net.Conn) {
 	defer conn.Close()
 
-	var buf [256]byte
+	var buf [512]byte
 
 	for {
 		length, err := conn.Read(buf[0:])
@@ -71,11 +71,16 @@ func HandleConn(conn net.Conn) {
 				} else {
 					fmt.Println("Not Empty, sending to queue.")
 					BlockQueue = append(BlockQueue, block)
+					fmt.Println(BlockQueue)
 				}
 			}
-		} else if string(buf[0:7]) == "propose" {
+		} else if string(buf[0:6]) == "verify" {
 			//TODO: Verify the block is correct
-			fmt.Println("Recieved the proposition.")
+			block := new(database.Block)
+			json.Unmarshal(buf[7:length], block)
+			if (consensus.VerifyHash(database.Block{}, *block)) {
+				fmt.Println("Block verified!")
+			}
 		}
 	}
 }
