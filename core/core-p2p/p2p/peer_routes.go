@@ -62,7 +62,7 @@ func HandleConn(conn net.Conn) {
 					Sender:   "",
 					Vote:     vote,
 					Receiver: "",
-				})
+				}, Port)
 
 				//Check if there is a proposed block currently, if so, add to the queue
 				if ProposedBlock == (database.Block{}) {
@@ -76,12 +76,11 @@ func HandleConn(conn net.Conn) {
 				}
 			}
 		} else if string(buf[0:6]) == "verify" { //Verifying that the sent block is correct(sign/reject)
-			//TODO: Verify the block is correct
 			block := new(database.Block)
 			json.Unmarshal(buf[7:length], block)
-			if (consensus.VerifyHash(database.Block{}, *block)) {
-				fmt.Println("Block verified!")
-			}
+			VerifyBlock(*block)
+		} else if string(buf[0:4]) == "sign" { //Response from all peers verifying block
+			fmt.Println("Block Signed!")
 		}
 	}
 }

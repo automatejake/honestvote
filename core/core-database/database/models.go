@@ -21,6 +21,7 @@ type Block struct {
 	Hash        string
 	PrevHash    string
 	Validator   string
+	Port        int //TODO: Make Validator part of Peer struct to identify who proposed block
 }
 
 type Transaction struct {
@@ -53,4 +54,5 @@ type TempPeer struct {
 	Port      int
 	Role      string
 	Socket    net.Conn
+	//Validator -- used to identify who sent proposition block
 }

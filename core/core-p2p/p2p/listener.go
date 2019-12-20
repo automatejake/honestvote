@@ -3,6 +3,7 @@ package p2p
 import (
 	"log"
 	"net"
+	"strconv"
 )
 
 func ListenConn(port string) {
@@ -10,6 +11,8 @@ func ListenConn(port string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	Port, err = strconv.Atoi(port)
 
 	defer listen.Close()
 

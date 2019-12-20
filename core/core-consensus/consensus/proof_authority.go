@@ -22,7 +22,7 @@ func CalculateHash(input string) string {
 	return base64.URLEncoding.EncodeToString(sum)
 }
 
-func GenerateBlock(block database.Block, transaction database.Transaction) database.Block {
+func GenerateBlock(block database.Block, transaction database.Transaction, port int) database.Block {
 	var newBlock database.Block
 
 	newBlock.Index = block.Index + 1
@@ -30,6 +30,7 @@ func GenerateBlock(block database.Block, transaction database.Transaction) datab
 	newBlock.Transaction = transaction
 	newBlock.PrevHash = block.Hash
 	newBlock.Validator = Address
+	newBlock.Port = port
 
 	header := GenerateHeader(newBlock)
 
