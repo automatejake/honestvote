@@ -33,7 +33,7 @@ func HandleConn(conn net.Conn) {
 			port, err := strconv.Atoi(string(buf[8:length]))
 
 			if err == nil {
-				Nodes[port] = true
+				// Nodes[port] = true
 				tmpPeer := database.TempPeer{
 					IPAddress: "127.0.0.1",
 					Port:      port,
