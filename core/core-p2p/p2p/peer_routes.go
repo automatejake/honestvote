@@ -27,7 +27,6 @@ func HandleConn(conn net.Conn) {
 		if string(buf[0:7]) == "connect" {
 
 			//ADD TO DATABASE AS WELL
-
 			port, err := strconv.Atoi(string(buf[8:length]))
 
 			if err == nil {
@@ -52,7 +51,7 @@ func HandleConn(conn net.Conn) {
 			}
 		} else if string(buf[0:8]) == "get data" {
 			database.MoveDocuments(Peers, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
-		} else if string(buf[0:4]) == "vote" {
+		} else if string(buf[0:4]) == "vote" { //Get a vote and make a block out of it
 			sVote := string(buf[5:length])
 			sVote = strings.TrimSuffix(sVote, "\n")
 			vote, err := strconv.Atoi(sVote)
@@ -74,7 +73,7 @@ func HandleConn(conn net.Conn) {
 					fmt.Println(BlockQueue)
 				}
 			}
-		} else if string(buf[0:6]) == "verify" {
+		} else if string(buf[0:6]) == "verify" { //Verifying that the sent block is correct(sign/reject)
 			//TODO: Verify the block is correct
 			block := new(database.Block)
 			json.Unmarshal(buf[7:length], block)
