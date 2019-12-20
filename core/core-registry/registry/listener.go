@@ -1,41 +1,51 @@
 package registry
 
 import (
-	"fmt"
+	"log"
 	"net"
 	"strconv"
 )
 
 func ListenConnections(udp_service string, tcp_service string) {
 
+	// Sets up server to accept incoming connections
 	port, err := strconv.Atoi(udp_service)
 	if err != nil {
-		fmt.Printf("Error %v\n", err)
+		log.Println("File: listener.go\nFunction:ListenConnections\n", err)
 	}
 
-	buffer := make([]byte, 2048)
 	addr := net.UDPAddr{
-		Port: port,
 		IP:   net.ParseIP("127.0.0.1"),
+		Port: port,
 	}
-
-	ser, err := net.ListenUDP("udp", &addr)
+	listener, err := net.ListenUDP("udp", &addr)
 	if err != nil {
-		fmt.Printf("Some error %v\n", err)
+		log.Println("File: listener.go\nFunction:ListenConnections\n", err)
 		return
 	}
 
-	fmt.Println("Listening UDP on port ", addr.Port)
+	log.Println("Listening UDP on port ", addr.Port)
+
+	// The only UDP Route is called findpeer and is sent in order to tell the registry service that they want to talk to someone
+	//
+	defer listener.Close()
+	buffer := make([]byte, 4096)
+
 	for {
 
-		n, remoteaddr, err := ser.ReadFromUDP(buffer) // n is length of bytes, remoteaddr is ip and port of message sender
+		// n is length of bytes, remoteaddr is ip and port of message sender
+		n, remote_address, err := listener.ReadFromUDP(buffer)
 		if err != nil {
-			fmt.Printf("Some error  %v", err)
+			log.Println("File: listener.go\nFunction:ListenConnections2\n", err)
 			continue
 		}
 
+		log.Println("Registry receiving message from node: ", buffer[0:n])
+
 		if string(buffer[0:8]) == "findpeer" {
-			go RegisterNode(ser, remoteaddr, string(buffer[8:n]))
+			// default tcp port is 7632, otherwise it should be specified explicitly
+			non_default_port, _ := strconv.Atoi(string(buffer[8:n]))
+			go RegisterNode(listener, remote_address, non_default_port)
 		}
 
 	}

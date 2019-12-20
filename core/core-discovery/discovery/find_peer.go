@@ -1,7 +1,7 @@
 package discovery
 
 import (
-	"bufio"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -13,30 +13,49 @@ import (
 )
 
 /***
-* Find Peers in the network
+* Find Peers to talk to in the network, 2 Step Process
+*
+* 1) Send findpeer message to registry node over raw udp socket (include TCP socket that you will be listening in on)
+* 2)
+*
 **/
 
 func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 
-	new_peer := make([]byte, 2048)
-
-	// Dial Connection
-	conn, err := net.Dial("udp", registry_ip+":"+registry_port)
+	remote_address, err := net.ResolveUDPAddr("udp", registry_ip+":"+registry_port)
 	if err != nil {
-		fmt.Printf("Some error %v", err)
+		log.Println("File: find_peer.go\nFunction:FindPeer\n", err)
+	}
+
+	conn, err := net.DialUDP("udp", nil, remote_address)
+	if err != nil {
+		log.Println("File: find_peer.go\nFunction:FindPeer\n", err)
 		return
 	}
+	defer conn.Close()
 
-	// Read Connection
-	fmt.Fprintf(conn, "findpeer"+tcp_port)
-	_, err = bufio.NewReader(conn).Read(new_peer)
-	if err == nil {
-		DialPeer(string(new_peer))
-
-	} else {
-		fmt.Printf("Some error %v\n", err)
+	// fmt.Fprintf(conn, "findpeer"+tcp_port)
+	_, err = conn.Write([]byte("findpeer" + tcp_port))
+	if err != nil {
+		log.Println("File: find_peer.go\nFunction:FindPeer\n", err)
 	}
-	conn.Close()
+
+	peers_json := make([]byte, 2048)
+	n, _, err := conn.ReadFromUDP(peers_json) // n, udp_address, error
+	// fmt.Println("recieved ", n, " bytes")
+
+	var peers []database.Peer
+	_ = json.Unmarshal(peers_json[0:n], &peers)
+
+	// fmt.Println(peers[0].IPAddress)
+	log.Println("Got him " + peers[0].IPAddress)
+
+	// _, err = bufio.NewReader(conn).Read(new_peer)
+	// if err == nil {
+	// 	go DialPeer(string(new_peer))
+	// } else {
+	// 	fmt.Print("Some error %v\n", err)
+	// }
 
 }
 
