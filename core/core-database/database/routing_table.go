@@ -8,19 +8,24 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func ExistsInTable(ipaddr string, port string) bool {
+func ExistsInTable(ipaddr string, port int) bool {
 	// data, err := ioutil.ReadFile("routingtable.txt")
 
-	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + ElectionHistory)
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
+
+	query := bson.M{"ipaddress": ipaddr, "port": port}
 
 	var result Peer
-	err := collection.FindOne(context.TODO(), ipaddr).Decode(&result)
+	err := collection.FindOne(context.TODO(), query).Decode(&result)
 	if err != nil {
-		log.Print("Afraid weve reached an impasse: ", err)
+		if err.Error() != "mongo: no documents in result" {
+			log.Println("File: routing_table.go\nFunction:ExistsInTable\n", err)
+		}
+		log.Println("No documents in result")
 		return false
 	}
-	fmt.Println()
 
+	log.Println("Exists")
 	return true
 }
 
