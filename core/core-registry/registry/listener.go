@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func ListenConnections(udp_service string, tcp_service string) {
+func ListenConnections(udp_service string) {
 
 	// Sets up server to accept incoming connections
 	port, err := strconv.Atoi(udp_service)
