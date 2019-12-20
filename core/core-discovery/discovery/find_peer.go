@@ -12,11 +12,11 @@ import (
 )
 
 /***
-* Find Peers to talk to in the network, 2 Step Process
+* Find Nodes to talk to in the network, 2 Step Process
 *
-* 1) Send findpeer message to registry node over raw udp socket (include TCP socket that you will be listening in on)
-* 2) Parse peer from JSON to struct
-* 3) Send Connect Message to Peer
+* 1) Send findnode message to registry node over raw udp socket (include TCP socket that you will be listening in on)
+* 2) Parse node from JSON to struct
+* 3) Send Connect Message to node
 *
 **/
 func FindPeer(registry_ip string, registry_port string, tcp_port string) {
@@ -43,7 +43,7 @@ func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 	peers_json := make([]byte, 2048)
 	n, _, err := conn.ReadFromUDP(peers_json) // n, udp_address, error
 
-	var peers []database.Peer
+	var peers []database.Node
 	_ = json.Unmarshal(peers_json[0:n], &peers)
 
 	//Send connect message to peer
@@ -58,7 +58,7 @@ func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 * 2) If unsuccessful, report to registry node
 * 3) If succsessful, Add Peer to database and connection to memory
  */
-func ConnectMessage(peer database.Peer) {
+func ConnectMessage(peer database.Node) {
 	port := strconv.Itoa(peer.Port)
 
 	conn, err := net.Dial("tcp", peer.IPAddress+":"+port)
@@ -71,12 +71,12 @@ func ConnectMessage(peer database.Peer) {
 
 		conn.Write([]byte("connect " + port))
 
-		tmpPeer := database.TempPeer{
+		tmpNode := database.TempNode{
 			IPAddress: "127.0.0.1",
 			Port:      peer.Port,
 			Socket:    conn,
 		}
-		p2p.Peers = append(p2p.Peers, tmpPeer)
+		p2p.Nodes = append(p2p.Nodes, tmpNode)
 		database.AddToTable(peer.IPAddress, peer.Port)
 		go p2p.HandleConn(conn)
 	}

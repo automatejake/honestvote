@@ -6,7 +6,7 @@ import "github.com/jneubaum/honestvote/core/core-database/database"
 
 //Port is used for sending blocks so the Peers verifying know who do send it back to
 var Port int
-var Peers []database.TempPeer
+var Nodes []database.TempNode
 var ProposedBlock database.Block
 
 //Block queue starts to fill if ProposedBlock is not nil

@@ -42,14 +42,14 @@ type Candidate struct {
 	Votes     int32  `json:"votes"`
 }
 
-type Peer struct {
+type Node struct {
 	IPAddress   string
 	Port        int
 	Role        string
-	Connections []Peer
+	Connections []Node
 }
 
-type TempPeer struct {
+type TempNode struct {
 	IPAddress string
 	Port      int
 	Role      string

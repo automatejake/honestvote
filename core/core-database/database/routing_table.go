@@ -20,7 +20,7 @@ func ExistsInTable(ipaddr string, port int) bool {
 
 	query := bson.M{"ipaddress": ipaddr, "port": port}
 
-	var result Peer
+	var result Node
 	err := collection.FindOne(context.TODO(), query).Decode(&result)
 	if err != nil {
 		if err.Error() != "mongo: no documents in result" {
@@ -41,14 +41,14 @@ func ExistsInTable(ipaddr string, port int) bool {
 **/
 func AddToTable(ipaddr string, port int) {
 
-	newPeer := Peer{
+	newNode := Node{
 		IPAddress: ipaddr,
 		Port:      port,
 		// Role:      role,
 	}
 
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
-	result, err := collection.InsertOne(context.TODO(), newPeer)
+	result, err := collection.InsertOne(context.TODO(), newNode)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,20 +57,20 @@ func AddToTable(ipaddr string, port int) {
 }
 
 /**
-* Find Peers - 2 Step Process
+* Find Nodes - 2 Step Process
 *
-* 1) Query database for all peers besides requesting peer
-* 2) Return list of peers to the requesting peer
+* 1) Query database for all Nodes besides requesting Node
+* 2) Return list of Nodes to the requesting Node
 *
 **/
-func FindPeers(requesting_peer Peer) []Peer {
+func ConnectPeerNode(requesting_node Node) []Node {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
-	var peers []Peer
+	var peers []Node
 
 	// Mongo shell format:
 	// {$or: [ { ipaddress: { $ne: "127.0.0.1" } },{ port: { $ne: 7002 } }]}
-	query := bson.M{"$or": bson.A{bson.M{"ipaddress": bson.M{"$ne": requesting_peer.IPAddress}}, bson.M{"port": bson.M{"$ne": requesting_peer.Port}}}}
+	query := bson.M{"$or": bson.A{bson.M{"ipaddress": bson.M{"$ne": requesting_node.IPAddress}}, bson.M{"port": bson.M{"$ne": requesting_node.Port}}}}
 
 	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
@@ -78,7 +78,7 @@ func FindPeers(requesting_peer Peer) []Peer {
 	}
 
 	for result.Next(context.TODO()) {
-		var peer Peer
+		var peer Node
 		err = result.Decode(&peer)
 		if err != nil {
 			log.Fatal(err)
@@ -93,6 +93,17 @@ func FindPeers(requesting_peer Peer) []Peer {
 	return peers
 }
 
-func FindFullNode() {
+func DisconnectNode(node Node) {
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
+
+	query := bson.M{"ipadress": node.IPAddress}
+	_, err := collection.DeleteOne(context.TODO(), query)
+	if err != nil {
+		log.Println(err)
+	}
+
+}
+
+func ConnectFullNode() {
 
 }

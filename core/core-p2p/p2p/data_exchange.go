@@ -8,7 +8,7 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func ProposeBlock(block database.Block, peers []database.TempPeer) {
+func ProposeBlock(block database.Block, peers []database.TempNode) {
 	j, err := json.Marshal(block)
 
 	if err == nil {
@@ -21,9 +21,9 @@ func ProposeBlock(block database.Block, peers []database.TempPeer) {
 
 func VerifyBlock(block database.Block) {
 	if (consensus.VerifyHash(database.Block{}, block)) {
-		for _, peer := range Peers {
-			if peer.Port == block.Port {
-				peer.Socket.Write([]byte("sign"))
+		for _, node := range Nodes {
+			if node.Port == block.Port {
+				node.Socket.Write([]byte("sign"))
 			}
 		}
 	}

@@ -26,11 +26,11 @@ func RegisterNode(conn *net.UDPConn, addr *net.UDPAddr, tcp_port int) {
 	}
 
 	// Returns to node the list of nodes to speak with, IP Address and Port contained in a JSON object
-	exclude_requesting_peer := database.Peer{
+	exclude_requesting_peer := database.Node{
 		IPAddress: addr.IP.String(),
 		Port:      tcp_port,
 	}
-	tmp_peers := database.FindPeers(exclude_requesting_peer)
+	tmp_peers := database.ConnectPeerNode(exclude_requesting_peer)
 
 	peers_json, err := json.Marshal(tmp_peers)
 	if err != nil {

@@ -33,15 +33,15 @@ func HandleConn(conn net.Conn) {
 			log.Println("Recieved Connect Message")
 			if err == nil {
 				// Nodes[port] = true
-				tmpPeer := database.TempPeer{
+				tmpNode := database.TempNode{
 					IPAddress: "127.0.0.1",
 					Port:      port,
 					Socket:    conn,
 				}
-				Peers = append(Peers, tmpPeer)
-				fmt.Println(Peers)
-				// permPeer := database.Peer{}
-				// database.AddToTable(permPeer.IPAddress, permPeer.Port)
+				Nodes = append(Nodes, tmpNode)
+				fmt.Println(Nodes)
+				// permNode := database.Node{}
+				// database.AddToTable(permNode.IPAddress, permNode.Port)
 			}
 		} else if string(buf[0:12]) == "recieve data" {
 			buffer := bytes.NewBuffer(buf[13:length])
@@ -52,7 +52,7 @@ func HandleConn(conn net.Conn) {
 				database.UpdateMongo(database.MongoDB, *tmpArray, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 			}
 		} else if string(buf[0:8]) == "get data" {
-			database.MoveDocuments(Peers, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
+			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		} else if string(buf[0:4]) == "vote" { //Get a vote and make a block out of it
 			sVote := string(buf[5:length])
 			sVote = strings.TrimSuffix(sVote, "\n")
@@ -68,7 +68,7 @@ func HandleConn(conn net.Conn) {
 				if ProposedBlock == (database.Block{}) {
 					fmt.Println("Empty, proposing this block.")
 					ProposedBlock = block
-					ProposeBlock(ProposedBlock, Peers)
+					ProposeBlock(ProposedBlock, Nodes)
 				} else {
 					fmt.Println("Not Empty, sending to queue.")
 					BlockQueue = append(BlockQueue, block)
@@ -79,7 +79,7 @@ func HandleConn(conn net.Conn) {
 			block := new(database.Block)
 			json.Unmarshal(buf[7:length], block)
 			VerifyBlock(*block)
-		} else if string(buf[0:4]) == "sign" { //Response from all peers verifying block
+		} else if string(buf[0:4]) == "sign" { //Response from all Nodes verifying block
 			fmt.Println("Block Signed!")
 		}
 	}
