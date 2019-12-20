@@ -20,9 +20,9 @@ import (
 func RegisterNode(conn *net.UDPConn, addr *net.UDPAddr, tcp_port int) {
 
 	//Checks if the node already exists in the database
-	if database.ExistsInTable(addr.IP.String(), tcp_port) == false {
+	if database.DoesNodeExist(addr.IP.String(), tcp_port) == false {
 		// Adds the node to the database of connections as a full node.  Nodes do not become peers until accpetance by the network
-		database.AddToTable(addr.IP.String(), tcp_port)
+		database.AddNode(addr.IP.String(), tcp_port)
 	}
 
 	// Returns to node the list of nodes to speak with, IP Address and Port contained in a JSON object
@@ -30,7 +30,7 @@ func RegisterNode(conn *net.UDPConn, addr *net.UDPAddr, tcp_port int) {
 		IPAddress: addr.IP.String(),
 		Port:      tcp_port,
 	}
-	tmp_peers := database.ConnectPeerNode(exclude_requesting_peer)
+	tmp_peers := database.FindNode(exclude_requesting_peer)
 
 	peers_json, err := json.Marshal(tmp_peers)
 	if err != nil {

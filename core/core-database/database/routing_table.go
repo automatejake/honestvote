@@ -14,7 +14,7 @@ import (
 * 1) Checks to see if the given connection exists in the table of connections
 *
 **/
-func ExistsInTable(ipaddr string, port int) bool {
+func DoesNodeExist(ipaddr string, port int) bool {
 
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
@@ -39,7 +39,7 @@ func ExistsInTable(ipaddr string, port int) bool {
 *
 * 1) Adds the node to the database of connections
 **/
-func AddToTable(ipaddr string, port int) {
+func AddNode(ipaddr string, port int) {
 
 	newNode := Node{
 		IPAddress: ipaddr,
@@ -63,7 +63,7 @@ func AddToTable(ipaddr string, port int) {
 * 2) Return list of Nodes to the requesting Node
 *
 **/
-func ConnectPeerNode(requesting_node Node) []Node {
+func FindNode(requesting_node Node) []Node {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
 	var peers []Node
@@ -93,7 +93,7 @@ func ConnectPeerNode(requesting_node Node) []Node {
 	return peers
 }
 
-func DisconnectNode(node Node) {
+func DeleteNode(node Node) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
 	query := bson.M{"ipadress": node.IPAddress}
