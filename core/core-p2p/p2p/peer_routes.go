@@ -58,7 +58,7 @@ func HandleConn(conn net.Conn) {
 			sVote = strings.TrimSuffix(sVote, "\n")
 			vote, err := strconv.Atoi(sVote)
 			if err == nil {
-				block := consensus.GenerateBlock(database.Block{}, database.Transaction{
+				block := consensus.GenerateBlock(PrevIndex, PrevHash, database.Transaction{
 					Sender:   "",
 					Vote:     vote,
 					Receiver: "",
@@ -80,7 +80,25 @@ func HandleConn(conn net.Conn) {
 			json.Unmarshal(buf[7:length], block)
 			VerifyBlock(*block)
 		} else if string(buf[0:4]) == "sign" { //Response from all Nodes verifying block
-			fmt.Println("Block Signed!")
+			block := new(database.Block)
+			json.Unmarshal(buf[5:length], block)
+			ValidatorResponses = append(ValidatorResponses, *block) //Keep track of all responses to check and compare
+			if len(ValidatorResponses)+1 == len(Nodes) { //Shouldn't be +1
+				CheckResponses(ValidatorResponses, len(ValidatorResponses)) //Go through the responses and see if block valid
+				ValidatorResponses = nil
+				ProposedBlock = database.Block{}
+			}
+
+			if len(BlockQueue) > 0{
+				//Propose the next block
+				ProposedBlock = BlockQueue[0]
+				//TODO: get rid of first item in slice
+				ProposeBlock(ProposedBlock, Nodes)
+			}else{
+				//Wait for the next vote
+				fmt.Println("Everything is up to date.")
+				continue
+			}
 		}
 	}
 }
