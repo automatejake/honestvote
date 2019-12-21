@@ -11,3 +11,5 @@ var ProposedBlock database.Block
 
 //Block queue starts to fill if ProposedBlock is not nil
 var BlockQueue []database.Block
+
+var ValidatorResponses []database.Block
