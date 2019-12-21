@@ -36,18 +36,39 @@ func genKey() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
 
 	pubkey = privKey.PublicKey
 
+	//get the bitLength for priv key then check if it's 256:
+	var bitLen int
+	bitLen = privKey.Curve.Params().BitSize //wont work with pub key : different data type
+	//fmt.Println(bitLen)
+	lenIsValid(bitLen) //send bitLen in order to check if len is correct for priv key, returns true
+	//fmt.Println(lenIsValid(bitLen)) //returns bool val: true
+
 	return privKey, pubkey
 
 	//end pub key gen
 
 }
-func isValid(*ecdsa.PrivateKey, ecdsa.PublicKey) {
+func lenIsValid(x int) bool { // checks if the len of priv key is 256 as it should be
+
+	//fmt.Println(x)
+	if x == 256 {
+		return true
+	} else {
+		return false
+	}
+
+}
+func sign1(*ecdsa.PrivateKey, ecdsa.PublicKey) {
 
 	var hash1 hash.Hash //hash value: hash1=<nil>
 
 	hash1 = md5.New() // the md5 fn :producing a (128-bit) hash value
 
 	fmt.Println(hash1) //temp
-	r := big.NewInt(0)
+
+	s := new(big.Int) //values used in ECDSA
+	r := new(big.Int)
+
 	fmt.Println(r) //temp
+	fmt.Println(s) //temp
 }
