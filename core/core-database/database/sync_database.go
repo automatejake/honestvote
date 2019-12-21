@@ -36,7 +36,7 @@ func GatherMongoData(client *mongo.Client, filter bson.M, database_name string, 
 }
 
 //Send the data to the full/peer node
-func MoveDocuments(peers []TempPeer, database_name string, collection_name string) {
+func MoveDocuments(nodes []TempNode, database_name string, collection_name string) {
 
 	MongoData := GatherMongoData(MongoDB, bson.M{}, database_name, collection_name)
 	buffer := new(bytes.Buffer)
@@ -44,7 +44,7 @@ func MoveDocuments(peers []TempPeer, database_name string, collection_name strin
 	js := json.NewEncoder(buffer)
 	err := js.Encode(tmpArray)
 	if err == nil {
-		for _, socket := range peers {
+		for _, socket := range nodes {
 			fmt.Println("Sending documents.")
 			socket.Socket.Write(append([]byte("recieve data "), buffer.Bytes()...))
 		}

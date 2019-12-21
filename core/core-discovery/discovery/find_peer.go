@@ -1,7 +1,7 @@
 package discovery
 
 import (
-	"bufio"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -12,53 +12,72 @@ import (
 )
 
 /***
-* Find Peers in the network
+* Find Nodes to talk to in the network, 2 Step Process
+*
+* 1) Send findnode message to registry node over raw udp socket (include TCP socket that you will be listening in on)
+* 2) Parse node from JSON to struct
+* 3) Send Connect Message to node
+*
 **/
-
 func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 
-	new_peer := make([]byte, 2048)
-
-	// Dial Connection
-	conn, err := net.Dial("udp", registry_ip+":"+registry_port)
+	// Send findpeer message to registry node over raw udp socket (include TCP socket that you will be listening in on)
+	remote_address, err := net.ResolveUDPAddr("udp", registry_ip+":"+registry_port)
 	if err != nil {
-		fmt.Printf("Some error %v", err)
+		log.Println("File: find_peer.go\nFunction:FindPeer\n", err)
+	}
+
+	conn, err := net.DialUDP("udp", nil, remote_address)
+	if err != nil {
+		log.Println("File: find_peer.go\nFunction:FindPeer\n", err)
 		return
 	}
+	defer conn.Close()
 
-	// Read Connection
-	fmt.Fprintf(conn, "findpeer"+tcp_port)
-	_, err = bufio.NewReader(conn).Read(new_peer)
-	if err == nil {
-		fmt.Printf("%s\n", new_peer)
-		DialPeer(string(new_peer))
-
-	} else {
-		fmt.Printf("Some error %v\n", err)
+	_, err = conn.Write([]byte("findpeer" + tcp_port))
+	if err != nil {
+		log.Println("File: find_peer.go\nFunction:FindPeer\n", err)
 	}
-	conn.Close()
+
+	// Parse Peer from JSON to struct
+	peers_json := make([]byte, 2048)
+	n, _, err := conn.ReadFromUDP(peers_json) // n, udp_address, error
+
+	var peers []database.Node
+	_ = json.Unmarshal(peers_json[0:n], &peers)
+
+	//Send connect message to peer
+	for _, peer := range peers {
+		ConnectMessage(peer)
+	}
 
 }
 
-func DialPeer(peer string) {
-	fmt.Println(peer)
-	conn, err := net.Dial("tcp", "127.0.0.1:"+peer)
-	if err != nil {
-		log.Print(err)
-	}
+/*
+* 1) Attempt to connect to peer
+* 2) If unsuccessful, report to registry node
+* 3) If succsessful, Add Peer to database and connection to memory
+ */
+func ConnectMessage(peer database.Node) {
+	port := strconv.Itoa(peer.Port)
 
-	port, _ := strconv.Atoi(peer)
+	conn, err := net.Dial("tcp", peer.IPAddress+":"+port)
+	if err != nil {
+		log.Println("File: find_peer.go\nFunction:ConnectMessage\n", err)
+	}
 
 	if conn != nil {
 		fmt.Println("Dial Successful!")
-		tmpPeer := database.TempPeer{
+
+		conn.Write([]byte("connect " + port))
+
+		tmpNode := database.TempNode{
 			IPAddress: "127.0.0.1",
-			Port:      port,
+			Port:      peer.Port,
 			Socket:    conn,
 		}
-		p2p.Peers = append(p2p.Peers, tmpPeer)
-
-		conn.Write([]byte("connect " + peer))
+		p2p.Nodes = append(p2p.Nodes, tmpNode)
+		database.AddNode(peer.IPAddress, peer.Port)
 		go p2p.HandleConn(conn)
 	}
 

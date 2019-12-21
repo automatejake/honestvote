@@ -4,42 +4,51 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func ExistsInTable(ipaddr string, port string) bool {
-	// data, err := ioutil.ReadFile("routingtable.txt")
+/**
+* Exist in table - Simple Process
+*
+* 1) Checks to see if the given connection exists in the table of connections
+*
+**/
+func DoesNodeExist(node Node) bool {
 
-	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + ElectionHistory)
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
-	var result Peer
-	err := collection.FindOne(context.TODO(), ipaddr).Decode(&result)
+	query := bson.M{"ipaddress": node.IPAddress, "port": node.Port}
+
+	var result Node
+	err := collection.FindOne(context.TODO(), query).Decode(&result)
 	if err != nil {
-		log.Print("Afraid weve reached an impasse: ", err)
+		if err.Error() != "mongo: no documents in result" {
+			log.Println("File: routing_table.go\nFunction:ExistsInTable\n", err)
+		}
+		log.Println("No documents in result")
 		return false
 	}
-	fmt.Println()
 
+	log.Println("Exists")
 	return true
 }
 
-func AddToTable(ipaddr string, port string) {
+/**
+* Add to Table - Simple Process
+*
+* 1) Adds the node to the database of connections
+**/
+func AddNode(ipaddr string, port int) {
 
-	int_port, err := strconv.Atoi(port)
-	if err != nil {
-		log.Print(err)
-	}
-
-	newPeer := Peer{
+	newNode := Node{
 		IPAddress: ipaddr,
-		Port:      int_port,
+		Port:      port,
 		// Role:      role,
 	}
 
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
-	result, err := collection.InsertOne(context.TODO(), newPeer)
+	result, err := collection.InsertOne(context.TODO(), newNode)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -47,18 +56,29 @@ func AddToTable(ipaddr string, port string) {
 
 }
 
-func FindPeer() []Peer {
+/**
+* Find Nodes - 2 Step Process
+*
+* 1) Query database for all Nodes besides requesting Node
+* 2) Return list of Nodes to the requesting Node
+*
+**/
+func FindNode(requesting_node Node) []Node {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
-	var peers []Peer
+	var peers []Node
 
-	result, err := collection.Find(context.TODO(), bson.M{})
+	// Mongo shell format:
+	// {$or: [ { ipaddress: { $ne: "127.0.0.1" } },{ port: { $ne: 7002 } }]}
+	query := bson.M{"$or": bson.A{bson.M{"ipaddress": bson.M{"$ne": requesting_node.IPAddress}}, bson.M{"port": bson.M{"$ne": requesting_node.Port}}}}
+
+	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for result.Next(context.TODO()) {
-		var peer Peer
+		var peer Node
 		err = result.Decode(&peer)
 		if err != nil {
 			log.Fatal(err)
@@ -68,7 +88,22 @@ func FindPeer() []Peer {
 	}
 
 	// Close the cursor once finished
-	// result.Close(context.TODO())
+	result.Close(context.TODO())
 
 	return peers
+}
+
+func DeleteNode(node Node) {
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
+
+	query := bson.M{"ipadress": node.IPAddress, "port": node.Port}
+	_, err := collection.DeleteOne(context.TODO(), query)
+	if err != nil {
+		log.Println(err)
+	}
+
+}
+
+func ConnectFullNode() {
+
 }

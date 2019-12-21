@@ -3,22 +3,16 @@ package p2p
 import (
 	"log"
 	"net"
-
-	"github.com/jneubaum/honestvote/core/core-database/database"
+	"strconv"
 )
-
-var Nodes = make(map[int]bool)
-var Peers []database.TempPeer
-var ProposedBlock database.Block
-
-//Block queue starts to fill if ProposedBlock is not nil
-var BlockQueue []database.Block
 
 func ListenConn(port string) {
 	listen, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	Port, err = strconv.Atoi(port)
 
 	defer listen.Close()
 

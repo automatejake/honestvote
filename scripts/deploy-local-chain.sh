@@ -1,4 +1,7 @@
 cd ../build
+
+
+----
 go run main.go --tcp 7000 --udp 7001 --role registry  & \
 go run main.go --tcp 7002 --udp 7003 --role peer --collection-prefix a_ --registry-host 127.0.0.1 --registry-port 7001 & \
 go run main.go --tcp 7004 --udp 7005 --role peer --collection-prefix b_ --registry-host 127.0.0.1 --registry-port 7001  & \

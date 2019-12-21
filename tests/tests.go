@@ -1,24 +1,32 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"net"
+	"log"
+	"testing"
+
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
+type P struct {
+	X, Y, Z int
+	Name    string
+}
+
+func findpeers(b *testing.B) {
+	database.MongoDB = database.MongoConnect()
+	log.Println("Connected")
+	database.ExistsInTable("127.0.0.1", 7002)
+}
+
 func main() {
-	p := make([]byte, 2048)
-	conn, err := net.Dial("udp", "127.0.0.1:7001")
-	if err != nil {
-		fmt.Printf("Some error %v", err)
-		return
+	database.MongoDB = database.MongoConnect()
+	log.Println("Connected")
+	exclude_peer := database.Peer{IPAddress: "127.0.0.1", Port: 7004}
+	peers := database.FindPeers(exclude_peer)
+	for i := range peers {
+		log.Println(peers[i])
 	}
-	fmt.Fprintf(conn, "hello")
-	_, err = bufio.NewReader(conn).Read(p)
-	if err == nil {
-		fmt.Printf("%s\n", p)
-	} else {
-		fmt.Printf("Some error %v\n", err)
-	}
-	conn.Close()
+
+	// fmt.Println(testing.Benchmark(findpeers))
+
 }
