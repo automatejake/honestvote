@@ -1,13 +1,12 @@
 package http
 
 import (
-	"log"
 	"net/http"
 )
 
 func CreateServer(port string) {
 	HandleRoutes() // imported from routes
 
-	log.Println("Listening...")
+	logger.Println("main.go", "main", "HTTP Service Running on port: "+port)
 	http.ListenAndServe(":"+port, Router)
 }

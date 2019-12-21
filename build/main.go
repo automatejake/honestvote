@@ -5,7 +5,7 @@ import (
 	"net"
 	"os"
 
-	logger "github.com/jneubaum/honestvote/tests/logging"
+	"github.com/jneubaum/honestvote/tests/logger"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-discovery/discovery"
@@ -98,7 +98,7 @@ func main() {
 	// create http server for light clients to get information from
 	if ROLE == "full" {
 		go http.CreateServer(HTTP_SERVICE)
-		logger.Println("main.go", "main", "HTTP Service Running on port: "+HTTP_SERVICE)
+
 	}
 
 	// udp service that sends connected peers to other peers
@@ -109,16 +109,11 @@ func main() {
 	// find peers to talk to from registry node
 	if ROLE == "full" || ROLE == "peer" {
 		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT, TCP_SERVICE)
+		logger.Println("main.go", "main", "Node type: "+ROLE+"\nContacting: "+REGISTRY_IP+":"+REGISTRY_PORT)
+		logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
 	}
 
-	logger.Println("main.go", "main", "Registry service running on port: "+UDP_SERVICE)
-
-	logger.Println("main.go", "main", "Node type: "+ROLE+"\nRegistry Server IP: "+REGISTRY_IP)
-	logger.Println("main.go", "main", "Registry Server Port: "+REGISTRY_PORT)
-	logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
-
 	// accept incoming connections and handle p2p
-	logger.Println("main.go", "main", "Peer Running on port: "+TCP_SERVICE)
 	p2p.ListenConn(TCP_SERVICE)
 
 }

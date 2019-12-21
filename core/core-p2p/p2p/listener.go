@@ -5,7 +5,7 @@ import (
 	"net"
 	"strconv"
 
-	logger "github.com/jneubaum/honestvote/tests/logging"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func ListenConn(port string) {
