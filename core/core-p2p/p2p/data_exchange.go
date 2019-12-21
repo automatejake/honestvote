@@ -6,6 +6,7 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func ProposeBlock(block database.Block, peers []database.TempNode) {
@@ -60,6 +61,6 @@ func CheckResponses(responses []database.Block, size int) {
 			}
 		}
 	} else {
-		fmt.Println("Someone is a bad actor or this block is wrong.")
+		logger.Println("data_exchange.go", "CheckResponses", "Someone is a bad actor or this block is wrong.")
 	}
 }

@@ -2,8 +2,8 @@ package database
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -20,9 +20,9 @@ func UpdateBlockchain(client *mongo.Client, block Block) {
 		Validator:   block.Validator,
 	}
 
-	result, err := collection.InsertOne(context.TODO(), document)
+	_, err := collection.InsertOne(context.TODO(), document)
 
-	if err == nil {
-		fmt.Println(result)
+	if err != nil {
+		logger.Println("database_exchange.go", "UpdateBlockchain()", err.Error())
 	}
 }

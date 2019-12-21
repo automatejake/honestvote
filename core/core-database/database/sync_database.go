@@ -4,9 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
-	"log"
 
+	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -19,14 +18,14 @@ func GatherMongoData(client *mongo.Client, filter bson.M, database_name string, 
 	cur, err := collection.Find(context.TODO(), filter)
 
 	if err != nil {
-		log.Fatal(err)
+		logger.Println("sync_database.go", "GatherMongoData", err.Error())
 	}
 
 	for cur.Next(context.TODO()) {
 		var candidate Candidate
 		err = cur.Decode(&candidate)
 		if err != nil {
-			log.Fatal(err)
+			logger.Println("sync_database.go", "GatherMongoData", err.Error())
 		}
 
 		Candidates = append(Candidates, candidate)
@@ -44,10 +43,12 @@ func MoveDocuments(nodes []TempNode, database_name string, collection_name strin
 	js := json.NewEncoder(buffer)
 	err := js.Encode(tmpArray)
 	if err == nil {
+		logger.Println("sync_database.go", "MoveDocuments", "Moving Documents")
 		for _, socket := range nodes {
-			fmt.Println("Sending documents.")
 			socket.Socket.Write(append([]byte("recieve data "), buffer.Bytes()...))
 		}
+	} else {
+		logger.Println("sync_database.go", "MoveDocuments", err.Error())
 	}
 }
 

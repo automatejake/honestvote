@@ -108,9 +108,8 @@ func main() {
 
 	// find peers to talk to from registry node
 	if ROLE == "full" || ROLE == "peer" {
-		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT, TCP_SERVICE)
-		logger.Println("main.go", "main", "Node type: "+ROLE+"\nContacting: "+REGISTRY_IP+":"+REGISTRY_PORT)
 		logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
+		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT, TCP_SERVICE)
 	}
 
 	// accept incoming connections and handle p2p

@@ -1,7 +1,6 @@
 package p2p
 
 import (
-	"log"
 	"net"
 	"strconv"
 
@@ -14,7 +13,7 @@ func ListenConn(port string) {
 		logger.Println("listener.go", "ListenConn()", err.Error())
 	}
 
-	logger.Println("listener.go", "ListenConn()", port)
+	logger.Println("listener.go", "ListenConn()", "Peer running on port: "+port)
 
 	Port, err = strconv.Atoi(port)
 
@@ -23,7 +22,7 @@ func ListenConn(port string) {
 	for {
 		conn, err := listen.Accept()
 		if err != nil {
-			log.Fatal(err)
+			logger.Println("listener.go", "ListenConn", err.Error())
 		}
 
 		// defined in peer_routes.go

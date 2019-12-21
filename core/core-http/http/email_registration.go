@@ -2,10 +2,10 @@ package http
 
 import (
 	"fmt"
-	"log"
 	"net/smtp"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func EmailRegistration(registrantEmail string) {
@@ -42,7 +42,7 @@ func sendRegistrationCode(email string) {
 
 	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
 	if err != nil {
-		log.Printf("smtp error: %s", err)
+		logger.Println("email_registration.go", "SendRegistrationCode", err.Error())
 		return
 	}
 

@@ -83,26 +83,26 @@ func HandleConn(conn net.Conn) {
 			block := new(database.Block)
 			json.Unmarshal(buf[5:length], block)
 			ValidatorResponses = append(ValidatorResponses, *block) //Keep track of all responses to check and compare
-			if len(ValidatorResponses)+1 == len(Nodes) { //Shouldn't be +1
+			if len(ValidatorResponses)+1 == len(Nodes) {            //Shouldn't be +1
 				CheckResponses(ValidatorResponses, len(ValidatorResponses)) //Go through the responses and see if block valid
 				ValidatorResponses = nil
 				ProposedBlock = database.Block{}
 			}
 
-			if len(BlockQueue) > 0{
+			if len(BlockQueue) > 0 {
 				//Propose the next block
 				ProposedBlock = BlockQueue[0]
 				//TODO: get rid of first item in slice
 				ProposeBlock(ProposedBlock, Nodes)
-			}else{
+			} else {
 				//Wait for the next vote
 				fmt.Println("Everything is up to date.")
 				continue
 			}
-		}else if string(buf[0:6]) == "update"{
+		} else if string(buf[0:6]) == "update" {
 			block := new(database.Block)
 			json.Unmarshal(buf[7:length], block)
-			database.UpdateBlockchain(database.MongoDB,*block)
+			database.UpdateBlockchain(database.MongoDB, *block)
 		}
 	}
 }
