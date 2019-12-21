@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net"
 	"strconv"
 	"strings"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func HandleConn(conn net.Conn) {
@@ -29,8 +29,7 @@ func HandleConn(conn net.Conn) {
 
 			//ADD TO DATABASE AS WELL
 			port, err := strconv.Atoi(string(buf[8:length]))
-
-			log.Println("Recieved Connect Message")
+			logger.Println("peer_routes.go", "HandleConn()", "Recieved Connect Message")
 			if err == nil {
 				// Nodes[port] = true
 				tmpNode := database.TempNode{
@@ -66,11 +65,11 @@ func HandleConn(conn net.Conn) {
 
 				//Check if there is a proposed block currently, if so, add to the queue
 				if ProposedBlock == (database.Block{}) {
-					fmt.Println("Empty, proposing this block.")
+					logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
 					ProposedBlock = block
 					ProposeBlock(ProposedBlock, Nodes)
 				} else {
-					fmt.Println("Not Empty, sending to queue.")
+					logger.Println("peer_routes.go", "HandleConn()", "Not Empty, sending to queue.")
 					BlockQueue = append(BlockQueue, block)
 					fmt.Println(BlockQueue)
 				}
@@ -96,7 +95,7 @@ func HandleConn(conn net.Conn) {
 				ProposeBlock(ProposedBlock, Nodes)
 			} else {
 				//Wait for the next vote
-				fmt.Println("Everything is up to date.")
+				logger.Println("peer_routes.go", "HandleConn()", "Everything is up to date.")
 				continue
 			}
 		} else if string(buf[0:6]) == "update" {
