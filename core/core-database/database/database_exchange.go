@@ -9,7 +9,7 @@ import (
 
 func UpdateBlockchain(client *mongo.Client, block Block) {
 	//Make the block a document and add it to local database
-	collection := client.Database("honestvote").Collection("blockchain")
+	collection := client.Database("honestvote").Collection(CollectionPrefix + "blockchain")
 
 	document := Block{
 		Index:       block.Index,

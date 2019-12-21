@@ -99,6 +99,10 @@ func HandleConn(conn net.Conn) {
 				fmt.Println("Everything is up to date.")
 				continue
 			}
+		}else if string(buf[0:6]) == "update"{
+			block := new(database.Block)
+			json.Unmarshal(buf[7:length], block)
+			database.UpdateBlockchain(database.MongoDB,*block)
 		}
 	}
 }

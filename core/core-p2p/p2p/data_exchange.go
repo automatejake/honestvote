@@ -41,18 +41,25 @@ func VerifyBlock(block database.Block) {
 
 func CheckResponses(responses []database.Block, size int) {
 	counter := size
-	for _, response := range responses{
-		if response.Valid{
+	for _, response := range responses {
+		if response.Valid {
 			continue
-		}else{
+		} else {
 			counter--
 		}
 	}
 
-	if size == counter{
-		database.UpdateBlockchain(database.MongoDB, ProposedBlock) //Update the mongo database with the new block
-	}else{
+	if size == counter {
+		j, err := json.Marshal(ProposedBlock)
+
+		if err == nil {
+			database.UpdateBlockchain(database.MongoDB, ProposedBlock)
+
+			for _, node := range Nodes {
+				node.Socket.Write(append([]byte("update "), j...))
+			}
+		}
+	} else {
 		fmt.Println("Someone is a bad actor or this block is wrong.")
 	}
 }
-
