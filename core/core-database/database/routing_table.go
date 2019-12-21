@@ -14,11 +14,11 @@ import (
 * 1) Checks to see if the given connection exists in the table of connections
 *
 **/
-func DoesNodeExist(ipaddr string, port int) bool {
+func DoesNodeExist(node Node) bool {
 
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
-	query := bson.M{"ipaddress": ipaddr, "port": port}
+	query := bson.M{"ipaddress": node.IPAddress, "port": node.Port}
 
 	var result Node
 	err := collection.FindOne(context.TODO(), query).Decode(&result)
@@ -96,7 +96,7 @@ func FindNode(requesting_node Node) []Node {
 func DeleteNode(node Node) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
-	query := bson.M{"ipadress": node.IPAddress}
+	query := bson.M{"ipadress": node.IPAddress, "port": node.Port}
 	_, err := collection.DeleteOne(context.TODO(), query)
 	if err != nil {
 		log.Println(err)

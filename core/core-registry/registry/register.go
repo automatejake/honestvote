@@ -20,7 +20,11 @@ import (
 func RegisterNode(conn *net.UDPConn, addr *net.UDPAddr, tcp_port int) {
 
 	//Checks if the node already exists in the database
-	if database.DoesNodeExist(addr.IP.String(), tcp_port) == false {
+	tempNode := database.Node{
+		IPAddress: addr.IP.String(),
+		Port:      tcp_port,
+	}
+	if database.DoesNodeExist(tempNode) == false {
 		// Adds the node to the database of connections as a full node.  Nodes do not become peers until accpetance by the network
 		database.AddNode(addr.IP.String(), tcp_port)
 	}
