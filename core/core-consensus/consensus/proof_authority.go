@@ -22,13 +22,13 @@ func CalculateHash(input string) string {
 	return base64.URLEncoding.EncodeToString(sum)
 }
 
-func GenerateBlock(block database.Block, transaction database.Transaction, port int) database.Block {
+func GenerateBlock(pIndex int, pHash string, transaction database.Transaction, port int) database.Block {
 	var newBlock database.Block
 
-	newBlock.Index = block.Index + 1
+	newBlock.Index = pIndex + 1
 	newBlock.Timestamp = time.Now().String()
 	newBlock.Transaction = transaction
-	newBlock.PrevHash = block.Hash
+	newBlock.PrevHash = pHash
 	newBlock.Validator = Address
 	newBlock.Port = port
 

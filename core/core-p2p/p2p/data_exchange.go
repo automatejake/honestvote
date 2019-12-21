@@ -25,7 +25,7 @@ func VerifyBlock(block database.Block) {
 		block.Valid = true
 	} else {
 		block.Signiture = "" //Put the Validator's signiture here so peer knows who signed it
-		block.Valid = true
+		block.Valid = false
 	}
 
 	j, err := json.Marshal(block)
@@ -50,7 +50,7 @@ func CheckResponses(responses []database.Block, size int) {
 	}
 
 	if size == counter{
-		fmt.Println("Everything checks out!")
+		database.UpdateBlockchain(database.MongoDB, ProposedBlock) //Update the mongo database with the new block
 	}else{
 		fmt.Println("Someone is a bad actor or this block is wrong.")
 	}
