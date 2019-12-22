@@ -8,8 +8,8 @@ import "github.com/jneubaum/honestvote/core/core-database/database"
 var Port int
 
 //PrevHash is used to create a new block, same with PrevIndex
-var PrevHash = ""
-var PrevIndex = 0
+var PrevHash string
+var PrevIndex int
 
 var Nodes []database.TempNode
 var ProposedBlock database.Block

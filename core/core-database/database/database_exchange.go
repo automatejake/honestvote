@@ -24,5 +24,7 @@ func UpdateBlockchain(client *mongo.Client, block Block) {
 
 	if err != nil {
 		logger.Println("database_exchange.go", "UpdateBlockchain()", err.Error())
+	} else {
+
 	}
 }
