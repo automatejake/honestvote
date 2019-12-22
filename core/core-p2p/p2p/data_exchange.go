@@ -54,7 +54,11 @@ func CheckResponses(responses []database.Block, size int) {
 		j, err := json.Marshal(ProposedBlock)
 
 		if err == nil {
-			database.UpdateBlockchain(database.MongoDB, ProposedBlock)
+			if database.UpdateBlockchain(database.MongoDB, ProposedBlock) {
+				PrevHash = ProposedBlock.Hash
+				PrevIndex = ProposedBlock.Index
+				fmt.Println(string(PrevIndex) + " " + PrevHash)
+			}
 
 			for _, node := range Nodes {
 				node.Socket.Write(append([]byte("update "), j...))

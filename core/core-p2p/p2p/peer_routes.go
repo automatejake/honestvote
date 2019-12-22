@@ -101,7 +101,11 @@ func HandleConn(conn net.Conn) {
 		} else if string(buf[0:6]) == "update" {
 			block := new(database.Block)
 			json.Unmarshal(buf[7:length], block)
-			database.UpdateBlockchain(database.MongoDB, *block)
+			if database.UpdateBlockchain(database.MongoDB, *block) {
+				PrevHash = block.Hash
+				PrevIndex = block.Index
+				fmt.Println(string(PrevIndex) + " " + PrevHash)
+			}
 		}
 	}
 }

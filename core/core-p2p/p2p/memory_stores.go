@@ -7,8 +7,10 @@ import "github.com/jneubaum/honestvote/core/core-database/database"
 //Port is used for sending blocks so the Peers verifying know who do send it back to
 var Port int
 
-//PrevHash is used to create a new block, same with PrevIndex
+//PrevHash is used to create a new block
 var PrevHash string
+
+//PrevIndex is used to create a new block
 var PrevIndex int
 
 var Nodes []database.TempNode

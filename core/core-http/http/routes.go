@@ -57,8 +57,8 @@ func GetTicketsHandler(w http.ResponseWriter, r *http.Request) {
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	registrant := r.FormValue("email")
-	EmailRegistration(registrant)
+	//registrant := r.FormValue("email")
+	//EmailRegistration(registrant)
 }
 
 func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
