@@ -8,6 +8,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"hash"
+	"io"
 	"math/big"
 	"os"
 )
@@ -35,6 +36,7 @@ func genKey() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
 	var pubkey ecdsa.PublicKey
 
 	pubkey = privKey.PublicKey
+	//end pub key gen
 
 	//get the bitLength for priv key then check if it's 256:
 	var bitLen int
@@ -43,9 +45,13 @@ func genKey() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
 	lenIsValid(bitLen) //send bitLen in order to check if len is correct for priv key, returns true
 	//fmt.Println(lenIsValid(bitLen)) //returns bool val: true
 
-	return privKey, pubkey
+	//testing sign1
+	var msg string
+	msg = "message"
+	//fmt.Println(msg)
+	sign1(msg, privKey, pubkey)
 
-	//end pub key gen
+	return privKey, pubkey
 
 }
 func lenIsValid(x int) bool { // checks if the len of priv key is 256 as it should be
@@ -58,7 +64,7 @@ func lenIsValid(x int) bool { // checks if the len of priv key is 256 as it shou
 	}
 
 }
-func sign1(*ecdsa.PrivateKey, ecdsa.PublicKey) {
+func sign1(msg string, q *ecdsa.PrivateKey, w ecdsa.PublicKey) bool {
 
 	var hash1 hash.Hash //hash value: hash1=<nil>
 
@@ -69,6 +75,19 @@ func sign1(*ecdsa.PrivateKey, ecdsa.PublicKey) {
 	s := new(big.Int) //values used in ECDSA
 	r := new(big.Int)
 
-	fmt.Println(r) //temp
-	fmt.Println(s) //temp
+	//fmt.Println(r) //temp
+	//fmt.Println(s) //temp
+
+	io.WriteString(hash1, msg) //the message is now hashed
+	sum1 := hash1.Sum(nil)[:]
+
+	r, s, nilVal := ecdsa.Sign(rand.Reader, q, sum1)
+	//fmt.Println(nilVal)
+	if nilVal != nil {
+		fmt.Println(nilVal)
+		os.Exit(1)
+	}
+	verify := ecdsa.Verify(&w, sum1, r, s)
+	return verify
+
 }
