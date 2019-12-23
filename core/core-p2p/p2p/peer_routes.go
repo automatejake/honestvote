@@ -77,12 +77,14 @@ func HandleConn(conn net.Conn) {
 		} else if string(buf[0:6]) == "verify" { //Verifying that the sent block is correct(sign/reject)
 			block := new(database.Block)
 			json.Unmarshal(buf[7:length], block)
+			logger.Println("peer_routes.go", "HandleConn()", "Verifying")
 			VerifyBlock(*block)
 		} else if string(buf[0:4]) == "sign" { //Response from all Nodes verifying block
 			block := new(database.Block)
 			json.Unmarshal(buf[5:length], block)
 			ValidatorResponses = append(ValidatorResponses, *block) //Keep track of all responses to check and compare
-			if len(ValidatorResponses)+1 == len(Nodes) {            //Shouldn't be +1
+			logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")
+			if len(ValidatorResponses)+1 == len(Nodes) { //Shouldn't be +1
 				CheckResponses(ValidatorResponses, len(ValidatorResponses)) //Go through the responses and see if block valid
 				ValidatorResponses = nil
 				ProposedBlock = database.Block{}

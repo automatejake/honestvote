@@ -39,8 +39,8 @@ func GenerateBlock(pIndex int, pHash string, transaction database.Transaction, p
 	return newBlock
 }
 
-func VerifyHash(prevBlock, block database.Block) bool {
-	if prevBlock.Hash != block.PrevHash {
+func VerifyHash(prevIndex int, prevHash string, block database.Block) bool {
+	if prevHash != block.PrevHash {
 		return false
 	} else if CalculateHash(GenerateHeader(block)) != block.Hash {
 		return false
