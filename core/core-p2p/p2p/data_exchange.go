@@ -6,6 +6,7 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func ProposeBlock(block database.Block, peers []database.TempNode) {
@@ -41,18 +42,29 @@ func VerifyBlock(block database.Block) {
 
 func CheckResponses(responses []database.Block, size int) {
 	counter := size
-	for _, response := range responses{
-		if response.Valid{
+	for _, response := range responses {
+		if response.Valid {
 			continue
-		}else{
+		} else {
 			counter--
 		}
 	}
 
-	if size == counter{
-		database.UpdateBlockchain(database.MongoDB, ProposedBlock) //Update the mongo database with the new block
-	}else{
-		fmt.Println("Someone is a bad actor or this block is wrong.")
+	if size == counter {
+		j, err := json.Marshal(ProposedBlock)
+
+		if err == nil {
+			if database.UpdateBlockchain(database.MongoDB, ProposedBlock) {
+				PrevHash = ProposedBlock.Hash
+				PrevIndex = ProposedBlock.Index
+				fmt.Println(string(PrevIndex) + " " + PrevHash)
+			}
+
+			for _, node := range Nodes {
+				node.Socket.Write(append([]byte("update "), j...))
+			}
+		}
+	} else {
+		logger.Println("data_exchange.go", "CheckResponses", "Someone is a bad actor or this block is wrong.")
 	}
 }
-

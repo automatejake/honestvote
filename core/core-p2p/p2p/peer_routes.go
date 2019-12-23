@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net"
 	"strconv"
 	"strings"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func HandleConn(conn net.Conn) {
@@ -29,8 +29,7 @@ func HandleConn(conn net.Conn) {
 
 			//ADD TO DATABASE AS WELL
 			port, err := strconv.Atoi(string(buf[8:length]))
-
-			log.Println("Recieved Connect Message")
+			logger.Println("peer_routes.go", "HandleConn()", "Recieved Connect Message")
 			if err == nil {
 				// Nodes[port] = true
 				tmpNode := database.TempNode{
@@ -66,11 +65,11 @@ func HandleConn(conn net.Conn) {
 
 				//Check if there is a proposed block currently, if so, add to the queue
 				if ProposedBlock == (database.Block{}) {
-					fmt.Println("Empty, proposing this block.")
+					logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
 					ProposedBlock = block
 					ProposeBlock(ProposedBlock, Nodes)
 				} else {
-					fmt.Println("Not Empty, sending to queue.")
+					logger.Println("peer_routes.go", "HandleConn()", "Not Empty, sending to queue.")
 					BlockQueue = append(BlockQueue, block)
 					fmt.Println(BlockQueue)
 				}
@@ -83,21 +82,29 @@ func HandleConn(conn net.Conn) {
 			block := new(database.Block)
 			json.Unmarshal(buf[5:length], block)
 			ValidatorResponses = append(ValidatorResponses, *block) //Keep track of all responses to check and compare
-			if len(ValidatorResponses)+1 == len(Nodes) { //Shouldn't be +1
+			if len(ValidatorResponses)+1 == len(Nodes) {            //Shouldn't be +1
 				CheckResponses(ValidatorResponses, len(ValidatorResponses)) //Go through the responses and see if block valid
 				ValidatorResponses = nil
 				ProposedBlock = database.Block{}
 			}
 
-			if len(BlockQueue) > 0{
+			if len(BlockQueue) > 0 {
 				//Propose the next block
 				ProposedBlock = BlockQueue[0]
 				//TODO: get rid of first item in slice
 				ProposeBlock(ProposedBlock, Nodes)
-			}else{
+			} else {
 				//Wait for the next vote
-				fmt.Println("Everything is up to date.")
+				logger.Println("peer_routes.go", "HandleConn()", "Everything is up to date.")
 				continue
+			}
+		} else if string(buf[0:6]) == "update" {
+			block := new(database.Block)
+			json.Unmarshal(buf[7:length], block)
+			if database.UpdateBlockchain(database.MongoDB, *block) {
+				PrevHash = block.Hash
+				PrevIndex = block.Index
+				fmt.Println(string(PrevIndex) + " " + PrevHash)
 			}
 		}
 	}

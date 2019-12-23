@@ -34,3 +34,7 @@ go install
 
 # cd ../../core-election/election
 # go install
+
+
+cd ../../../tests/logging
+go install

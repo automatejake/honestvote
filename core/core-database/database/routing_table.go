@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -24,7 +25,7 @@ func DoesNodeExist(node Node) bool {
 	err := collection.FindOne(context.TODO(), query).Decode(&result)
 	if err != nil {
 		if err.Error() != "mongo: no documents in result" {
-			log.Println("File: routing_table.go\nFunction:ExistsInTable\n", err)
+			logger.Println("routing_table.go", "ExistsInTable()", err.Error())
 		}
 		log.Println("No documents in result")
 		return false
@@ -74,14 +75,14 @@ func FindNode(requesting_node Node) []Node {
 
 	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
-		log.Fatal(err)
+		logger.Println("routing_table.go", "FindNode", err.Error())
 	}
 
 	for result.Next(context.TODO()) {
 		var peer Node
 		err = result.Decode(&peer)
 		if err != nil {
-			log.Fatal(err)
+			logger.Println("routing_table.go", "FindNode", err.Error())
 		}
 
 		peers = append(peers, peer)
@@ -99,7 +100,7 @@ func DeleteNode(node Node) {
 	query := bson.M{"ipadress": node.IPAddress, "port": node.Port}
 	_, err := collection.DeleteOne(context.TODO(), query)
 	if err != nil {
-		log.Println(err)
+		logger.Println("routing_table.go", "DeleteNode", err.Error())
 	}
 
 }

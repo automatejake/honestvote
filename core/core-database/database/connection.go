@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -22,7 +23,7 @@ func MongoConnect() *mongo.Client {
 	err = client.Ping(context.TODO(), nil)
 
 	if err != nil {
-		log.Fatal(err)
+		logger.Println("connection.go", "MongoConnect()", err.Error())
 	}
 
 	return client

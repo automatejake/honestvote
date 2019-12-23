@@ -5,6 +5,8 @@ import (
 	"net"
 	"os"
 
+	"github.com/jneubaum/honestvote/tests/logger"
+
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-discovery/discovery"
 	"github.com/jneubaum/honestvote/core/core-http/http"
@@ -22,6 +24,7 @@ var ROLE string = "peer" //options peer || full || registry
 var COLLECTION_PREFIX string = ""
 var REGISTRY_IP string
 var REGISTRY_PORT string = "7002"
+var LOGGING bool = true
 
 //this file will be responsible for deploying the app
 func main() {
@@ -83,16 +86,19 @@ func main() {
 			REGISTRY_PORT = os.Args[index+1]
 		}
 	}
-	fmt.Println("Peer Running on port: "+TCP_SERVICE, "\nRegistry service running on port: ", UDP_SERVICE,
-		"\nHTTP Service Running on port: "+HTTP_SERVICE, "\nNode type: ", ROLE, "\nRegistry Server IP: ", REGISTRY_IP,
-		"\nRegistry Server Port: ", REGISTRY_PORT, "\nCollection Prefix: ", COLLECTION_PREFIX)
 
 	database.CollectionPrefix = COLLECTION_PREFIX
 	database.MongoDB = database.MongoConnect() // Connect to data store
 
+	// if logging is turned on
+	if LOGGING {
+		logger.Logs = true
+	}
+
 	// create http server for light clients to get information from
 	if ROLE == "full" {
 		go http.CreateServer(HTTP_SERVICE)
+
 	}
 
 	// udp service that sends connected peers to other peers
@@ -102,6 +108,7 @@ func main() {
 
 	// find peers to talk to from registry node
 	if ROLE == "full" || ROLE == "peer" {
+		logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
 		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT, TCP_SERVICE)
 	}
 

@@ -2,13 +2,12 @@ package discovery
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net"
 	"strconv"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 /***
@@ -20,23 +19,24 @@ import (
 *
 **/
 func FindPeer(registry_ip string, registry_port string, tcp_port string) {
+	logger.Println("find_peer.go", "FindPeer()", "Contacting: "+registry_ip+":"+registry_port)
 
 	// Send findpeer message to registry node over raw udp socket (include TCP socket that you will be listening in on)
 	remote_address, err := net.ResolveUDPAddr("udp", registry_ip+":"+registry_port)
 	if err != nil {
-		log.Println("File: find_peer.go\nFunction:FindPeer\n", err)
+		logger.Println("find_peer.go", "FindPeer", err.Error())
 	}
 
 	conn, err := net.DialUDP("udp", nil, remote_address)
 	if err != nil {
-		log.Println("File: find_peer.go\nFunction:FindPeer\n", err)
+		logger.Println("find_peer.go", "FindPeer", err.Error())
 		return
 	}
 	defer conn.Close()
 
 	_, err = conn.Write([]byte("findpeer" + tcp_port))
 	if err != nil {
-		log.Println("File: find_peer.go\nFunction:FindPeer\n", err)
+		logger.Println("find_peer.go", "FindPeer", err.Error())
 	}
 
 	// Parse Peer from JSON to struct
@@ -63,11 +63,11 @@ func ConnectMessage(peer database.Node) {
 
 	conn, err := net.Dial("tcp", peer.IPAddress+":"+port)
 	if err != nil {
-		log.Println("File: find_peer.go\nFunction:ConnectMessage\n", err)
+		logger.Println("find_peer.go", "ConnectMessage", err.Error())
 	}
 
 	if conn != nil {
-		fmt.Println("Dial Successful!")
+		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 
 		conn.Write([]byte("connect " + port))
 

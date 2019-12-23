@@ -2,14 +2,14 @@ package database
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func UpdateBlockchain(client *mongo.Client, block Block) {
+func UpdateBlockchain(client *mongo.Client, block Block) bool {
 	//Make the block a document and add it to local database
-	collection := client.Database("honestvote").Collection("blockchain")
+	collection := client.Database("honestvote").Collection(CollectionPrefix + "blockchain")
 
 	document := Block{
 		Index:       block.Index,
@@ -20,9 +20,12 @@ func UpdateBlockchain(client *mongo.Client, block Block) {
 		Validator:   block.Validator,
 	}
 
-	result, err := collection.InsertOne(context.TODO(), document)
+	_, err := collection.InsertOne(context.TODO(), document)
 
-	if err == nil {
-		fmt.Println(result)
+	if err != nil {
+		return false
+		logger.Println("database_exchange.go", "UpdateBlockchain()", err.Error())
 	}
+
+	return true
 }
