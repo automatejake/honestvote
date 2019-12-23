@@ -46,10 +46,28 @@ func genKey() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
 	//fmt.Println(lenIsValid(bitLen)) //returns bool val: true
 
 	//testing sign1
-	var msg string
-	msg = "message"
+	//var msg string
+	//msg = "message"
 	//fmt.Println(msg)
-	sign1(msg, privKey, pubkey)
+	//sign1(msg, privKey, pubkey)
+
+	//CREATING ADDRESS FROM PUBKEY
+	var prefix string
+	prefix = "33"
+	var add1 string
+	add1 = prefix + pubkey.Y.String() //String address
+	//TURN ADDRESS INTO A BIGINT:
+	//https://stackoverflow.com/questions/46783352/string-to-big-int-in-go
+	//https://golang.org/pkg/math/big/#example_Int_SetString   - see SetString header
+	n := new(big.Int)
+	n, ok := n.SetString(pubkey.Y.String(), 10)
+	if !ok {
+		fmt.Println("SetString: error")
+		//return
+		os.Exit(1)
+	}
+	fmt.Println(add1) //temp: here to remover error
+	//n is the second portion of the pub key with a prefix
 
 	return privKey, pubkey
 
