@@ -21,7 +21,7 @@ func ProposeBlock(block database.Block, peers []database.TempNode) {
 }
 
 func VerifyBlock(block database.Block) {
-	if (consensus.VerifyHash(database.Block{}, block)) {
+	if consensus.VerifyHash(PrevIndex, PrevHash, block) {
 		block.Signiture = "" //Put the Validator's signiture here so peer knows who signed it
 		block.Valid = true
 	} else {
@@ -32,6 +32,7 @@ func VerifyBlock(block database.Block) {
 	j, err := json.Marshal(block)
 
 	if err == nil {
+		logger.Println("peer_routes.go", "HandleConn()", "Sending response")
 		for _, node := range Nodes {
 			if node.Port == block.Port {
 				node.Socket.Write(append([]byte("sign "), j...))
