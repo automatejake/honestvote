@@ -11,6 +11,7 @@ import (
 	"io"
 	"math/big"
 	"os"
+	"strings"
 )
 
 func genKey() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
@@ -80,6 +81,12 @@ func lenIsValid(x int) bool { // checks if the len of priv key is 256 as it shou
 	} else {
 		return false
 	}
+
+}
+func prefIsValid(z *big.Int) bool { //takes in address as a bigInt, returns true or false depending on if it has the correct prefix
+	var t string
+	t = z.String()
+	return strings.HasPrefix(t, "33")
 
 }
 func sign1(msg string, q *ecdsa.PrivateKey, w ecdsa.PublicKey) bool {
