@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-func genKey() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
+func KeyGen() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
 
 	//priv key gen start
 

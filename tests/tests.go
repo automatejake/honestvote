@@ -1,9 +1,13 @@
 package main
 
 import (
-	"io"
-	"log"
-	"os"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"fmt"
+	"reflect"
+
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 )
 
 // import "github.com/jneubaum/honestvote/tests/logging"
@@ -29,9 +33,20 @@ type P struct {
 // 	}
 
 func main() {
-	mw := io.MultiWriter(os.Stdout, logFile)
-	log.SetOutput(mw)
+	privateKey, _ := ecdsa.GenerateKey(elliptic.P384(), rand.Reader)
+	publicKey := &privateKey.PublicKey
 
-	// fmt.Println(testing.Benchmark(findpeers))
+	encPriv, encPub := crypto.Encode(privateKey, publicKey)
 
+	fmt.Println(encPriv)
+	fmt.Println(encPub)
+
+	priv2, pub2 := crypto.Decode(encPriv, encPub)
+
+	if !reflect.DeepEqual(privateKey, priv2) {
+		fmt.Println("Private keys do not match.")
+	}
+	if !reflect.DeepEqual(publicKey, pub2) {
+		fmt.Println("Public keys do not match.")
+	}
 }

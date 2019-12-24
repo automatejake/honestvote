@@ -36,5 +36,5 @@ go install
 # go install
 
 
-cd ../../../tests/logging
+cd ../../../tests/logger
 go install
