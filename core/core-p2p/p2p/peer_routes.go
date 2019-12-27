@@ -39,8 +39,6 @@ func HandleConn(conn net.Conn) {
 				}
 				Nodes = append(Nodes, tmpNode)
 				fmt.Println(Nodes)
-				// permNode := database.Node{}
-				// database.AddToTable(permNode.IPAddress, permNode.Port)
 			}
 		} else if string(buf[0:12]) == "recieve data" {
 			buffer := bytes.NewBuffer(buf[13:length])

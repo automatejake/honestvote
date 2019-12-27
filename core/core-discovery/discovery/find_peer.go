@@ -48,7 +48,7 @@ func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 
 	//Send connect message to peer
 	for _, peer := range peers {
-		ConnectMessage(peer)
+		ConnectMessage(peer, tcp_port)
 	}
 
 }
@@ -58,7 +58,7 @@ func FindPeer(registry_ip string, registry_port string, tcp_port string) {
 * 2) If unsuccessful, report to registry node
 * 3) If succsessful, Add Peer to database and connection to memory
  */
-func ConnectMessage(peer database.Node) {
+func ConnectMessage(peer database.Node, tcp_port string) {
 	port := strconv.Itoa(peer.Port)
 
 	conn, err := net.Dial("tcp", peer.IPAddress+":"+port)
@@ -69,7 +69,7 @@ func ConnectMessage(peer database.Node) {
 	if conn != nil {
 		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 
-		conn.Write([]byte("connect " + port))
+		conn.Write([]byte("connect " + tcp_port))
 
 		tmpNode := database.TempNode{
 			IPAddress: peer.IPAddress,
