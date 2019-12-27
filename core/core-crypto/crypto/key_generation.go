@@ -12,6 +12,8 @@ import (
 	"math/big"
 	"os"
 	"strings"
+
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func KeyGen() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
@@ -24,11 +26,8 @@ func KeyGen() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
 
 	privKey, err := ecdsa.GenerateKey(pubkeyCurve, rand.Reader) // this generates a public & private key pair
 
-	//At this point: privatekey is complete and err is null
-
-	if err != nil { //exits if err contains a value
-		//return //"cannot use nil as type ecdsa.PublicKey in return argumentgo"
-		os.Exit(1)
+	if err != nil {
+		logger.Println("key_generation.go", "KeyGen()", err.Error())
 	}
 
 	//end priv key gen
@@ -43,7 +42,7 @@ func KeyGen() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
 	var bitLen int
 	bitLen = privKey.Curve.Params().BitSize //wont work with pub key : different data type
 	//fmt.Println(bitLen)
-	lenIsValid(bitLen) //send bitLen in order to check if len is correct for priv key, returns true
+	LengthIsValid(bitLen) //send bitLen in order to check if len is correct for priv key, returns true
 	//fmt.Println(lenIsValid(bitLen)) //returns bool val: true
 
 	//testing sign1
@@ -73,7 +72,7 @@ func KeyGen() (*ecdsa.PrivateKey, ecdsa.PublicKey) {
 	return privKey, pubkey
 
 }
-func lenIsValid(x int) bool { // checks if the len of priv key is 256 as it should be
+func LengthIsValid(x int) bool { // checks if the len of priv key is 256 as it should be
 
 	//fmt.Println(x)
 	if x == 256 {
@@ -83,13 +82,13 @@ func lenIsValid(x int) bool { // checks if the len of priv key is 256 as it shou
 	}
 
 }
-func prefIsValid(z *big.Int) bool { //takes in address as a bigInt, returns true or false depending on if it has the correct prefix
+func PrefixIsValid(z *big.Int) bool { //takes in address as a bigInt, returns true or false depending on if it has the correct prefix
 	var t string
 	t = z.String()
 	return strings.HasPrefix(t, "33")
 
 }
-func sign1(msg string, q *ecdsa.PrivateKey, w ecdsa.PublicKey) bool {
+func Sign1(msg string, q *ecdsa.PrivateKey, w ecdsa.PublicKey) bool {
 
 	var hash1 hash.Hash //hash value: hash1=<nil>
 
@@ -100,14 +99,11 @@ func sign1(msg string, q *ecdsa.PrivateKey, w ecdsa.PublicKey) bool {
 	s := new(big.Int) //values used in ECDSA
 	r := new(big.Int)
 
-	//fmt.Println(r) //temp
-	//fmt.Println(s) //temp
-
 	io.WriteString(hash1, msg) //the message is now hashed
 	sum1 := hash1.Sum(nil)[:]
 
 	r, s, nilVal := ecdsa.Sign(rand.Reader, q, sum1)
-	//fmt.Println(nilVal)
+
 	if nilVal != nil {
 		fmt.Println(nilVal)
 		os.Exit(1)

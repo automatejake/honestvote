@@ -72,7 +72,7 @@ func ConnectMessage(peer database.Node) {
 		conn.Write([]byte("connect " + port))
 
 		tmpNode := database.TempNode{
-			IPAddress: "127.0.0.1",
+			IPAddress: peer.IPAddress,
 			Port:      peer.Port,
 			Socket:    conn,
 		}

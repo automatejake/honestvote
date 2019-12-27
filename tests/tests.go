@@ -33,8 +33,10 @@ type P struct {
 // 	}
 
 func main() {
-	privateKey, _ := ecdsa.GenerateKey(elliptic.P384(), rand.Reader)
+	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	publicKey := &privateKey.PublicKey
+
+	// privateKey, publicKey := crypto.KeyGen()
 
 	encPriv, encPub := crypto.Encode(privateKey, publicKey)
 
@@ -49,4 +51,9 @@ func main() {
 	if !reflect.DeepEqual(publicKey, pub2) {
 		fmt.Println("Public keys do not match.")
 	}
+
+	msg := "hello"
+	crypto.Sign1(msg, privateKey, *publicKey)
+	fmt.Println(msg)
+
 }

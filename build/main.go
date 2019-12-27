@@ -7,7 +7,6 @@ import (
 
 	"github.com/jneubaum/honestvote/tests/logger"
 
-	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-discovery/discovery"
 	"github.com/jneubaum/honestvote/core/core-http/http"
@@ -26,7 +25,8 @@ var COLLECTION_PREFIX string = ""
 var REGISTRY_IP string
 var REGISTRY_PORT string = "7002"
 var LOGGING bool = true
-var PRIVATE_KEY, PUBLIC_KEY = crypto.KeyGen()
+
+// var PRIVATE_KEY, PUBLIC_KEY = crypto.KeyGen()
 
 //this file will be responsible for deploying the app
 func main() {
