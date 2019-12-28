@@ -2,52 +2,41 @@ package main
 
 import (
 	"fmt"
-	"math"
+
+	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-type Abser interface {
-	Abs() float64
-	Okay() int
+// var priv, pub = crypto.GenerateKeys()
+var priv, pub = crypto.GenerateKeyPair()
+var block database.Block = database.Block{
+	Index:       1,
+	Timestamp:   "now",
+	Transaction: database.Transaction{},
+	Hash:        consensus.CalculateHash(consensus.GenerateHeader(database.Block{Index: 1, Timestamp: "now", Transaction: database.Transaction{}})),
+	PrevHash:    "",
+	Signature:   "",
+}
+
+var block2 database.Block = database.Block{
+	Index:       1,
+	Timestamp:   "now",
+	Transaction: database.Transaction{},
+	Hash:        consensus.CalculateHash(consensus.GenerateHeader(database.Block{Index: 1, Timestamp: "now", Transaction: database.Transaction{}})),
+	PrevHash:    "",
+	Signature:   "",
 }
 
 func main() {
-	var a Abser
-	f := MyFloat(-math.Sqrt2)
-	v := Vertex{3, 4}
+	byteHash := []byte(block.Hash)
 
-	a = f  // a MyFloat implements Abser
-	a = &v // a *Vertex implements Abser
+	// fmt.Println(priv + "\n\n" + pub)
+	signature, _ := crypto.Sign(byteHash, priv)
+	verify, _ := crypto.Verify(byteHash, pub, signature)
+	fmt.Println(string(byteHash) + "\n")
 
-	// In the following line, v is a Vertex (not *Vertex)
-	// and does NOT implement Abser.
-	// a = v
+	fmt.Println(signature + "\n")
+	fmt.Println(verify)
 
-	fmt.Println(a.Abs())
-}
-
-type MyFloat float64
-
-func (f MyFloat) Abs() float64 {
-	if f < 0 {
-		return float64(-f)
-	}
-	return float64(f)
-}
-
-func (f MyFloat) Okay() int {
-	if f < 0 {
-		return 4
-	}
-	return 3
-}
-
-type Vertex struct {
-	X, Y float64
-}
-
-func (v *Vertex) Abs() float64 {
-	return math.Sqrt(v.X*v.X + v.Y*v.Y)
-}
-func (v *Vertex) Okay() int {
-	return 2
 }

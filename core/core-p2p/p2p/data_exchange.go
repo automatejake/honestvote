@@ -22,10 +22,10 @@ func ProposeBlock(block database.Block, peers []database.TempNode) {
 
 func VerifyBlock(block database.Block) {
 	if consensus.VerifyHash(PrevIndex, PrevHash, block) {
-		block.Signiture = "" //Put the Validator's signiture here so peer knows who signed it
+		block.Signature = "" //Put the Validator's signature here so peer knows who signed it
 		block.Valid = true
 	} else {
-		block.Signiture = "" //Put the Validator's signiture here so peer knows who signed it
+		block.Signature = "" //Put the Validator's signature here so peer knows who signed it
 		block.Valid = false
 	}
 

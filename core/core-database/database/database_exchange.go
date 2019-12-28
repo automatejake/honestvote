@@ -24,8 +24,8 @@ func UpdateBlockchain(client *mongo.Client, block Block) bool {
 	_, err := collection.InsertOne(context.TODO(), document)
 
 	if err != nil {
-		return false
 		logger.Println("database_exchange.go", "UpdateBlockchain()", err.Error())
+		return false
 	}
 
 	return true

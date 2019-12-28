@@ -21,7 +21,7 @@ type Block struct {
 	Hash        string
 	PrevHash    string
 	Validator   string
-	Signiture   string
+	Signature   string
 	Valid       bool
 	Port        int //TODO: Make Validator part of Peer struct to identify who proposed block
 }
