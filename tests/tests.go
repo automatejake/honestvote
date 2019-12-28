@@ -31,7 +31,7 @@ var block2 database.Block = database.Block{
 func main() {
 	byteHash := []byte(block.Hash)
 
-	// fmt.Println(priv + "\n\n" + pub)
+	fmt.Println(priv + "\n\n" + pub)
 	signature, _ := crypto.Sign(byteHash, priv)
 	verify, _ := crypto.Verify(byteHash, pub, signature)
 	fmt.Println(string(byteHash) + "\n")
