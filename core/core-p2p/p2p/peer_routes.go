@@ -82,7 +82,7 @@ func HandleConn(conn net.Conn) {
 			json.Unmarshal(buf[5:length], block)
 			ValidatorResponses = append(ValidatorResponses, *block) //Keep track of all responses to check and compare
 			logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")
-			if len(ValidatorResponses)+1 == len(Nodes) { //Shouldn't be +1
+			if len(ValidatorResponses) == len(Nodes) { //Shouldn't be +1
 				CheckResponses(ValidatorResponses, len(ValidatorResponses)) //Go through the responses and see if block valid
 				ValidatorResponses = nil
 				ProposedBlock = database.Block{}
