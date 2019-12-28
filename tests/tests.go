@@ -1,59 +1,53 @@
 package main
 
 import (
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
 	"fmt"
-	"reflect"
-
-	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
+	"math"
 )
 
-// import "github.com/jneubaum/honestvote/tests/logging"
-
-type P struct {
-	X, Y, Z int
-	Name    string
+type Abser interface {
+	Abs() float64
+	Okay() int
 }
 
-// func findpeers(b *testing.B) {
-// 	database.MongoDB = database.MongoConnect()
-// 	log.Println("Connected")
-// 	database.ExistsInTable("127.0.0.1", 7002)
-// }
-
-// func main() {
-// 	database.MongoDB = database.MongoConnect()
-// 	log.Println("Connected")
-// 	exclude_peer := database.Peer{IPAddress: "127.0.0.1", Port: 7004}
-// 	peers := database.FindPeers(exclude_peer)
-// 	for i := range peers {
-// 		log.Println(peers[i])
-// 	}
-
 func main() {
-	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	publicKey := &privateKey.PublicKey
+	var a Abser
+	f := MyFloat(-math.Sqrt2)
+	v := Vertex{3, 4}
 
-	// privateKey, publicKey := crypto.KeyGen()
+	a = f  // a MyFloat implements Abser
+	a = &v // a *Vertex implements Abser
 
-	encPriv, encPub := crypto.Encode(privateKey, publicKey)
+	// In the following line, v is a Vertex (not *Vertex)
+	// and does NOT implement Abser.
+	// a = v
 
-	fmt.Println(encPriv)
-	fmt.Println(encPub)
+	fmt.Println(a.Abs())
+}
 
-	priv2, pub2 := crypto.Decode(encPriv, encPub)
+type MyFloat float64
 
-	if !reflect.DeepEqual(privateKey, priv2) {
-		fmt.Println("Private keys do not match.")
+func (f MyFloat) Abs() float64 {
+	if f < 0 {
+		return float64(-f)
 	}
-	if !reflect.DeepEqual(publicKey, pub2) {
-		fmt.Println("Public keys do not match.")
+	return float64(f)
+}
+
+func (f MyFloat) Okay() int {
+	if f < 0 {
+		return 4
 	}
+	return 3
+}
 
-	msg := "hello"
-	crypto.Sign1(msg, privateKey, *publicKey)
-	fmt.Println(msg)
+type Vertex struct {
+	X, Y float64
+}
 
+func (v *Vertex) Abs() float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+func (v *Vertex) Okay() int {
+	return 2
 }

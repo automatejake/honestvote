@@ -33,11 +33,20 @@ func HandleConn(conn net.Conn) {
 			if err == nil {
 				// Nodes[port] = true
 				tmpNode := database.TempNode{
-					IPAddress: "127.0.0.1",
+					IPAddress: conn.RemoteAddr().String(),
 					Port:      port,
 					Socket:    conn,
 				}
+
+				if !database.DoesNodeExist(database.Node{
+					IPAddress: conn.RemoteAddr().String(),
+					Port:      port,
+				}) {
+					database.AddNode(conn.RemoteAddr().String(), port)
+				}
+
 				Nodes = append(Nodes, tmpNode)
+
 				fmt.Println(Nodes)
 			}
 		} else if string(buf[0:12]) == "recieve data" {
