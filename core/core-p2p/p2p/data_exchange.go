@@ -9,6 +9,7 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
+//Send a block out to be verified by other peers
 func ProposeBlock(block database.Block, peers []database.TempNode) {
 	j, err := json.Marshal(block)
 
@@ -20,6 +21,7 @@ func ProposeBlock(block database.Block, peers []database.TempNode) {
 	}
 }
 
+//Decide if the block sent is valid
 func VerifyBlock(block database.Block) {
 	if consensus.VerifyHash(PrevIndex, PrevHash, block) {
 		block.Signiture = "" //Put the Validator's signiture here so peer knows who signed it
@@ -41,6 +43,7 @@ func VerifyBlock(block database.Block) {
 	}
 }
 
+//Go through all responses from other peers and see the result
 func CheckResponses(responses []database.Block, size int) {
 	counter := size
 	for _, response := range responses {

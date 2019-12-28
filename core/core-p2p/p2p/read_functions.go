@@ -43,6 +43,7 @@ func DecodeData(buffer *bytes.Buffer) {
 	}
 }
 
+//Get vote from full node and turn it into a block and propose
 func ReceiveVote(vote int) {
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, database.Transaction{
 		Sender:   "",
@@ -62,6 +63,7 @@ func ReceiveVote(vote int) {
 	}
 }
 
+//Receive the responses given by all other peers deciding if a block is valid
 func ReceiveResponses(block *database.Block) {
 	ValidatorResponses = append(ValidatorResponses, *block) //Keep track of all responses to check and compare
 	logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")
