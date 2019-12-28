@@ -77,7 +77,13 @@ func ConnectMessage(peer database.Node, tcp_port string) {
 			Socket:    conn,
 		}
 		p2p.Nodes = append(p2p.Nodes, tmpNode)
-		database.AddNode(peer.IPAddress, peer.Port)
+		if !database.DoesNodeExist(database.Node{
+			IPAddress: peer.IPAddress,
+			Port:      peer.Port,
+		}) {
+			database.AddNode(peer.IPAddress, peer.Port)
+		}
+
 		go p2p.HandleConn(conn)
 	}
 
