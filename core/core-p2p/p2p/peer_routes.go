@@ -15,7 +15,7 @@ import (
 func HandleConn(conn net.Conn) {
 	defer conn.Close()
 
-	var buf [512]byte
+	var buf [1024]byte
 
 	for {
 		length, err := conn.Read(buf[0:])
@@ -49,8 +49,12 @@ func HandleConn(conn net.Conn) {
 			VerifyBlock(*block)
 		} else if string(buf[0:4]) == "sign" { //Response from all Nodes verifying block
 			block := new(database.Block)
-			json.Unmarshal(buf[5:length], block)
-			ReceiveResponses(block)
+			err = json.Unmarshal(buf[5:length], &block)
+			if err == nil {
+				ReceiveResponses(block)
+			} else {
+				fmt.Println(err)
+			}
 		} else if string(buf[0:6]) == "update" {
 			block := new(database.Block)
 			json.Unmarshal(buf[7:length], block)

@@ -27,10 +27,9 @@ var REGISTRY_IP string
 var REGISTRY_PORT string = "7002"
 var LOGGING bool = true
 
-var PRIVATE_KEY, PUBLIC_KEY = crypto.GenerateKeyPair()
-
 //this file will be responsible for deploying the app
 func main() {
+	p2p.PrivateKey, p2p.PublicKey = crypto.GenerateKeyPair()
 
 	err := godotenv.Load()
 	if err != nil {
@@ -59,12 +58,12 @@ func main() {
 	if os.Getenv("REGISTRY_PORT") != "" {
 		REGISTRY_PORT = os.Getenv("REGISTRY_PORT")
 	}
-	if os.Getenv("PRIVATE_KEY") != "" {
-		PRIVATE_KEY = os.Getenv("PRIVATE_KEY")
-	}
-	if os.Getenv("PUBLIC_KEY") != "" {
-		PUBLIC_KEY = os.Getenv("PUBLIC_KEY")
-	}
+	// if os.Getenv("PRIVATE_KEY") != "" {
+	// 	PRIVATE_KEY = os.Getenv("PRIVATE_KEY")
+	// }
+	// if os.Getenv("PUBLIC_KEY") != "" {
+	// 	PUBLIC_KEY = os.Getenv("PUBLIC_KEY")
+	// }
 
 	//this domain is the default host to resolve traffic
 	if REGISTRY_IP == "" {
@@ -93,10 +92,10 @@ func main() {
 			REGISTRY_IP = os.Args[index+1]
 		case "--registry-port": //Sets the registry node port
 			REGISTRY_PORT = os.Args[index+1]
-		case "--private-key": //Sets the registry node
-			PRIVATE_KEY = os.Args[index+1]
-		case "--public-key": //Sets the registry node port
-			PUBLIC_KEY = os.Args[index+1]
+			// case "--private-key": //Sets the registry node
+			// 	PRIVATE_KEY = os.Args[index+1]
+			// case "--public-key": //Sets the registry node port
+			// 	PUBLIC_KEY = os.Args[index+1]
 		}
 	}
 

@@ -15,15 +15,15 @@ var ElectionHistory string = "election"
 var Connections string = "connections"
 
 type Block struct {
-	Index       int
-	Timestamp   string
-	Transaction Transaction
-	Hash        string
-	PrevHash    string
-	Validator   string
-	Signature   string
-	Valid       bool
-	Port        int //TODO: Make Validator part of Peer struct to identify who proposed block
+	Index       int         `json:"index"`
+	Timestamp   string      `json:"timestamp"`
+	Transaction Transaction `json:"transaction"`
+	Hash        string      `json:"hash"`
+	PrevHash    string      `json:"prevhash"`
+	Validator   string      `json:"validator"`
+	Signature   string      `json:"signature"`
+	Valid       bool        `json:"valid"`
+	Port        int         `json:"port"`
 }
 
 type Transaction struct {
@@ -56,5 +56,5 @@ type TempNode struct {
 	Port      int
 	Role      string
 	Socket    net.Conn
-	//Validator -- used to identify who sent proposition block
+	Validator string //Use this to send responses
 }

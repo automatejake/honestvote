@@ -8,13 +8,6 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-var Blockchain []database.Block
-var ProposedBlocks []database.Block
-
-var Validators []string
-
-var Address string
-
 func CalculateHash(input string) string {
 	hash := sha256.New()
 	hash.Write([]byte(input))
@@ -22,14 +15,14 @@ func CalculateHash(input string) string {
 	return base64.URLEncoding.EncodeToString(sum)
 }
 
-func GenerateBlock(pIndex int, pHash string, transaction database.Transaction, port int) database.Block {
+func GenerateBlock(pIndex int, pHash string, transaction database.Transaction, port int, pKey string) database.Block {
 	var newBlock database.Block
 
 	newBlock.Index = pIndex + 1
 	newBlock.Timestamp = time.Now().String()
 	newBlock.Transaction = transaction
 	newBlock.PrevHash = pHash
-	newBlock.Validator = Address
+	newBlock.Validator = pKey
 	newBlock.Port = port
 
 	header := GenerateHeader(newBlock)

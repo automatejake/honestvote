@@ -13,6 +13,9 @@ var PrevHash = ""
 //PrevIndex is used to create a new block
 var PrevIndex = 0
 
+var PublicKey string
+var PrivateKey string
+
 var Nodes []database.TempNode
 var ProposedBlock database.Block
 

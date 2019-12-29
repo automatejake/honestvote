@@ -49,7 +49,7 @@ func ReceiveVote(vote int) {
 		Sender:   "",
 		Vote:     vote,
 		Receiver: "",
-	}, Port)
+	}, Port, PublicKey)
 
 	//Check if there is a proposed block currently, if so, add to the queue
 	if ProposedBlock == (database.Block{}) {
@@ -67,7 +67,7 @@ func ReceiveVote(vote int) {
 func ReceiveResponses(block *database.Block) {
 	ValidatorResponses = append(ValidatorResponses, *block) //Keep track of all responses to check and compare
 	logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")
-	if len(ValidatorResponses) == len(Nodes) { //Shouldn't be +1
+	if len(ValidatorResponses) == len(Nodes) {
 		CheckResponses(ValidatorResponses, len(ValidatorResponses)) //Go through the responses and see if block valid
 		ValidatorResponses = nil
 		ProposedBlock = database.Block{}
