@@ -69,7 +69,14 @@ func ConnectMessage(peer database.Node, tcp_port string) {
 	if conn != nil {
 		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 
-		conn.Write([]byte("connect " + tcp_port))
+		write := new(database.Write)
+		write.Message = "connect"
+		write.Data = []byte(tcp_port)
+		jWrite, err := json.Marshal(write)
+
+		if err == nil {
+			conn.Write(jWrite)
+		}
 
 		tmpNode := database.TempNode{
 			IPAddress: peer.IPAddress,

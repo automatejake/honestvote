@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net"
 	"strconv"
-	"strings"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -15,49 +14,42 @@ import (
 func HandleConn(conn net.Conn) {
 	defer conn.Close()
 
-	var buf [1024]byte
-
 	for {
-		length, err := conn.Read(buf[0:])
 
-		if err != nil {
-			return
-		}
+		d := json.NewDecoder(conn)
+		var write database.Write
+		d.Decode(&write)
 
-		if string(buf[0:7]) == "connect" {
-			port, err := strconv.Atoi(string(buf[8:length]))
+		if write.Message == "connect" {
+			port, err := strconv.Atoi(string(write.Data))
 			logger.Println("peer_routes.go", "HandleConn()", "Recieved Connect Message")
 			if err == nil {
 				ConnectMessage(port, conn)
 			}
-		} else if string(buf[0:12]) == "recieve data" {
-			buffer := bytes.NewBuffer(buf[13:length])
+		} else if write.Message == "recieve data" {
+			buffer := bytes.NewBuffer(write.Data)
 			DecodeData(buffer)
-		} else if string(buf[0:8]) == "get data" {
+		} else if write.Message == "get data" {
 			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
-		} else if string(buf[0:4]) == "vote" { //Get a vote and make a block out of it
-			sVote := string(buf[5:length])
-			sVote = strings.TrimSuffix(sVote, "\n")
-			vote, err := strconv.Atoi(sVote)
-			if err == nil {
-				ReceiveVote(vote)
-			}
-		} else if string(buf[0:6]) == "verify" { //Verifying that the sent block is correct(sign/reject)
+		} else if write.Message == "vote" { //Get a vote and make a block out of it
+			vote := write.Vote
+			ReceiveVote(vote)
+		} else if write.Message == "verify" { //Verifying that the sent block is correct(sign/reject)
 			block := new(database.Block)
-			json.Unmarshal(buf[7:length], block)
+			json.Unmarshal(write.Data, block)
 			logger.Println("peer_routes.go", "HandleConn()", "Verifying")
 			VerifyBlock(*block)
-		} else if string(buf[0:4]) == "sign" { //Response from all Nodes verifying block
+		} else if write.Message == "sign" { //Response from all Nodes verifying block
 			block := new(database.Block)
-			err = json.Unmarshal(buf[5:length], &block)
+			err := json.Unmarshal(write.Data, &block)
 			if err == nil {
 				ReceiveResponses(block)
 			} else {
 				fmt.Println(err)
 			}
-		} else if string(buf[0:6]) == "update" {
+		} else if write.Message == "update" {
 			block := new(database.Block)
-			json.Unmarshal(buf[7:length], block)
+			json.Unmarshal(write.Data, block)
 			if database.UpdateBlockchain(database.MongoDB, *block) {
 				PrevHash = block.Hash
 				PrevIndex = block.Index

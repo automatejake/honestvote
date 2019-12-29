@@ -13,10 +13,16 @@ import (
 func ProposeBlock(block database.Block, peers []database.TempNode) {
 	j, err := json.Marshal(block)
 
+	write := new(database.Write)
+	write.Message = "verify"
+	write.Data = j
+
+	jWrite, err := json.Marshal(write)
+
 	if err == nil {
 		fmt.Println(len(peers))
 		for _, peer := range peers {
-			peer.Socket.Write(append([]byte("verify "), j...))
+			peer.Socket.Write(jWrite)
 		}
 	}
 }
@@ -33,11 +39,17 @@ func VerifyBlock(block database.Block) {
 
 	j, err := json.Marshal(block)
 
+	write := new(database.Write)
+	write.Message = "sign"
+	write.Data = j
+
+	jWrite, err := json.Marshal(write)
+
 	if err == nil {
 		logger.Println("peer_routes.go", "HandleConn()", "Sending response")
 		for _, node := range Nodes {
 			if node.Port == block.Port {
-				node.Socket.Write(append([]byte("sign "), j...))
+				node.Socket.Write(jWrite)
 			}
 		}
 	}
@@ -57,6 +69,12 @@ func CheckResponses(responses []database.Block, size int) {
 	if size == counter {
 		j, err := json.Marshal(ProposedBlock)
 
+		write := new(database.Write)
+		write.Message = "update"
+		write.Data = j
+
+		jWrite, err := json.Marshal(write)
+
 		if err == nil {
 			if database.UpdateBlockchain(database.MongoDB, ProposedBlock) {
 				PrevHash = ProposedBlock.Hash
@@ -65,7 +83,7 @@ func CheckResponses(responses []database.Block, size int) {
 			}
 
 			for _, node := range Nodes {
-				node.Socket.Write(append([]byte("update "), j...))
+				node.Socket.Write(jWrite)
 			}
 		}
 	} else {
