@@ -29,8 +29,8 @@ func HandleConn(conn net.Conn) {
 			AcceptConnectMessage(node, conn)
 		case "get id":
 			var node database.Node
-			node.IPAddress = conn.RemoteAddr().String()
 			json.Unmarshal(write.Data, &node)
+			node.IPAddress = conn.RemoteAddr().String()[0:9]
 			if !database.DoesNodeExist(node) {
 				database.AddNode(node)
 			}

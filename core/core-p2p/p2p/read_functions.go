@@ -19,12 +19,8 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 		IPAddress: conn.RemoteAddr().String(),
 		Socket:    conn,
 	}
-
-	if !database.DoesNodeExist(database.Node{
-		IPAddress: conn.RemoteAddr().String(),
-		Port:      node.Port,
-	}) {
-		node.IPAddress = conn.RemoteAddr().String()[0:9]
+	node.IPAddress = conn.RemoteAddr().String()[0:9]
+	if !database.DoesNodeExist(node) {
 		database.AddNode(node)
 	}
 
