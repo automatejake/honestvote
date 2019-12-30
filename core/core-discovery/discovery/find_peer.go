@@ -84,12 +84,7 @@ func ConnectMessage(peer database.Node, tcp_port string) {
 		}
 		conn.Write(jWrite)
 
-		tmpNode := database.TempNode{
-			IPAddress: peer.IPAddress,
-			Port:      peer.Port,
-			Socket:    conn,
-		}
-		p2p.Nodes = append(p2p.Nodes, tmpNode)
+		p2p.Nodes = append(p2p.Nodes, conn)
 		if !database.DoesNodeExist(database.Node{
 			IPAddress: peer.IPAddress,
 			Port:      peer.Port,

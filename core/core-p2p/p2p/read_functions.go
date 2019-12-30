@@ -15,16 +15,9 @@ import (
 func AcceptConnectMessage(node database.Node, conn net.Conn) {
 	//ADD TO DATABASE AS WELL
 	// Nodes[port] = true
-	tmpNode := database.TempNode{
-		IPAddress: conn.RemoteAddr().String(),
-		Socket:    conn,
-	}
 
-	if !database.DoesNodeExist(database.Node{
-		IPAddress: conn.RemoteAddr().String(),
-		Port:      node.Port,
-	}) {
-		node.IPAddress = conn.RemoteAddr().String()[0:9]
+	node.IPAddress = conn.RemoteAddr().String()[0:9]
+	if !database.DoesNodeExist(node) {
 		database.AddNode(node)
 	}
 
@@ -42,7 +35,7 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 
 	conn.Write(data)
 
-	Nodes = append(Nodes, tmpNode)
+	Nodes = append(Nodes, conn)
 
 	fmt.Println(Nodes)
 }

@@ -1,6 +1,10 @@
 package p2p
 
-import "github.com/jneubaum/honestvote/core/core-database/database"
+import (
+	"net"
+
+	"github.com/jneubaum/honestvote/core/core-database/database"
+)
 
 // var Nodes = make(map[int]bool)
 
@@ -16,7 +20,7 @@ var PrevIndex = 0
 var PublicKey string
 var PrivateKey string
 
-var Nodes []database.TempNode
+var Nodes []net.Conn
 var ProposedBlock database.Block
 
 var Self database.Node

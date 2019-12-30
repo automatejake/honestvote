@@ -104,7 +104,7 @@ func main() {
 	database.MongoDB = database.MongoConnect() // Connect to data store
 
 	port, _ := strconv.Atoi(TCP_SERVICE)
-	p2p.Self = database.Node{Port: port, Role: ROLE, ID: p2p.PublicKey}
+	p2p.Self = database.Node{Port: port, Role: ROLE, PublicKey: p2p.PublicKey}
 
 	// if logging is turned on
 	if LOGGING {

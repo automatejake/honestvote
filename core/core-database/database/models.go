@@ -1,7 +1,5 @@
 package database
 
-import "net"
-
 // Multiple nodes can work on the same host using different collection prefixes
 var CollectionPrefix string = ""
 
@@ -48,14 +46,6 @@ type Node struct {
 	IPAddress   string
 	Port        int
 	Role        string
-	ID          string
+	PublicKey   string
 	Connections []Node
-}
-
-type TempNode struct {
-	IPAddress string
-	Port      int
-	Role      string
-	Socket    net.Conn
-	Validator string //Use this to send responses
 }

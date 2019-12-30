@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -42,11 +41,9 @@ func main() {
 
 	// r, _ := regexp.Compile("p([a-z]+)ch")
 
-	re := regexp.MustCompile(`.*:`)
-	s := re.FindString("127.0.0.1:8059")
-
-	fmt.Println(s[6])
-
-	fmt.Printf("%q\n", re.FindString("meat"))
+	for i := 0; i < 100; i++ {
+		pub, priv = crypto.GenerateKeyPair()
+		fmt.Println(pub + "\n")
+	}
 
 }

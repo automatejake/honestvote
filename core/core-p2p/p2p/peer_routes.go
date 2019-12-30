@@ -28,8 +28,8 @@ func HandleConn(conn net.Conn) {
 			AcceptConnectMessage(node, conn)
 		case "get id":
 			var node database.Node
-			node.IPAddress = conn.RemoteAddr().String()
 			json.Unmarshal(write.Data, &node)
+			node.IPAddress = conn.RemoteAddr().String()[0:9]
 			if !database.DoesNodeExist(node) {
 				database.AddNode(node)
 			}
@@ -45,7 +45,7 @@ func HandleConn(conn net.Conn) {
 			block := new(database.Block)
 			json.Unmarshal(write.Data, block)
 			logger.Println("peer_routes.go", "HandleConn()", "Verifying")
-			VerifyBlock(*block)
+			VerifyBlock(*block, conn)
 		case "sign":
 			block := new(database.Block)
 			err := json.Unmarshal(write.Data, &block)
