@@ -15,7 +15,6 @@ func HandleConn(conn net.Conn) {
 	defer conn.Close()
 
 	for {
-
 		d := json.NewDecoder(conn)
 		var write database.Write
 		d.Decode(&write)

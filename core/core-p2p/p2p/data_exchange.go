@@ -30,10 +30,8 @@ func ProposeBlock(block database.Block, peers []database.TempNode) {
 //Decide if the block sent is valid
 func VerifyBlock(block database.Block) {
 	if consensus.VerifyHash(PrevIndex, PrevHash, block) {
-		block.Signature = PublicKey //Put the Validator's signature here so peer knows who signed it
 		block.Valid = true
 	} else {
-		block.Signature = PublicKey //Put the Validator's signature here so peer knows who signed it
 		block.Valid = false
 	}
 
@@ -58,11 +56,14 @@ func VerifyBlock(block database.Block) {
 //Go through all responses from other peers and see the result
 func CheckResponses(responses []database.Block, size int) {
 	counter := size
+
 	for _, response := range responses {
 		if response.Valid {
-			continue
-		} else {
-			counter--
+			if response.Valid {
+				continue
+			} else {
+				counter--
+			}
 		}
 	}
 
