@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
@@ -29,14 +30,28 @@ var block2 database.Block = database.Block{
 }
 
 func main() {
-	byteHash := []byte(block.Hash)
+	// byteHash := []byte(block.Hash)
 
-	fmt.Println(priv + "\n\n" + pub)
-	signature, _ := crypto.Sign(byteHash, priv)
-	verify, _ := crypto.Verify(byteHash, pub, signature)
-	fmt.Println(string(byteHash) + "\n")
+	// fmt.Println(priv + "\n\n" + pub)
+	// signature, _ := crypto.Sign(byteHash, priv)
+	// verify, _ := crypto.Verify(byteHash, pub, signature)
+	// fmt.Println(string(byteHash) + "\n")
 
-	fmt.Println(signature + "\n")
-	fmt.Println(verify)
+	// fmt.Println(signature + "\n")
+	// fmt.Println(verify)
+
+	var test database.Write
+	test.Message = "hello"
+
+	peer := database.Node{IPAddress: "hello"}
+	test.Data, _ = json.Marshal(peer)
+
+	obsfucated, _ := json.Marshal(test)
+
+	var newTest database.Write
+	var newPeer database.Node
+	json.Unmarshal(obsfucated, &newTest)
+	json.Unmarshal(newTest.Data, &newPeer)
+	fmt.Println(newPeer)
 
 }

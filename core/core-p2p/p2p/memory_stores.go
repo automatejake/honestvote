@@ -19,6 +19,8 @@ var PrivateKey string
 var Nodes []database.TempNode
 var ProposedBlock database.Block
 
+var Self database.Node
+
 //Block queue starts to fill if ProposedBlock is not nil
 var BlockQueue []database.Block
 

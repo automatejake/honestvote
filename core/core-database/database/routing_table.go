@@ -40,13 +40,7 @@ func DoesNodeExist(node Node) bool {
 *
 * 1) Adds the node to the database of connections
 **/
-func AddNode(ipaddr string, port int) {
-
-	newNode := Node{
-		IPAddress: ipaddr,
-		Port:      port,
-		// Role:      role,
-	}
+func AddNode(newNode Node) {
 
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 	result, err := collection.InsertOne(context.TODO(), newNode)

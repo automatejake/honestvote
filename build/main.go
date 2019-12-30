@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strconv"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 
@@ -58,12 +59,12 @@ func main() {
 	if os.Getenv("REGISTRY_PORT") != "" {
 		REGISTRY_PORT = os.Getenv("REGISTRY_PORT")
 	}
-	// if os.Getenv("PRIVATE_KEY") != "" {
-	// 	PRIVATE_KEY = os.Getenv("PRIVATE_KEY")
-	// }
-	// if os.Getenv("PUBLIC_KEY") != "" {
-	// 	PUBLIC_KEY = os.Getenv("PUBLIC_KEY")
-	// }
+	if os.Getenv("PRIVATE_KEY") != "" {
+		p2p.PrivateKey = os.Getenv("PRIVATE_KEY")
+	}
+	if os.Getenv("PUBLIC_KEY") != "" {
+		p2p.PublicKey = os.Getenv("PUBLIC_KEY")
+	}
 
 	//this domain is the default host to resolve traffic
 	if REGISTRY_IP == "" {
@@ -92,15 +93,18 @@ func main() {
 			REGISTRY_IP = os.Args[index+1]
 		case "--registry-port": //Sets the registry node port
 			REGISTRY_PORT = os.Args[index+1]
-			// case "--private-key": //Sets the registry node
-			// 	PRIVATE_KEY = os.Args[index+1]
-			// case "--public-key": //Sets the registry node port
-			// 	PUBLIC_KEY = os.Args[index+1]
+		case "--private-key": //Sets the registry node
+			p2p.PrivateKey = os.Args[index+1]
+		case "--public-key": //Sets the registry node port
+			p2p.PublicKey = os.Args[index+1]
 		}
 	}
 
 	database.CollectionPrefix = COLLECTION_PREFIX
 	database.MongoDB = database.MongoConnect() // Connect to data store
+
+	port, _ := strconv.Atoi(TCP_SERVICE)
+	p2p.Self = database.Node{Port: port, Role: ROLE, ID: p2p.PublicKey}
 
 	// if logging is turned on
 	if LOGGING {
