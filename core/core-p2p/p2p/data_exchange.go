@@ -3,6 +3,7 @@ package p2p
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -10,7 +11,7 @@ import (
 )
 
 //Send a block out to be verified by other peers
-func ProposeBlock(block database.Block, peers []database.TempNode) {
+func ProposeBlock(block database.Block, peers []net.Conn) {
 	j, err := json.Marshal(block)
 
 	write := new(Message)
@@ -22,13 +23,13 @@ func ProposeBlock(block database.Block, peers []database.TempNode) {
 	if err == nil {
 		fmt.Println(len(peers))
 		for _, peer := range peers {
-			peer.Socket.Write(jWrite)
+			peer.Write(jWrite)
 		}
 	}
 }
 
 //Decide if the block sent is valid
-func VerifyBlock(block database.Block) {
+func VerifyBlock(block database.Block, conn net.Conn) {
 	if consensus.VerifyHash(PrevIndex, PrevHash, block) {
 		block.Signature = PublicKey //Put the Validator's signature here so peer knows who signed it
 		block.Valid = true
@@ -47,11 +48,12 @@ func VerifyBlock(block database.Block) {
 
 	if err == nil {
 		logger.Println("peer_routes.go", "HandleConn()", "Sending response")
-		for _, node := range Nodes {
-			if node.Port == block.Port {
-				node.Socket.Write(jWrite)
-			}
-		}
+		// for _, node := range Nodes {
+		// 	if node.Port == block.Port {
+		// 		node.Write(jWrite)
+		// 	}
+		// }
+		conn.Write(jWrite)
 	}
 }
 
@@ -83,7 +85,7 @@ func CheckResponses(responses []database.Block, size int) {
 			}
 
 			for _, node := range Nodes {
-				node.Socket.Write(jWrite)
+				node.Write(jWrite)
 			}
 		}
 	} else {

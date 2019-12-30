@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"net"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/bson"
@@ -35,7 +36,7 @@ func GatherMongoData(client *mongo.Client, filter bson.M, database_name string, 
 }
 
 //Send the data to the full/peer node
-func MoveDocuments(nodes []TempNode, database_name string, collection_name string) {
+func MoveDocuments(nodes []net.Conn, database_name string, collection_name string) {
 
 	MongoData := GatherMongoData(MongoDB, bson.M{}, database_name, collection_name)
 	buffer := new(bytes.Buffer)
@@ -45,7 +46,7 @@ func MoveDocuments(nodes []TempNode, database_name string, collection_name strin
 	if err == nil {
 		logger.Println("sync_database.go", "MoveDocuments", "Moving Documents")
 		for _, socket := range nodes {
-			socket.Socket.Write(append([]byte("recieve data "), buffer.Bytes()...))
+			socket.Write(append([]byte("recieve data "), buffer.Bytes()...))
 		}
 	} else {
 		logger.Println("sync_database.go", "MoveDocuments", err.Error())

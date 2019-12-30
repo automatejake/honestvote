@@ -46,7 +46,7 @@ func HandleConn(conn net.Conn) {
 			block := new(database.Block)
 			json.Unmarshal(write.Data, block)
 			logger.Println("peer_routes.go", "HandleConn()", "Verifying")
-			VerifyBlock(*block)
+			VerifyBlock(*block, conn)
 		case "sign":
 			block := new(database.Block)
 			err := json.Unmarshal(write.Data, &block)

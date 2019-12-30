@@ -128,7 +128,6 @@ func main() {
 		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT, TCP_SERVICE)
 	}
 
-	fmt.Println(p2p.PublicKey)
 	// accept incoming connections and handle p2p
 	p2p.ListenConn(TCP_SERVICE)
 
