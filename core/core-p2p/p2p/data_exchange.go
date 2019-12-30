@@ -43,9 +43,12 @@ func VerifyBlock(block database.Block) {
 
 	jWrite, err := json.Marshal(write)
 
+	fmt.Println(database.GrabPort(database.MongoDB, block.Validator))
+
 	if err == nil {
 		logger.Println("peer_routes.go", "HandleConn()", "Sending response")
 		for _, node := range Nodes {
+			fmt.Println(node.Port)
 			if node.Port == block.Port {
 				node.Socket.Write(jWrite)
 			}

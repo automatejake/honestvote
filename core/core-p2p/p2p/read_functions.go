@@ -63,7 +63,7 @@ func ReceiveVote(vote int) {
 		Sender:   "",
 		Vote:     vote,
 		Receiver: "",
-	}, Port, PublicKey)
+	}, PublicKey)
 
 	//Check if there is a proposed block currently, if so, add to the queue
 	if ProposedBlock == (database.Block{}) {
