@@ -69,7 +69,7 @@ func ConnectMessage(peer database.Node, tcp_port string) {
 
 		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 
-		write := new(database.Write)
+		write := new(p2p.Message)
 
 		byteSelf, err := json.Marshal(p2p.Self)
 		if err != nil {

@@ -13,7 +13,7 @@ import (
 func ProposeBlock(block database.Block, peers []database.TempNode) {
 	j, err := json.Marshal(block)
 
-	write := new(database.Write)
+	write := new(Message)
 	write.Message = "verify"
 	write.Data = j
 
@@ -39,7 +39,7 @@ func VerifyBlock(block database.Block) {
 
 	j, err := json.Marshal(block)
 
-	write := new(database.Write)
+	write := new(Message)
 	write.Message = "sign"
 	write.Data = j
 
@@ -69,7 +69,7 @@ func CheckResponses(responses []database.Block, size int) {
 	if size == counter {
 		j, err := json.Marshal(ProposedBlock)
 
-		write := new(database.Write)
+		write := new(Message)
 		write.Message = "update"
 		write.Data = j
 
