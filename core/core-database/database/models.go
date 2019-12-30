@@ -59,10 +59,3 @@ type TempNode struct {
 	Socket    net.Conn
 	Validator string //Use this to send responses
 }
-
-//Struct to write data to other peers as a json
-type Write struct {
-	Message string `json:"message"`
-	Data    []byte `json:"data"`
-	Vote    int    `json:"vote"` //Used to send vote, should be changed
-}

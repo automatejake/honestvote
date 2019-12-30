@@ -15,7 +15,7 @@ func HandleConn(conn net.Conn) {
 
 	for {
 		d := json.NewDecoder(conn)
-		var write database.Write
+		var write Message
 		d.Decode(&write)
 
 		switch write.Message {
@@ -26,6 +26,13 @@ func HandleConn(conn net.Conn) {
 			json.Unmarshal(write.Data, &node)
 
 			AcceptConnectMessage(node, conn)
+		case "get id":
+			var node database.Node
+			node.IPAddress = conn.RemoteAddr().String()
+			json.Unmarshal(write.Data, &node)
+			if !database.DoesNodeExist(node) {
+				database.AddNode(node)
+			}
 		case "recieve data":
 			buffer := bytes.NewBuffer(write.Data)
 			DecodeData(buffer)

@@ -7,6 +7,12 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
+type Message struct {
+	Message string `json:"message"`
+	Data    []byte `json:"data"`
+	Vote    int    `json:"vote"` //Used to send vote, should be changed
+}
+
 func ListenConn(port string) {
 	listen, err := net.Listen("tcp", ":"+port)
 	if err != nil {

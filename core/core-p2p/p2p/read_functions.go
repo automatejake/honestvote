@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-	"regexp"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -25,9 +24,23 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 		IPAddress: conn.RemoteAddr().String(),
 		Port:      node.Port,
 	}) {
-		node.IPAddress = regexp.FindString(conn.RemoteAddr().String())
+		node.IPAddress = conn.RemoteAddr().String()[0:9]
 		database.AddNode(node)
 	}
+
+	var message Message
+	data, err := json.Marshal(Self)
+	if err != nil {
+		logger.Println("read_functions.go", "AcceptConnectMessage()", err.Error())
+	}
+	message.Message = "get id"
+	message.Data = data
+	data, err = json.Marshal(message)
+	if err != nil {
+		logger.Println("read_functions.go", "AcceptConnectMessage()", err.Error())
+	}
+
+	conn.Write(data)
 
 	Nodes = append(Nodes, tmpNode)
 
