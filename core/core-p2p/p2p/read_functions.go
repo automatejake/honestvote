@@ -12,20 +12,20 @@ import (
 )
 
 //Adds new connection to database and local Node array
-func ConnectMessage(port int, conn net.Conn) {
+func AcceptConnectMessage(node database.Node, conn net.Conn) {
 	//ADD TO DATABASE AS WELL
 	// Nodes[port] = true
 	tmpNode := database.TempNode{
 		IPAddress: conn.RemoteAddr().String(),
-		Port:      port,
 		Socket:    conn,
 	}
 
 	if !database.DoesNodeExist(database.Node{
 		IPAddress: conn.RemoteAddr().String(),
-		Port:      port,
+		Port:      node.Port,
 	}) {
-		database.AddNode(conn.RemoteAddr().String(), port)
+		node.IPAddress = conn.RemoteAddr().String()
+		database.AddNode(node)
 	}
 
 	Nodes = append(Nodes, tmpNode)

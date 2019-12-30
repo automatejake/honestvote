@@ -48,6 +48,7 @@ type Node struct {
 	IPAddress   string
 	Port        int
 	Role        string
+	ID          string
 	Connections []Node
 }
 

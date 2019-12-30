@@ -65,18 +65,24 @@ func ConnectMessage(peer database.Node, tcp_port string) {
 	if err != nil {
 		logger.Println("find_peer.go", "ConnectMessage", err.Error())
 	}
-
 	if conn != nil {
+
 		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 
 		write := new(database.Write)
-		write.Message = "connect"
-		write.Data = []byte(tcp_port)
-		jWrite, err := json.Marshal(write)
 
-		if err == nil {
-			conn.Write(jWrite)
+		byteSelf, err := json.Marshal(p2p.Self)
+		if err != nil {
+			logger.Println("find_peer.go", "ConnectMessage", err.Error())
 		}
+
+		write.Message = "connect"
+		write.Data = byteSelf
+		jWrite, err := json.Marshal(write)
+		if err != nil {
+			logger.Println("find_peer.go", "ConnectMessage()", err.Error())
+		}
+		conn.Write(jWrite)
 
 		tmpNode := database.TempNode{
 			IPAddress: peer.IPAddress,
@@ -88,10 +94,9 @@ func ConnectMessage(peer database.Node, tcp_port string) {
 			IPAddress: peer.IPAddress,
 			Port:      peer.Port,
 		}) {
-			database.AddNode(peer.IPAddress, peer.Port)
+			database.AddNode(peer)
 		}
 
 		go p2p.HandleConn(conn)
 	}
-
 }

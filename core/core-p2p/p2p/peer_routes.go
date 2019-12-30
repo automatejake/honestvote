@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-	"strconv"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -21,11 +20,12 @@ func HandleConn(conn net.Conn) {
 		d.Decode(&write)
 
 		if write.Message == "connect" {
-			port, err := strconv.Atoi(string(write.Data))
 			logger.Println("peer_routes.go", "HandleConn()", "Recieved Connect Message")
-			if err == nil {
-				ConnectMessage(port, conn)
-			}
+
+			var node database.Node
+			json.Unmarshal(write.Data, &node)
+
+			AcceptConnectMessage(node, conn)
 		} else if write.Message == "recieve data" {
 			buffer := bytes.NewBuffer(write.Data)
 			DecodeData(buffer)
