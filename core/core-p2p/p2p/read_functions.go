@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"regexp"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -24,7 +25,7 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 		IPAddress: conn.RemoteAddr().String(),
 		Port:      node.Port,
 	}) {
-		node.IPAddress = conn.RemoteAddr().String()
+		node.IPAddress = regexp.FindString(conn.RemoteAddr().String())
 		database.AddNode(node)
 	}
 

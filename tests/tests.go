@@ -1,8 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"regexp"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -40,18 +40,13 @@ func main() {
 	// fmt.Println(signature + "\n")
 	// fmt.Println(verify)
 
-	var test database.Write
-	test.Message = "hello"
+	// r, _ := regexp.Compile("p([a-z]+)ch")
 
-	peer := database.Node{IPAddress: "hello"}
-	test.Data, _ = json.Marshal(peer)
+	re := regexp.MustCompile(`.*:`)
+	s := re.FindString("127.0.0.1:8059")
 
-	obsfucated, _ := json.Marshal(test)
+	fmt.Println(s[6])
 
-	var newTest database.Write
-	var newPeer database.Node
-	json.Unmarshal(obsfucated, &newTest)
-	json.Unmarshal(newTest.Data, &newPeer)
-	fmt.Println(newPeer)
+	fmt.Printf("%q\n", re.FindString("meat"))
 
 }
