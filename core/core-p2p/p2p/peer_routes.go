@@ -19,27 +19,28 @@ func HandleConn(conn net.Conn) {
 		var write database.Write
 		d.Decode(&write)
 
-		if write.Message == "connect" {
+		switch write.Message {
+		case "connect":
 			logger.Println("peer_routes.go", "HandleConn()", "Recieved Connect Message")
 
 			var node database.Node
 			json.Unmarshal(write.Data, &node)
 
 			AcceptConnectMessage(node, conn)
-		} else if write.Message == "recieve data" {
+		case "recieve data":
 			buffer := bytes.NewBuffer(write.Data)
 			DecodeData(buffer)
-		} else if write.Message == "get data" {
+		case "get data":
 			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
-		} else if write.Message == "vote" { //Get a vote and make a block out of it
+		case "vote":
 			vote := write.Vote
 			ReceiveVote(vote)
-		} else if write.Message == "verify" { //Verifying that the sent block is correct(sign/reject)
+		case "verify":
 			block := new(database.Block)
 			json.Unmarshal(write.Data, block)
 			logger.Println("peer_routes.go", "HandleConn()", "Verifying")
 			VerifyBlock(*block)
-		} else if write.Message == "sign" { //Response from all Nodes verifying block
+		case "sign":
 			block := new(database.Block)
 			err := json.Unmarshal(write.Data, &block)
 			if err == nil {
@@ -47,7 +48,7 @@ func HandleConn(conn net.Conn) {
 			} else {
 				fmt.Println(err)
 			}
-		} else if write.Message == "update" {
+		case "update":
 			block := new(database.Block)
 			json.Unmarshal(write.Data, block)
 			if database.UpdateBlockchain(database.MongoDB, *block) {
@@ -56,5 +57,6 @@ func HandleConn(conn net.Conn) {
 				fmt.Println(string(PrevIndex) + " " + PrevHash)
 			}
 		}
+
 	}
 }
