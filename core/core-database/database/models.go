@@ -21,7 +21,6 @@ type Block struct {
 	Validator   string      `json:"validator"`
 	Signature   string      `json:"signature"`
 	Valid       bool        `json:"valid"`
-	Port        int         `json:"port"`
 }
 
 type Transaction struct {

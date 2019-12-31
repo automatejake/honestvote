@@ -48,21 +48,7 @@ func VerifyBlock(block database.Block, conn net.Conn) {
 
 	if err == nil {
 		logger.Println("peer_routes.go", "HandleConn()", "Sending response")
-<<<<<<< HEAD
-		for _, node := range Nodes {
-			fmt.Println(node.Port)
-			if node.Port == block.Port {
-				node.Socket.Write(jWrite)
-			}
-		}
-=======
-		// for _, node := range Nodes {
-		// 	if node.Port == block.Port {
-		// 		node.Write(jWrite)
-		// 	}
-		// }
 		conn.Write(jWrite)
->>>>>>> 8d152c8ffa4d3d7ed09adb8dd14d5e6367b560bf
 	}
 }
 
