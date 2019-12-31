@@ -22,7 +22,9 @@ func GenerateBlock(pIndex int, pHash string, transaction database.Transaction, p
 	newBlock.Timestamp = time.Now().String()
 	newBlock.Transaction = transaction
 	newBlock.PrevHash = pHash
-	newBlock.Validator = pKey
+
+	newBlock.Signatures = make(map[string]string)
+	newBlock.Signatures[pKey] = "Validator"
 
 	header := GenerateHeader(newBlock)
 
@@ -44,7 +46,7 @@ func VerifyHash(prevIndex int, prevHash string, block database.Block) bool {
 func GenerateHeader(block database.Block) string {
 	header := string(block.Index) + block.Timestamp +
 		block.Transaction.Sender + string(block.Transaction.Vote) +
-		block.Transaction.Receiver + block.PrevHash + block.Validator
+		block.Transaction.Receiver + block.PrevHash
 
 	return header
 }

@@ -13,14 +13,13 @@ var ElectionHistory string = "election"
 var Connections string = "connections"
 
 type Block struct {
-	Index       int         `json:"index"`
-	Timestamp   string      `json:"timestamp"`
-	Transaction Transaction `json:"transaction"`
-	Hash        string      `json:"hash"`
-	PrevHash    string      `json:"prevhash"`
-	Validator   string      `json:"validator"`
-	Signature   string      `json:"signature"`
-	Valid       bool        `json:"valid"`
+	Index       int               `json:"index"`
+	Timestamp   string            `json:"timestamp"`
+	Transaction Transaction       `json:"transaction"`
+	Hash        string            `json:"hash"`
+	PrevHash    string            `json:"prevhash"`
+	Signatures  map[string]string `json:"signatures"`
+	Valid       bool              `json:"valid"`
 }
 
 type Transaction struct {

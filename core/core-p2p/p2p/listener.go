@@ -8,9 +8,10 @@ import (
 )
 
 type Message struct {
-	Message string `json:"message"`
-	Data    []byte `json:"data"`
-	Vote    int    `json:"vote"` //Used to send vote, should be changed
+	Message   string            `json:"message"`
+	Data      []byte            `json:"data"`
+	Signature map[string]string `json:"signature"`
+	Vote      int               `json:"vote"` //Used to send vote, should be changed
 }
 
 func ListenConn(port string) {

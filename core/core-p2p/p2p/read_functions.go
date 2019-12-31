@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"reflect"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -59,7 +60,7 @@ func ReceiveVote(vote int) {
 	}, PublicKey)
 
 	//Check if there is a proposed block currently, if so, add to the queue
-	if ProposedBlock == (database.Block{}) {
+	if reflect.DeepEqual(ProposedBlock, database.Block{}) {
 		logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
 		ProposedBlock = block
 		ProposeBlock(ProposedBlock, Nodes)
@@ -71,12 +72,19 @@ func ReceiveVote(vote int) {
 }
 
 //Receive the responses given by all other peers deciding if a block is valid
-func ReceiveResponses(block *database.Block) {
+func ReceiveResponses(block *database.Block, signatureMap map[string]string) {
+	//This is to pair public key with their signature to be verified later
+	SignatureMap = make(map[string]string)
+	for k, v := range signatureMap {
+		SignatureMap[k] = v
+	}
+
 	ValidatorResponses = append(ValidatorResponses, *block) //Keep track of all responses to check and compare
 	logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")
 	if len(ValidatorResponses) == len(Nodes) {
 		CheckResponses(ValidatorResponses, len(ValidatorResponses)) //Go through the responses and see if block valid
 		ValidatorResponses = nil
+		SignatureMap = nil
 		ProposedBlock = database.Block{}
 	}
 
