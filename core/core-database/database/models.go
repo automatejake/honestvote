@@ -19,7 +19,6 @@ type Block struct {
 	Hash        string            `json:"hash"`
 	PrevHash    string            `json:"prevhash"`
 	Signatures  map[string]string `json:"signatures"`
-	Valid       bool              `json:"valid"`
 }
 
 type Transaction struct {

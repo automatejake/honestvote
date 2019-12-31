@@ -19,7 +19,6 @@ func UpdateBlockchain(client *mongo.Client, block Block) bool {
 		Hash:        block.Hash,
 		PrevHash:    block.PrevHash,
 		Signatures:  block.Signatures,
-		Valid:       true,
 	}
 
 	_, err := collection.InsertOne(context.TODO(), document)

@@ -72,17 +72,16 @@ func ReceiveVote(vote int) {
 }
 
 //Receive the responses given by all other peers deciding if a block is valid
-func ReceiveResponses(block *database.Block, signatureMap map[string]string) {
+func ReceiveResponses(signatureMap map[string]string) {
 	//This is to pair public key with their signature to be verified later
 	SignatureMap = make(map[string]string)
 	for k, v := range signatureMap {
 		SignatureMap[k] = v
 	}
 
-	ValidatorResponses = append(ValidatorResponses, *block) //Keep track of all responses to check and compare
 	logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")
-	if len(ValidatorResponses) == len(Nodes) {
-		CheckResponses(ValidatorResponses, len(ValidatorResponses)) //Go through the responses and see if block valid
+	if len(SignatureMap) == len(Nodes) {
+		CheckResponses(len(SignatureMap) - 1) //Go through the responses and see if block valid
 		ValidatorResponses = nil
 		SignatureMap = nil
 		ProposedBlock = database.Block{}
