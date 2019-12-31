@@ -26,6 +26,8 @@ type Block struct {
 type Transaction struct {
 	Sender   string
 	Vote     int
+	Type     string
+	Election string
 	Receiver string
 }
 

@@ -11,12 +11,19 @@ import (
 )
 
 func HandleConn(conn net.Conn) {
-	defer conn.Close()
 
-	for {
-		d := json.NewDecoder(conn)
+	d := json.NewDecoder(conn)
+	connectionOpen := true
+
+	for connectionOpen {
+
 		var write Message
-		d.Decode(&write)
+
+		err := d.Decode(&write)
+		if err != nil {
+			connectionOpen = false
+			conn.Close()
+		}
 
 		switch write.Message {
 		case "connect":
