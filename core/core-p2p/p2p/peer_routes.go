@@ -50,7 +50,7 @@ func HandleConn(conn net.Conn) {
 			block := new(database.Block)
 			err := json.Unmarshal(write.Data, &block)
 			if err == nil {
-				ReceiveResponses(block)
+				ReceiveResponses(block, write.Signature)
 			} else {
 				fmt.Println(err)
 			}

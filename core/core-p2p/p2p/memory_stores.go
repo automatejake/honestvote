@@ -29,3 +29,5 @@ var Self database.Node
 var BlockQueue []database.Block
 
 var ValidatorResponses []database.Block
+
+var SignatureMap map[string]string

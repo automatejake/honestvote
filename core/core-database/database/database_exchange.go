@@ -18,7 +18,7 @@ func UpdateBlockchain(client *mongo.Client, block Block) bool {
 		Transaction: block.Transaction,
 		Hash:        block.Hash,
 		PrevHash:    block.PrevHash,
-		Validator:   block.Validator,
+		Signatures:  block.Signatures,
 		Valid:       true,
 	}
 

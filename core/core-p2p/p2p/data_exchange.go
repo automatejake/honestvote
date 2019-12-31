@@ -36,26 +36,21 @@ func VerifyBlock(block database.Block, conn net.Conn) {
 		block.Valid = false
 	}
 
+	// block.Signatures = make(map[string]string)
+	// block.Signatures[PublicKey] = "Signature"
+
 	j, err := json.Marshal(block)
 
 	write := new(Message)
 	write.Message = "sign"
 	write.Data = j
+	write.Signature = make(map[string]string)
+	write.Signature[PublicKey] = "Signature"
 
 	jWrite, err := json.Marshal(write)
 
-	fmt.Println(database.GrabPort(database.MongoDB, block.Validator))
-
 	if err == nil {
 		logger.Println("peer_routes.go", "HandleConn()", "Sending response")
-<<<<<<< HEAD
-		// for _, node := range Nodes {
-		// 	if node.Port == block.Port {
-		// 		node.Write(jWrite)
-		// 	}
-		// }
-=======
->>>>>>> 53e186e2065254545cd5f817332297a84ff1adf2
 		conn.Write(jWrite)
 	}
 }
@@ -75,6 +70,10 @@ func CheckResponses(responses []database.Block, size int) {
 	}
 
 	if size == counter {
+		for k, v := range SignatureMap {
+			ProposedBlock.Signatures[k] = v
+		}
+
 		j, err := json.Marshal(ProposedBlock)
 
 		write := new(Message)
