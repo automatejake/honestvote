@@ -40,7 +40,6 @@ func VerifyBlock(block database.Block, conn net.Conn) {
 
 	write := new(Message)
 	write.Message = "sign"
-	write.Data = j
 	write.Signature = make(map[string]string)
 	write.Signature[PublicKey], err = crypto.Sign(j, PrivateKey)
 

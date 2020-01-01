@@ -80,9 +80,9 @@ func ReceiveResponses(signatureMap map[string]string) {
 	}
 
 	logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")
+
 	if len(SignatureMap) == len(Nodes) {
-		CheckResponses(len(SignatureMap) - 1) //Go through the responses and see if block valid
-		ValidatorResponses = nil
+		CheckResponses(len(SignatureMap)) //Go through the responses and see if block valid
 		SignatureMap = nil
 		ProposedBlock = database.Block{}
 	}
