@@ -72,11 +72,16 @@ func ReceiveVote(vote int) {
 }
 
 //Receive the responses given by all other peers deciding if a block is valid
-func ReceiveResponses(signatureMap map[string]string) {
-	//This is to pair public key with their signature to be verified later
-	SignatureMap = make(map[string]string)
-	for k, v := range signatureMap {
-		SignatureMap[k] = v
+func ReceiveResponses(answer bool, sMap map[string]string) {
+
+	/*
+		Use answer and pair it with sMap which allows for accountability
+		of their choices
+	*/
+	SignatureMap = make(map[bool]map[string]string)
+	for k, v := range sMap {
+		SignatureMap[answer] = make(map[string]string)
+		SignatureMap[answer][k] = v
 	}
 
 	logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")

@@ -28,4 +28,4 @@ var Self database.Node
 //Block queue starts to fill if ProposedBlock is not nil
 var BlockQueue []database.Block
 
-var SignatureMap map[string]string
+var SignatureMap map[bool]map[string]string

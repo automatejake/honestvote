@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"strconv"
 
+	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -30,16 +32,19 @@ func ProposeBlock(block database.Block, peers []net.Conn) {
 
 //Decide if the block sent is valid
 func VerifyBlock(block database.Block, conn net.Conn) {
-	// if consensus.VerifyHash(PrevIndex, PrevHash, block) {
-	// 	Valid = true
-	// } else {
-	// 	Valid = false
-	// }
+	var valid bool
+
+	if consensus.VerifyHash(PrevIndex, PrevHash, block) {
+		valid = true
+	} else {
+		valid = false
+	}
 
 	j, err := json.Marshal(block)
 
 	write := new(Message)
 	write.Message = "sign"
+	write.Data = []byte(strconv.FormatBool(valid))
 	write.Signature = make(map[string]string)
 	write.Signature[PublicKey], err = crypto.Sign(j, PrivateKey)
 
@@ -65,22 +70,20 @@ func CheckResponses(size int) {
 		return
 	}
 
-	for k, v := range SignatureMap {
-		valid, err := crypto.Verify(checkBlock, k, v)
-		if valid && err == nil {
-			ProposedBlock.Signatures[k] = v
+	/*
+		Iterate through nested map that holds boolean as first arg and
+		a map[string]string as its second
+	*/
+	for b, v1 := range SignatureMap {
+		for k, v2 := range v1 {
+			valid, err := crypto.Verify(checkBlock, k, v2)
+			if valid && err == nil && b {
+				ProposedBlock.Signatures[k] = v2
+			} else {
+				counter--
+			}
 		}
 	}
-
-	// for _, response := range responses {
-	// 	if response.Valid {
-	// 		if response.Valid {
-	// 			continue
-	// 		} else {
-	// 			counter--
-	// 		}
-	// 	}
-	// }
 
 	if size == counter {
 		j, err := json.Marshal(ProposedBlock)

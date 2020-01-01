@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"strconv"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -54,7 +55,11 @@ func HandleConn(conn net.Conn) {
 			logger.Println("peer_routes.go", "HandleConn()", "Verifying")
 			VerifyBlock(*block, conn)
 		case "sign":
-			ReceiveResponses(write.Signature)
+			answer, err := strconv.ParseBool(string(write.Data))
+
+			if err == nil {
+				ReceiveResponses(answer, write.Signature)
+			}
 		case "update":
 			block := new(database.Block)
 			json.Unmarshal(write.Data, block)
