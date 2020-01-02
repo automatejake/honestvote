@@ -19,7 +19,7 @@ func GenerateBlock(pIndex int, pHash string, transaction database.Transaction, p
 	var newBlock database.Block
 
 	newBlock.Index = pIndex + 1
-	newBlock.Timestamp = time.Now().String()
+	newBlock.Timestamp = time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	newBlock.Transaction = transaction
 	newBlock.PrevHash = pHash
 

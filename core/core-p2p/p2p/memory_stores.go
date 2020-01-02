@@ -9,7 +9,7 @@ import (
 // var Nodes = make(map[int]bool)
 
 //Port is used for sending blocks so the Peers verifying know who do send it back to
-var Port int
+var TCP_SERVICE int
 
 //PrevHash is used to create a new block
 var PrevHash = ""
@@ -29,3 +29,4 @@ var Self database.Node
 var BlockQueue []database.Block
 
 var SignatureMap map[bool]map[string]string
+var PublicIP string
