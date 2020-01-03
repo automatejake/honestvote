@@ -9,8 +9,11 @@ var DatabaseName string = "honestvote"
 // Elections
 var ElectionHistory string = "election"
 
-//Peers on network
+// Nodes on network
 var Connections string = "connections"
+
+// Email registrants
+var EmailRegistrants string = "email_registrants"
 
 type Block struct {
 	Index       int               `json:"index"`
@@ -32,6 +35,13 @@ type Transaction struct {
 type Election struct {
 	Name             string `json:"name"`
 	RegisteredVoters string `json:"registeredVoters"`
+}
+
+type AwaitingRegistration struct {
+	Election  string
+	Code      string
+	PublicKey string
+	Timestamp string
 }
 
 type Candidate struct {

@@ -65,6 +65,9 @@ func main() {
 	if os.Getenv("PUBLIC_KEY") != "" {
 		p2p.PublicKey = os.Getenv("PUBLIC_KEY")
 	}
+	if os.Getenv("PUBLIC_IP_ADDRESS") != "" {
+		p2p.PublicIP = os.Getenv("PUBLIC_IP_ADDRESS")
+	}
 
 	//this domain is the default host to resolve traffic
 	if REGISTRY_IP == "" {
@@ -93,10 +96,12 @@ func main() {
 			REGISTRY_IP = os.Args[index+1]
 		case "--registry-port": //Sets the registry node port
 			REGISTRY_PORT = os.Args[index+1]
-		case "--private-key": //Sets the registry node
+		case "--private-key": //Sets the private key
 			p2p.PrivateKey = os.Args[index+1]
-		case "--public-key": //Sets the registry node port
+		case "--public-key": //Sets the public key
 			p2p.PublicKey = os.Args[index+1]
+		case "--public-ip": //sets the public ip address
+			p2p.PublicIP = os.Args[index+1]
 		}
 	}
 
@@ -119,16 +124,16 @@ func main() {
 
 	// udp service that sends connected peers to other peers
 	if ROLE == "registry" {
-		go registry.ListenConnections(UDP_SERVICE)
+		registry.ListenConnections(UDP_SERVICE)
 	}
 
 	// find peers to talk to from registry node
 	if ROLE == "full" || ROLE == "peer" {
 		logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
 		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT, TCP_SERVICE)
-	}
 
-	// accept incoming connections and handle p2p
-	p2p.ListenConn(TCP_SERVICE)
+		// accept incoming connections and handle p2p
+		p2p.ListenConn(TCP_SERVICE)
+	}
 
 }
