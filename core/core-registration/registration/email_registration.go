@@ -54,7 +54,9 @@ func VerifyRegistrationCode(code string) {
 	//check if registration link has expired (should expire after x time, e.g. 1 hour or less for extra security)
 	valid, public_key := database.IsValidRegistrationCode(code)
 	if valid {
+		//should have to sign vote
 		fmt.Println(public_key)
+		p2p.ReceiveVote(1)
 	}
 
 }

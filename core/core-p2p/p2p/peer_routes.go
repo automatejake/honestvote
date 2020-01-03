@@ -1,29 +1,43 @@
 package p2p
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"net"
 	"strconv"
+	"strings"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-http/http"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func HandleConn(conn net.Conn) {
+	defer conn.Close()
 
+	//determines if it is an http request
+	scanner := bufio.NewScanner(conn)
+	for scanner.Scan() {
+		ln := scanner.Text()
+		if strings.Fields(ln)[0] == "GET" {
+			http.GetRegistrationCode(conn, strings.Fields(ln)[1])
+		}
+		return
+	}
+
+	//decode json data
 	d := json.NewDecoder(conn)
-	connectionOpen := true
 
-	for connectionOpen {
+	for {
 
 		var write Message
-
 		err := d.Decode(&write)
+
 		if err != nil {
-			connectionOpen = false
-			conn.Close()
+			logger.Println("peer_routes.go", "HandleConn()", err.Error())
+			return
 		}
 
 		switch write.Message {
