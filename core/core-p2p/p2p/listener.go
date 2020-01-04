@@ -25,7 +25,7 @@ func ListenConn(port string, role string) {
 
 	logger.Println("listener.go", "ListenConn()", "Peer running on port: "+port)
 
-	TCP_SERVICE, err = strconv.Atoi(port)
+	TCP_PORT, err = strconv.Atoi(port)
 
 	defer listen.Close()
 

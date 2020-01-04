@@ -17,7 +17,7 @@ func SaveRegistrationCode(registrant AwaitingRegistration) {
 	logger.Println("email_registration.go", "SaveRegistrationCode()", "inserted document successfully")
 }
 
-func IsValidRegistrationCode(code string) (bool, string) {
+func IsValidRegistrationCode(code string) (string, bool) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	query := bson.M{"code": code}
 
@@ -28,7 +28,7 @@ func IsValidRegistrationCode(code string) (bool, string) {
 		if err.Error() != "mongo: no documents in result" {
 			logger.Println("routing_table.go", "ExistsInTable()", err.Error())
 		}
-		return false, "no registration code exists"
+		return "no registration code exists", false
 	}
 
 	// determine if registration code is young enough
@@ -39,12 +39,12 @@ func IsValidRegistrationCode(code string) (bool, string) {
 
 	var HOURS float64 = 4
 	if time.Now().Sub(start).Hours() > HOURS {
-		return false, "registration code has expired"
+		return "registration code has expired", false
 	}
 
 	// make sure that public key is correct
 
 	// make sure that election is still ongoing / valid
 
-	return true, result.PublicKey
+	return result.PublicKey, true
 }
