@@ -1,18 +1,20 @@
 package p2p
 
 import (
-	"github.com/jneubaum/honestvote/core/core-database/database"
 	"net"
 	"strconv"
+
+	"github.com/jneubaum/honestvote/core/core-database/database"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 type Message struct {
-	Message   string            `json:"message"`
-	Data      []byte            `json:"data"`
-	Signature map[string]string `json:"signature"`
-	Vote      database.Transaction       `json:"vote"` //Used to send vote, should be changed
+	Message   string               `json:"message"`
+	Data      []byte               `json:"data"`
+	Signature map[string]string    `json:"signature"`
+	Vote      database.Transaction `json:"vote"`
+	Election  database.Election    `json:"election"`
 }
 
 func ListenConn(port string, role string) {

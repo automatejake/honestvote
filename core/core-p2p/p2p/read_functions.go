@@ -105,3 +105,9 @@ func ReceiveResponses(answer bool, sMap map[string]string) {
 		logger.Println("peer_routes.go", "HandleConn()", "Everything is up to date.")
 	}
 }
+
+func RequestElection(election database.Election) {
+	//Verify everything is good
+
+	CreateElection(election)
+}

@@ -3,6 +3,7 @@ package p2p
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net"
 	"strconv"
 
@@ -68,7 +69,13 @@ func HandleConn(conn net.Conn) {
 				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
 		case "election":
-			//Create a new election
+			RequestElection(write.Election)
+		case "make election":
+			election := new(database.Election)
+			json.Unmarshal(write.Data, election)
+			if database.UpdateElections(database.MongoDB, *election) {
+				fmt.Println("New election made!")
+			}
 		}
 	}
 }
