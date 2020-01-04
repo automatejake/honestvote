@@ -53,6 +53,11 @@ func DecodeData(buffer *bytes.Buffer) {
 
 //Get vote from full node and turn it into a block and propose
 func ReceiveVote(vote int) {
+
+	// if !crypto.Verify(){
+		//return
+	// }
+
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, database.Transaction{
 		Sender:   "",
 		Vote:     vote,

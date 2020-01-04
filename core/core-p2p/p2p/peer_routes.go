@@ -61,8 +61,7 @@ func HandleConn(conn net.Conn) {
 		case "get data":
 			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		case "vote":
-			vote := write.Vote
-			ReceiveVote(vote)
+			ReceiveVote(write.Vote)
 		case "verify":
 			block := new(database.Block)
 			json.Unmarshal(write.Data, block)
@@ -82,7 +81,8 @@ func HandleConn(conn net.Conn) {
 				PrevIndex = block.Index
 				fmt.Println(string(PrevIndex) + " " + PrevHash)
 			}
+		case "election":
+			//Create a new election
 		}
-
 	}
 }
