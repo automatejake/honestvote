@@ -55,7 +55,7 @@ func DecodeData(buffer *bytes.Buffer) {
 func ReceiveVote(vote int) {
 
 	// if !crypto.Verify(){
-		//return
+	//return
 	// }
 
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, database.Transaction{

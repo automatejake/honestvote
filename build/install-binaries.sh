@@ -20,21 +20,17 @@ go install
 cd ../../core-discovery/discovery
 go install
 
-
-
 cd ../../core-http/http
 go install
 
 cd ../../core-p2p/p2p
 go install
 
-cd ../../core-registry/registry
+cd ../../core-registration/registration
 go install
 
-
-# cd ../../core-election/election
-# go install
-
+cd ../../core-registry/registry
+go install
 
 cd ../../../tests/logger
 go install

@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -30,6 +31,8 @@ func IsValidRegistrationCode(code string) (string, bool) {
 		}
 		return "no registration code exists", false
 	}
+
+	fmt.Println(result.Timestamp)
 
 	// determine if registration code is young enough
 	start, err := time.Parse(time.RFC1123, result.Timestamp)

@@ -3,13 +3,10 @@ package http
 import (
 	"net/http"
 
-	"github.com/jneubaum/honestvote/tests/logger"
-
-	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
-
-	"github.com/jneubaum/honestvote/core/core-database/database"
-
 	"github.com/gorilla/mux"
+	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 var PeerRouter = mux.NewRouter()

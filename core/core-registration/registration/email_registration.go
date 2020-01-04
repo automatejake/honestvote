@@ -1,19 +1,16 @@
 package registration
 
 import (
-	"fmt"
 	"net/smtp"
-	"strconv"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
-	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func EmailRegistration(registrantEmail string, election string, public_key string) {
+func EmailRegistration(registrantEmail string, election string, public_key string, public_ip string, tcp_port string) {
 
 	//check if valid election
 	if !isValidElection(election) {
@@ -32,13 +29,13 @@ func EmailRegistration(registrantEmail string, election string, public_key strin
 		Election:  election,
 		PublicKey: public_key,
 		Code:      code,
-		Timestamp: time.Now().String(),
+		Timestamp: time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST"),
 	}
 
 	database.SaveRegistrationCode(registrant)
 
 	// send email verification code
-	SendRegistrationCode(registrantEmail, election, code)
+	SendRegistrationCode(registrantEmail, election, code, public_ip, tcp_port)
 
 }
 
@@ -50,29 +47,17 @@ func isValidElection(election string) bool {
 	return true
 }
 
-func VerifyRegistrationCode(code string) {
-	//check if registration link has expired (should expire after x time, e.g. 1 hour or less for extra security)
-	public_key, valid := database.IsValidRegistrationCode(code)
-	if valid {
-		//should have to sign vote
-		fmt.Println(public_key)
-		p2p.ReceiveVote(1)
-	}
-
-}
-
-func SendRegistrationCode(email string, election string, code string) {
+func SendRegistrationCode(email string, election string, code string, public_ip string, tcp_port string) {
 
 	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
 	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
 	to := email
 
-	tcp_service := strconv.Itoa(p2p.TCP_PORT)
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
 		"Subject:  " + "HonestVote Registration Code" + "\n\n" +
-		"Click this link if you requested to register for the upcoming" + election + "election: \n" + p2p.PublicIP + tcp_service + "/verifyCode/code=" + code + "&verified=true\n" +
-		"If this is incorrect, please click here:" + p2p.PublicIP + ":" + tcp_service + "/verifyCode/code=" + code + "&verified=false"
+		"Click this link if you requested to register for the upcoming" + election + "election: \n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + code + "&verified=true\n" +
+		"If this is incorrect, please click here:\n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + code + "&verified=false"
 
 	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
 	if err != nil {
