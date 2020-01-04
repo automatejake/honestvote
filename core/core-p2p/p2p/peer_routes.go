@@ -3,7 +3,6 @@ package p2p
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net"
 	"strconv"
 
@@ -16,13 +15,11 @@ func HandleConn(conn net.Conn) {
 
 	//decode json data
 	d := json.NewDecoder(conn)
-	// fmt.Println(d)
 
 	for {
 
 		var write Message
 		err := d.Decode(&write)
-		fmt.Println(write.Message)
 
 		if err != nil {
 			logger.Println("peer_routes.go", "HandleConn()", err.Error())
@@ -68,7 +65,7 @@ func HandleConn(conn net.Conn) {
 			if database.UpdateBlockchain(database.MongoDB, *block) {
 				PrevHash = block.Hash
 				PrevIndex = block.Index
-				fmt.Println(string(PrevIndex) + " " + PrevHash)
+				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
 		case "election":
 			//Create a new election
