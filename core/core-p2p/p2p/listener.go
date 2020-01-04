@@ -15,7 +15,7 @@ type Message struct {
 	Vote      database.Transaction       `json:"vote"` //Used to send vote, should be changed
 }
 
-func ListenConn(port string) {
+func ListenConn(port string, role string) {
 	listen, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		logger.Println("listener.go", "ListenConn()", err.Error())

@@ -18,9 +18,9 @@ import (
 )
 
 //defaults
-var TCP_SERVICE string = "7000"  //tcp service for peer to peer routes
-var UDP_SERVICE string = "7001"  //udp service for node discovery
-var HTTP_SERVICE string = "7002" //tcp service for light nodes to http routes
+var TCP_PORT string = "7000"  //tcp PORT for peer to peer routes
+var UDP_PORT string = "7001"  //udp PORT for node discovery
+var HTTP_PORT string = "7002" //tcp PORT for light nodes to http routes
 
 var ROLE string = "peer" //options peer || full || registry
 var COLLECTION_PREFIX string = ""
@@ -38,14 +38,14 @@ func main() {
 	}
 
 	// environmental variables override defaults
-	if os.Getenv("TCP_SERVICE") != "" {
-		TCP_SERVICE = os.Getenv("TCP_SERVICE")
+	if os.Getenv("TCP_PORT") != "" {
+		TCP_PORT = os.Getenv("TCP_PORT")
 	}
-	if os.Getenv("UDP_SERVICE") != "" {
-		UDP_SERVICE = os.Getenv("UDP_SERVICE")
+	if os.Getenv("UDP_PORT") != "" {
+		UDP_PORT = os.Getenv("UDP_PORT")
 	}
-	if os.Getenv("HTTP_SERVICE") != "" {
-		HTTP_SERVICE = os.Getenv("HTTP_SERVICE")
+	if os.Getenv("HTTP_PORT") != "" {
+		HTTP_PORT = os.Getenv("HTTP_PORT")
 	}
 	if os.Getenv("ROLE") != "" {
 		ROLE = os.Getenv("ROLE")
@@ -82,12 +82,12 @@ func main() {
 	// accept optional flags that override environmental variables
 	for index, element := range os.Args {
 		switch element {
-		case "--tcp": //Set the default port for peer tcp service
-			TCP_SERVICE = os.Args[index+1]
+		case "--tcp": //Set the default port for peer tcp PORT
+			TCP_PORT = os.Args[index+1]
 		case "--udp":
-			UDP_SERVICE = os.Args[index+1]
-		case "--http": //Set the default port for http service
-			HTTP_SERVICE = os.Args[index+1]
+			UDP_PORT = os.Args[index+1]
+		case "--http": //Set the default port for http PORT
+			HTTP_PORT = os.Args[index+1]
 		case "--role": //Set the role of the node options PEER || FULL || REGISTRY
 			ROLE = os.Args[index+1]
 		case "--collection-prefix": //Collection prefix (useful for starting up multiple nodes with same database)
@@ -108,7 +108,7 @@ func main() {
 	database.CollectionPrefix = COLLECTION_PREFIX
 	database.MongoDB = database.MongoConnect() // Connect to data store
 
-	port, _ := strconv.Atoi(TCP_SERVICE)
+	port, _ := strconv.Atoi(TCP_PORT)
 	p2p.Self = database.Node{Port: port, Role: ROLE, PublicKey: p2p.PublicKey}
 
 	// if logging is turned on
@@ -116,24 +116,20 @@ func main() {
 		logger.Logs = true
 	}
 
-	// create http server for light clients to get information from
-	if ROLE == "full" {
-		go http.CreateServer(HTTP_SERVICE)
-
-	}
-
-	// udp service that sends connected peers to other peers
+	// udp PORT that sends connected peers to other peers
 	if ROLE == "registry" {
-		registry.ListenConnections(UDP_SERVICE)
+		registry.ListenConnections(UDP_PORT)
 	}
 
 	// find peers to talk to from registry node
 	if ROLE == "full" || ROLE == "peer" {
 		logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
-		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT, TCP_SERVICE)
+
+		go http.CreateServer(HTTP_PORT, ROLE)
+		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT, TCP_PORT)
 
 		// accept incoming connections and handle p2p
-		p2p.ListenConn(TCP_SERVICE)
+		p2p.ListenConn(TCP_PORT, ROLE)
 	}
 
 }
