@@ -33,8 +33,16 @@ type Transaction struct {
 }
 
 type Election struct {
-	Name             string `json:"name"`
-	RegisteredVoters string `json:"registeredVoters"`
+	Name             string     `json:"name"`
+	RegisteredVoters string     `json:"registeredVoters"`
+	Start            string     `json:"start"`
+	End              string     `json:"end"`
+	Positions        []Position `json:"positions"`
+}
+
+type Position struct {
+	Name       string      `json:"name"`
+	Candidates []Candidate `json:"candidates"`
 }
 
 type AwaitingRegistration struct {

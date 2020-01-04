@@ -53,6 +53,11 @@ func DecodeData(buffer *bytes.Buffer) {
 
 //Get vote from full node and turn it into a block and propose
 func ReceiveVote(vote int) {
+
+	// if !crypto.Verify(){
+		//return
+	// }
+
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, database.Transaction{
 		Sender:   "",
 		Vote:     vote,
@@ -77,6 +82,8 @@ func ReceiveResponses(answer bool, sMap map[string]string) {
 	/*
 		Use answer and pair it with sMap which allows for accountability
 		of their choices
+
+		TODO: assumes that sMap is length 1, could be an issue????
 	*/
 	SignatureMap = make(map[bool]map[string]string)
 	for k, v := range sMap {

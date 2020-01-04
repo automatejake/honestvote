@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/jneubaum/honestvote/tests/logger"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -31,14 +30,24 @@ func UpdateBlockchain(client *mongo.Client, block Block) bool {
 	return true
 }
 
-func GrabPort(client *mongo.Client, id string) int {
-	var result Node
-	collection := client.Database("honestvote").Collection(CollectionPrefix + "connections")
-	err := collection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&result)
+func UpdateElections(client *mongo.Client, election Election) bool {
+	//Make the block a document and add it to local database
+	collection := client.Database("honestvote").Collection(CollectionPrefix + "elections")
 
-	if err == nil {
-		return result.Port
+	document := Election{
+		Name:             election.Name,
+		RegisteredVoters: election.RegisteredVoters,
+		Start:            election.Start,
+		End:              election.End,
+		Positions:        election.Positions,
 	}
 
-	return 0
+	_, err := collection.InsertOne(context.TODO(), document)
+
+	if err != nil {
+		logger.Println("database_exchange.go", "UpdateBlockchain()", err.Error())
+		return false
+	}
+
+	return true
 }
