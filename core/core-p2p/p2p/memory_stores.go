@@ -9,7 +9,7 @@ import (
 // var Nodes = make(map[int]bool)
 
 //Port is used for sending blocks so the Peers verifying know who do send it back to
-var TCP_SERVICE int
+var TCP_PORT int
 
 //PrevHash is used to create a new block
 var PrevHash = ""

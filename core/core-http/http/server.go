@@ -7,6 +7,8 @@ import (
 )
 
 func CreateServer(port string, server_type string) {
+	logger.Println("server.go", "main", "HTTP server running on port: "+port)
+
 	if server_type == "peer" {
 		HandlePeerRoutes()
 		http.ListenAndServe(":"+port, PeerRouter)
@@ -16,7 +18,5 @@ func CreateServer(port string, server_type string) {
 		HandleFullRoutes() // imported from routes
 		http.ListenAndServe(":"+port, FullRouter)
 	}
-
-	logger.Println("server.go", "main", "HTTP Service Running on port: "+port)
 
 }

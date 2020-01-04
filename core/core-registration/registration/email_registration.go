@@ -52,7 +52,7 @@ func isValidElection(election string) bool {
 
 func VerifyRegistrationCode(code string) {
 	//check if registration link has expired (should expire after x time, e.g. 1 hour or less for extra security)
-	valid, public_key := database.IsValidRegistrationCode(code)
+	public_key, valid := database.IsValidRegistrationCode(code)
 	if valid {
 		//should have to sign vote
 		fmt.Println(public_key)
@@ -67,11 +67,12 @@ func SendRegistrationCode(email string, election string, code string) {
 	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
 	to := email
 
-	tcp_service := strconv.Itoa(p2p.TCP_SERVICE)
+	tcp_service := strconv.Itoa(p2p.TCP_PORT)
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
 		"Subject:  " + "HonestVote Registration Code" + "\n\n" +
-		"Click this link if you requested to register for the upcoming" + election + "election: \n" + p2p.PublicIP + tcp_service + "/verifyCode/" + code
+		"Click this link if you requested to register for the upcoming" + election + "election: \n" + p2p.PublicIP + tcp_service + "/verifyCode/code=" + code + "&verified=true\n" +
+		"If this is incorrect, please click here:" + p2p.PublicIP + ":" + tcp_service + "/verifyCode/code=" + code + "&verified=false"
 
 	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
 	if err != nil {
