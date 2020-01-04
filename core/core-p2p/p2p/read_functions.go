@@ -52,17 +52,13 @@ func DecodeData(buffer *bytes.Buffer) {
 }
 
 //Get vote from full node and turn it into a block and propose
-func ReceiveVote(vote int) {
+func ReceiveVote(transaction database.Transaction) {
 
 	// if !crypto.Verify(){
-		//return
+	//return
 	// }
 
-	block := consensus.GenerateBlock(PrevIndex, PrevHash, database.Transaction{
-		Sender:   "",
-		Vote:     vote,
-		Receiver: "",
-	}, PublicKey)
+	block := consensus.GenerateBlock(PrevIndex, PrevHash, transaction, PublicKey)
 
 	//Check if there is a proposed block currently, if so, add to the queue
 	if reflect.DeepEqual(ProposedBlock, database.Block{}) {

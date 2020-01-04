@@ -25,11 +25,11 @@ type Block struct {
 }
 
 type Transaction struct {
-	Sender   string
-	Vote     int
-	Type     string
-	Election string
-	Receiver string
+	Sender   string   `json:"sender"`
+	Vote     int      `json:"vote"`
+	Type     string   `json:"type"`
+	Election string   `json:"election"`
+	Receiver []string `json:"receiver"`
 }
 
 type Election struct {

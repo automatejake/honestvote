@@ -45,8 +45,11 @@ func VerifyHash(prevIndex int, prevHash string, block database.Block) bool {
 
 func GenerateHeader(block database.Block) string {
 	header := string(block.Index) + block.Timestamp +
-		block.Transaction.Sender + string(block.Transaction.Vote) +
-		block.Transaction.Receiver + block.PrevHash
+		block.Transaction.Sender + string(block.Transaction.Vote) + block.PrevHash
+
+	for _, transaction := range block.Transaction.Receiver {
+		header = header + transaction
+	}
 
 	return header
 }
