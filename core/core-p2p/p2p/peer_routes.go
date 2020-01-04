@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-registration/registration"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -48,6 +49,9 @@ func HandleConn(conn net.Conn) {
 			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		case "vote":
 			ReceiveVote(write.Vote)
+		case "register":
+			tcp_port := strconv.Itoa(TCP_PORT)
+			registration.EmailRegistration("jacob@neubaum.com", "election", "eofrmfi3om4form", PublicIP, tcp_port)
 		case "verify":
 			block := new(database.Block)
 			json.Unmarshal(write.Data, block)
