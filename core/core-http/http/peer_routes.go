@@ -23,10 +23,10 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 
 	public_key, election, valid := database.IsValidRegistrationCode(params["id"])
 	if valid && params["verified"] == "true" {
-		logger.Println("peer_routes.go", "VerifyEmailHandler()", public_key+" is registered to vote")
+		logger.Println("peer_routes.go", "VerifyEmailHandler()", public_key+" is registered to vote for "+election)
 		p2p.ReceiveVote(1)
 	} else if params["verified"] == "false" {
-		logger.Println("peer_routes.go", "VerifyEmailHandler()", public_key+" is not supposed to be registered to vote")
+		logger.Println("peer_routes.go", "VerifyEmailHandler()", public_key+" is not supposed to be registered to vote for "+election)
 
 	}
 

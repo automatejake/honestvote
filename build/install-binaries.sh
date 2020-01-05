@@ -8,7 +8,10 @@ go get github.com/gorilla/mux
 
 
 #this script should install binaries with go install
-cd ../core/core-consensus/consensus
+cd ../core/core-administrator/administrator
+go install
+
+cd ../../core-consensus/consensus
 go install
 
 cd ../../core-crypto/crypto

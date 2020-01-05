@@ -9,16 +9,6 @@ import (
 
 var FullRouter = mux.NewRouter()
 
-//temporary function for demo data, get rid of when real database implemented
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
 func HandleFullRoutes() {
 	FullRouter.HandleFunc("/candidates", GetCandidatesHandler).Methods("GET")
 	FullRouter.HandleFunc("/elections", GetElectionsHandler).Methods("GET")
