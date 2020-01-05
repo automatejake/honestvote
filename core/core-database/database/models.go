@@ -42,14 +42,8 @@ type Election struct {
 
 type Position struct {
 	Name       string      `json:"name"`
+	ID         int         `json:"id"`
 	Candidates []Candidate `json:"candidates"`
-}
-
-type AwaitingRegistration struct {
-	Election  string
-	Code      string
-	PublicKey string
-	Timestamp string
 }
 
 type Candidate struct {
@@ -57,6 +51,13 @@ type Candidate struct {
 	PublicKey string `json:"key"`
 	Election  string `json:"election"`
 	Votes     int32  `json:"votes"`
+}
+
+type AwaitingRegistration struct {
+	Election  string
+	Code      string
+	PublicKey string
+	Timestamp string
 }
 
 type Node struct {

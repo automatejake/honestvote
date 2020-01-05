@@ -5,8 +5,6 @@ import (
 
 	"github.com/jneubaum/honestvote/tests/logger"
 
-	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
-
 	"github.com/jneubaum/honestvote/core/core-database/database"
 
 	"github.com/gorilla/mux"
@@ -27,7 +25,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	public_key, valid := database.IsValidRegistrationCode(params["id"])
 	if valid && params["verified"] == "true" {
 		logger.Println("peer_routes.go", "VerifyEmailHandler()", public_key+" is registered to vote")
-		p2p.ReceiveVote(1)
+		//p2p.ReceiveVote(1)
 	}
 
 }
