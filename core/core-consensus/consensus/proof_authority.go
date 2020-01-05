@@ -3,6 +3,7 @@ package consensus
 import (
 	"crypto/sha256"
 	"encoding/base64"
+	"fmt"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -18,6 +19,8 @@ func CalculateHash(input string) string {
 func GenerateBlock(pIndex int, pHash string, transaction database.Transaction, pKey string) database.Block {
 	var newBlock database.Block
 
+	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	fmt.Println(timestamp)
 	newBlock.Index = pIndex + 1
 	newBlock.Timestamp = time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	newBlock.Transaction = transaction

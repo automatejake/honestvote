@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -17,7 +18,7 @@ func SaveRegistrationCode(registrant AwaitingRegistration) {
 	logger.Println("email_registration.go", "SaveRegistrationCode()", "inserted document successfully")
 }
 
-func IsValidRegistrationCode(code string) (string, bool) {
+func IsValidRegistrationCode(code string) (string, string, bool) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	query := bson.M{"code": code}
 
@@ -28,8 +29,10 @@ func IsValidRegistrationCode(code string) (string, bool) {
 		if err.Error() != "mongo: no documents in result" {
 			logger.Println("routing_table.go", "ExistsInTable()", err.Error())
 		}
-		return "no registration code exists", false
+		return "", "no registration code exists", false
 	}
+
+	fmt.Println(result.Timestamp)
 
 	// determine if registration code is young enough
 	start, err := time.Parse(time.RFC1123, result.Timestamp)
@@ -39,12 +42,12 @@ func IsValidRegistrationCode(code string) (string, bool) {
 
 	var HOURS float64 = 4
 	if time.Now().Sub(start).Hours() > HOURS {
-		return "registration code has expired", false
+		return "", "registration code has expired", false
 	}
 
 	// make sure that public key is correct
 
 	// make sure that election is still ongoing / valid
 
-	return result.PublicKey, true
+	return result.PublicKey, result.PublicKey, true
 }

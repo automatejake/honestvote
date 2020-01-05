@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-registration/registration"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -49,6 +50,13 @@ func HandleConn(conn net.Conn) {
 			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		case "vote":
 			ReceiveVote(write.Vote)
+		case "register":
+			tcp_port := strconv.Itoa(TCP_PORT)
+			registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)
+		case "become peer":
+			//vote on
+		case "new election":
+			//Create a new election
 		case "verify":
 			block := new(database.Block)
 			json.Unmarshal(write.Data, block)
@@ -68,6 +76,7 @@ func HandleConn(conn net.Conn) {
 				PrevIndex = block.Index
 				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
+<<<<<<< HEAD
 		case "election":
 			RequestElection(write.Election)
 		case "make election":
@@ -76,6 +85,8 @@ func HandleConn(conn net.Conn) {
 			if database.UpdateElections(database.MongoDB, *election) {
 				fmt.Println("New election made!")
 			}
+=======
+>>>>>>> 5955ad42bede2e39c4650199c44f464c535921e1
 		}
 	}
 }
