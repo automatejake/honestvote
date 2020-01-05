@@ -51,7 +51,11 @@ func HandleConn(conn net.Conn) {
 			ReceiveVote(write.Vote)
 		case "register":
 			tcp_port := strconv.Itoa(TCP_PORT)
-			registration.EmailRegistration("jacob@neubaum.com", "election", "eofrmfi3om4form", PublicIP, tcp_port)
+			registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)
+		case "become peer":
+			//vote on
+		case "new election":
+			//Create a new election
 		case "verify":
 			block := new(database.Block)
 			json.Unmarshal(write.Data, block)
@@ -71,8 +75,6 @@ func HandleConn(conn net.Conn) {
 				PrevIndex = block.Index
 				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
-		case "election":
-			//Create a new election
 		}
 	}
 }

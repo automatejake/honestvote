@@ -66,3 +66,7 @@ func SendRegistrationCode(email string, election string, code string, public_ip 
 	}
 
 }
+
+func SendWarningEmail(email string, election string) {
+
+}
