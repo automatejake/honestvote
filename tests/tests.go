@@ -1,78 +1,114 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
-	"time"
-
-	"github.com/jneubaum/honestvote/core/core-database/database"
-	"github.com/jneubaum/honestvote/tests/logger"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"os"
+	"strings"
+	"text/template"
 )
 
 func main() {
-	a := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
-	// b := time.Now().String()
-	start, err := time.Parse(time.RFC1123, a)
-	if err != nil {
-		log.Println("Error is: ", err)
-	}
-
-	var HOURS float64 = 4
-	if time.Now().Sub(start).Hours() > HOURS {
-
-	}
-
-	// Mon, 02 Jan 2006 15:04:05 MST
-	// start, err := time.Parse("Mon, 02 Jan 2006 15:04:05 MST", result.Timestamp)
-	// if err != nil {
-	// 	log.Println("This is the error: ", err) // logger.Println("email_registration.go", "IsValidRegistrationCode()", err.Error())
-	// }
-
-	fmt.Println(time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST"))
-	// _, _ = IsValidRegistrationCode("b8442edc49bc01d335d71b0a7b4c92f23caedc5b3d2d6cbeb09389784d01288572dd6dc4e6a6891b149ff5e07e6969d0c5e12302b3cc733d9f99850149d4a77c7098057cd0741f83850fbfbeb6bb3c2439f7a8c2f7d6a3bfe93b5dce4936f0ef77f11d7d")
-
+	ExampleTemplate()
 }
 
-var DatabaseName string = "honestvote"
-var CollectionPrefix string = "a_"
-var EmailRegistrants string = "email_registrants"
-var MongoDB *mongo.Client = database.MongoConnect()
+// Copyright 2011 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
 
-func IsValidRegistrationCode(code string) (string, bool) {
-	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
-	query := bson.M{"code": code}
+func ExampleTemplate() {
+	// Define a template.
+	const letter = `
+Dear {{.Name}},
+{{if .Attended}}
+It was a pleasure to see you at the wedding.
+{{- else}}
+It is a shame you couldn't make it to the wedding.
+{{- end}}
+{{with .Gift -}}
+Thank you for the lovely {{.}}.
+{{end}}
+Best wishes,
+Josie
+`
 
-	// retrieve code from database
-	var result database.AwaitingRegistration
-	err := collection.FindOne(context.TODO(), query).Decode(&result)
-	if err != nil {
-		if err.Error() != "mongo: no documents in result" {
-			logger.Println("routing_table.go", "ExistsInTable()", err.Error())
+	// Prepare some data to insert into the template.
+	type Recipient struct {
+		Name, Gift string
+		Attended   bool
+	}
+	var recipients = []Recipient{
+		{"Aunt Mildred", "bone china tea set", true},
+		{"Uncle John", "moleskin pants", false},
+		{"Cousin Rodney", "", false},
+	}
+
+	// Create a new template and parse the letter into it.
+	t := template.Must(template.New("letter").Parse(letter))
+
+	// Execute the template for each recipient.
+	for _, r := range recipients {
+		err := t.Execute(os.Stdout, r)
+		if err != nil {
+			log.Println("executing template:", err)
 		}
-		return "no registration code exists", false
 	}
 
-	// determine if registration code is young enoughtime.RFC1123
-	a := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
-	fmt.Println(result.Timestamp)
-	fmt.Println(a)
+	// Output:
+	// Dear Aunt Mildred,
+	//
+	// It was a pleasure to see you at the wedding.
+	// Thank you for the lovely bone china tea set.
+	//
+	// Best wishes,
+	// Josie
+	//
+	// Dear Uncle John,
+	//
+	// It is a shame you couldn't make it to the wedding.
+	// Thank you for the lovely moleskin pants.
+	//
+	// Best wishes,
+	// Josie
+	//
+	// Dear Cousin Rodney,
+	//
+	// It is a shame you couldn't make it to the wedding.
+	//
+	// Best wishes,
+	// Josie
+}
 
-	start, err := time.Parse(time.RFC1123, a)
+// The following example is duplicated in html/template; keep them in sync.
+
+func ExampleTemplate_block() {
+	const (
+		master  = `Names:{{block "list" .}}{{"\n"}}{{range .}}{{println "-" .}}{{end}}{{end}}`
+		overlay = `{{define "list"}} {{join . ", "}}{{end}} `
+	)
+	var (
+		funcs     = template.FuncMap{"join": strings.Join}
+		guardians = []string{"Gamora", "Groot", "Nebula", "Rocket", "Star-Lord"}
+	)
+	masterTmpl, err := template.New("master").Funcs(funcs).Parse(master)
 	if err != nil {
-		log.Println("This is the error: ", err) // logger.Println("email_registration.go", "IsValidRegistrationCode()", err.Error())
+		log.Fatal(err)
 	}
-
-	var HOURS float64 = 4
-	if time.Now().Sub(start).Hours() > HOURS {
-		return "registration code has expired", false
+	overlayTmpl, err := template.Must(masterTmpl.Clone()).Parse(overlay)
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	// make sure that public key is correct
-
-	// make sure that election is still ongoing / valid
-
-	return result.PublicKey, true
+	if err := masterTmpl.Execute(os.Stdout, guardians); err != nil {
+		log.Fatal(err)
+	}
+	if err := overlayTmpl.Execute(os.Stdout, guardians); err != nil {
+		log.Fatal(err)
+	}
+	// Output:
+	// Names:
+	// - Gamora
+	// - Groot
+	// - Nebula
+	// - Rocket
+	// - Star-Lord
+	// Names: Gamora, Groot, Nebula, Rocket, Star-Lord
 }
