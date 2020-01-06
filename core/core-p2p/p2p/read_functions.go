@@ -27,7 +27,7 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 	if err != nil {
 		logger.Println("read_functions.go", "AcceptConnectMessage()", err.Error())
 	}
-	message.Message = "get id"
+	message.Message = "connect response"
 	message.Data = data
 	data, err = json.Marshal(message)
 	if err != nil {

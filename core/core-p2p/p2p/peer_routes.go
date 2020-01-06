@@ -35,7 +35,7 @@ func HandleConn(conn net.Conn) {
 			json.Unmarshal(write.Data, &node)
 
 			AcceptConnectMessage(node, conn)
-		case "get id":
+		case "connect response":
 			var node database.Node
 			json.Unmarshal(write.Data, &node)
 			node.IPAddress = conn.RemoteAddr().String()[0:9]
@@ -53,7 +53,9 @@ func HandleConn(conn net.Conn) {
 			tcp_port := strconv.Itoa(TCP_PORT)
 			registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)
 		case "become peer":
-			//vote on
+			var node database.Node
+			json.Unmarshal(write.Data, &node)
+			// administrator.ProposePeer(node)
 		case "new election":
 			//Create a new election
 		case "verify":
