@@ -18,7 +18,7 @@ var EmailRegistrants string = "email_registrants"
 type Block struct {
 	Index       int               `json:"index"`
 	Timestamp   string            `json:"timestamp"`
-	Transaction Transaction       `json:"transaction"`
+	Transaction interface{}       `json:"transaction"`
 	Hash        string            `json:"hash"`
 	PrevHash    string            `json:"prevhash"`
 	Signatures  map[string]string `json:"signatures"`

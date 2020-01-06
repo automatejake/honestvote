@@ -52,7 +52,7 @@ func DecodeData(buffer *bytes.Buffer) {
 }
 
 //Get vote from full node and turn it into a block and propose
-func ReceiveVote(transaction database.Transaction) {
+func ReceiveTransaction(transaction interface{}) {
 
 	// if !crypto.Verify(){
 	//return
@@ -104,10 +104,4 @@ func ReceiveResponses(answer bool, sMap map[string]string) {
 		//Wait for the next vote
 		logger.Println("peer_routes.go", "HandleConn()", "Everything is up to date.")
 	}
-}
-
-func RequestElection(election database.Election) {
-	//Verify everything is good
-
-	CreateElection(election)
 }

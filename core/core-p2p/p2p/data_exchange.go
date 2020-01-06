@@ -109,22 +109,3 @@ func CheckResponses(size int) {
 		logger.Println("data_exchange.go", "CheckResponses", "Someone is a bad actor or this block is wrong.")
 	}
 }
-
-func CreateElection(election database.Election) {
-
-	database.UpdateElections(database.MongoDB, election)
-
-	j, err := json.Marshal(election)
-
-	write := new(Message)
-	write.Message = "make election"
-	write.Data = j
-
-	jWrite, err := json.Marshal(write)
-
-	if err == nil {
-		for _, node := range Nodes {
-			node.Write(jWrite)
-		}
-	}
-}

@@ -16,7 +16,7 @@ func CalculateHash(input string) string {
 	return base64.URLEncoding.EncodeToString(sum)
 }
 
-func GenerateBlock(pIndex int, pHash string, transaction database.Transaction, pKey string) database.Block {
+func GenerateBlock(pIndex int, pHash string, transaction interface{}, pKey string) database.Block {
 	var newBlock database.Block
 
 	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
@@ -47,11 +47,20 @@ func VerifyHash(prevIndex int, prevHash string, block database.Block) bool {
 }
 
 func GenerateHeader(block database.Block) string {
-	header := string(block.Index) + block.Timestamp +
-		block.Transaction.Sender + string(block.Transaction.Vote) + block.PrevHash
+	var header string
 
-	for _, transaction := range block.Transaction.Receiver {
-		header = header + transaction
+	if t, ok := block.Transaction.(database.Transaction); ok {
+		header = string(block.Index) + block.Timestamp +
+			t.Sender + string(t.Vote) + block.PrevHash
+
+		for _, transaction := range t.Receiver {
+			header = header + transaction
+		}
+	} else if t, ok := block.Transaction.(database.Election); ok {
+		header = string(block.Index) + block.Timestamp +
+			t.Name + t.RegisteredVoters + t.Start + t.End + block.PrevHash
+	} else {
+		fmt.Println(t)
 	}
 
 	return header

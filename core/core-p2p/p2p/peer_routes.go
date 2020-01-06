@@ -3,7 +3,6 @@ package p2p
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net"
 	"strconv"
 
@@ -48,8 +47,8 @@ func HandleConn(conn net.Conn) {
 			DecodeData(buffer)
 		case "get data":
 			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
-		case "vote":
-			ReceiveVote(write.Vote)
+		case "transaction":
+			ReceiveTransaction(write.Transaction)
 		case "register":
 			tcp_port := strconv.Itoa(TCP_PORT)
 			registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)
@@ -76,17 +75,6 @@ func HandleConn(conn net.Conn) {
 				PrevIndex = block.Index
 				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
-<<<<<<< HEAD
-		case "election":
-			RequestElection(write.Election)
-		case "make election":
-			election := new(database.Election)
-			json.Unmarshal(write.Data, election)
-			if database.UpdateElections(database.MongoDB, *election) {
-				fmt.Println("New election made!")
-			}
-=======
->>>>>>> 5955ad42bede2e39c4650199c44f464c535921e1
 		}
 	}
 }
