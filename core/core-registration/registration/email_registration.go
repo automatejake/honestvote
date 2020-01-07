@@ -56,8 +56,8 @@ func SendRegistrationCode(email string, election string, code string, public_ip 
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
 		"Subject:  " + "HonestVote Registration Code" + "\n\n" +
-		"Click this link if you requested to register for the upcoming" + election + "election: \n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + code + "&verified=true\n" +
-		"If this is incorrect, please click here:\n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + code + "&verified=false"
+		"Click this link if you requested to register for the upcoming" + election + "election: \n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + code + "&verified=true&email=null\n" +
+		"If this is incorrect, please click here:\n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + code + "&verified=false&email=" + email
 
 	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
 	if err != nil {
@@ -68,5 +68,19 @@ func SendRegistrationCode(email string, election string, code string, public_ip 
 }
 
 func SendWarningEmail(email string, election string) {
+	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
+	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
+	to := email
+
+	msg := "From: " + from + "\n" +
+		"To: " + to + "\n" +
+		"Subject:  " + "HonestVote Registration Warning" + "\n\n" +
+		"You indicated that someone attempted to register falsely with your school email.  Please register to vote as soon as possible."
+
+	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
+	if err != nil {
+		logger.Println("email_registration.go", "SendRegistrationCode", err.Error())
+		return
+	}
 
 }

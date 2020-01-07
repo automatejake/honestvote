@@ -8,10 +8,10 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func ListenConnections(udp_service string) {
+func ListenConnections(udp_port string) {
 
 	// Sets up server to accept incoming connections
-	port, err := strconv.Atoi(udp_service)
+	port, err := strconv.Atoi(udp_port)
 	if err != nil {
 		logger.Println("listener.go", "ListenConnections", err.Error())
 	}
@@ -26,9 +26,9 @@ func ListenConnections(udp_service string) {
 		return
 	}
 
-	logger.Println("listener.go", "ListenConnections()", "Registry service running on port: "+udp_service)
+	logger.Println("listener.go", "ListenConnections()", "Registry port running on port: "+udp_port)
 
-	// The only UDP Route is called findpeer and is sent in order to tell the registry service that they want to talk to someone
+	// The only UDP Route is called findpeer and is sent in order to tell the registry port that they want to talk to someone
 	//
 	defer listener.Close()
 	buffer := make([]byte, 4096)
