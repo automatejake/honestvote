@@ -52,7 +52,7 @@ func DecodeData(buffer *bytes.Buffer) {
 }
 
 //Get vote from full node and turn it into a block and propose
-func ReceiveTransaction(transaction interface{}) {
+func ReceiveTransaction(transaction database.Transaction) {
 
 	// if !crypto.Verify(){
 	//return

@@ -18,7 +18,7 @@ var EmailRegistrants string = "email_registrants"
 type Block struct {
 	Index       int               `json:"index"`
 	Timestamp   string            `json:"timestamp"`
-	Transaction interface{}       `json:"transaction"`
+	Transaction Transaction       `json:"transaction"` // instead of interface, should be transaction
 	Hash        string            `json:"hash"`
 	PrevHash    string            `json:"prevhash"`
 	Signatures  map[string]string `json:"signatures"`
@@ -26,6 +26,14 @@ type Block struct {
 
 type Transaction interface {
 	VerifySignature()
+}
+
+func (v Vote) VerifySignature() {
+
+}
+
+func (e Election) VerifySignature() {
+
 }
 
 type Vote struct {

@@ -4,14 +4,15 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 type Message struct {
-	Message     string            `json:"message"`
-	Data        []byte            `json:"data"`
-	Signature   map[string]string `json:"signature"`
-	Transaction interface{}       `json:"transaction"`
+	Message     string               `json:"message"`
+	Data        []byte               `json:"data"`
+	Signature   map[string]string    `json:"signature"`
+	Transaction database.Transaction `json:"transaction"`
 }
 
 func ListenConn(port string, role string) {

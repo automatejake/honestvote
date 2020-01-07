@@ -6,7 +6,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
-	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 	"github.com/jneubaum/honestvote/core/core-registration/registration"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
@@ -28,7 +27,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	if valid && params["verified"] == "true" {
 		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", public_key+" is registered to vote for "+election)
 
-		p2p.ReceiveTransaction(1)
+		// p2p.ReceiveTransaction(1)
 	} else if params["verified"] == "false" {
 		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", public_key+" is not supposed to be registered to vote for "+election)
 		// implement logic to allow email to register again

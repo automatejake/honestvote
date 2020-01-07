@@ -16,7 +16,7 @@ func CalculateHash(input string) string {
 	return base64.URLEncoding.EncodeToString(sum)
 }
 
-func GenerateBlock(pIndex int, pHash string, transaction interface{}, pKey string) database.Block {
+func GenerateBlock(pIndex int, pHash string, transaction database.Transaction, pKey string) database.Block {
 	var newBlock database.Block
 
 	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
