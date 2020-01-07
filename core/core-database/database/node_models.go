@@ -106,8 +106,9 @@ type Candidate struct {
 }
 
 type AwaitingRegistration struct {
-	Election  string
+	Email     string `json:"email"`
+	Election  string `json:"election"`
 	Code      string
-	PublicKey string
+	PublicKey string `json:"publicKey"`
 	Timestamp string
 }
