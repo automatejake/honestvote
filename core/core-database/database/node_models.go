@@ -1,16 +1,16 @@
 package database
 
-// Multiple nodes can work on the same host using different collection prefixes
-var CollectionPrefix string = ""
+import (
+	"encoding/json"
+	"strconv"
+)
 
-// Database is the same for all nodes even for a test net
-var DatabaseName string = "honestvote"
+var CollectionPrefix string = ""        // Multiple nodes can work on the same host using different collection prefixes
+var DatabaseName string = "honestvote"  // Database is the same for all nodes even for a test net
+var ElectionHistory string = "election" // Elections
+var Connections string = "connections"  // Nodes on network
 
-// Elections
-var ElectionHistory string = "election"
-
-// Nodes on network
-var Connections string = "connections"
+type PublicKey string
 
 // Email registrants
 var EmailRegistrants string = "email_registrants"
@@ -25,32 +25,71 @@ type Block struct {
 }
 
 type Transaction interface {
-	VerifySignature()
-}
-
-func (v Vote) VerifySignature() {
-
-}
-
-func (e Election) VerifySignature() {
-
+	VerifySignature() bool
 }
 
 type Vote struct {
-	Sender    string   `json:"sender"`
-	Vote      int      `json:"vote"`
-	Type      string   `json:"type"`
-	Election  string   `json:"election"`
-	Signature string   `json:"signature"`
-	Receiver  []string `json:"receiver"`
+	Vote      int       `json:"vote"`
+	Election  string    `json:"election"`
+	Receiver  []string  `json:"receiver"`
+	Sender    PublicKey `json:"sender"`
+	Signature string    `json:"signature"`
+}
+
+func (vote Vote) VerifySignature() bool {
+	vote_weight := strconv.Itoa(vote.Vote)
+	plaintext := vote_weight + vote.Election
+	for i, _ := range vote.Receiver {
+		plaintext += vote.Receiver[i]
+	}
+
+	// After decrypt method available: plaintext == crypto.Decrypt(vote.Signature, Sender)
+	if plaintext == vote.Signature {
+		return true
+	}
+	return false
 }
 
 type Election struct {
-	Name             string     `json:"name"`
-	RegisteredVoters int64      `json:"registeredVoters"`
-	Start            string     `json:"start"`
-	End              string     `json:"end"`
-	Positions        []Position `json:"positions"`
+	Name           string     `json:"name"`
+	Start          string     `json:"start"`
+	End            string     `json:"end"`
+	EligibleVoters int        `json:"registeredVoters"`
+	Positions      []Position `json:"positions"`
+	Sender         PublicKey  `json:"sender"`
+	Signature      string     `json:"signature"`
+}
+
+func (election Election) VerifySignature() bool {
+	eligible_voters := strconv.Itoa(election.EligibleVoters)
+	plaintext := election.Name + election.Start + election.End + eligible_voters
+	for i, _ := range election.Positions {
+		json_bytes, _ := json.Marshal(election.Positions[i])
+		plaintext += string(json_bytes)
+	}
+
+	// After decrypt method available: plaintext == crypto.Decrypt(vote.Signature, Sender)
+	if plaintext == election.Signature {
+		return true
+	}
+
+	return false
+}
+
+type Node struct {
+	Institution string
+	IPAddress   string
+	Port        int
+	Role        string // peer | full | registry
+	Identity    PublicKey
+	Signature   string
+}
+
+func (node Node) VerifySignature() bool {
+	if true {
+		return true
+	}
+	return false
 }
 
 type Position struct {
@@ -63,7 +102,7 @@ type Candidate struct {
 	Name      string `json:"name"`
 	PublicKey string `json:"key"`
 	Election  string `json:"election"`
-	Votes     int32  `json:"votes"`
+	Votes     int    `json:"votes"`
 }
 
 type AwaitingRegistration struct {
@@ -71,12 +110,4 @@ type AwaitingRegistration struct {
 	Code      string
 	PublicKey string
 	Timestamp string
-}
-
-type Node struct {
-	IPAddress   string
-	Port        int
-	Role        string
-	PublicKey   string
-	Connections []Node
 }
