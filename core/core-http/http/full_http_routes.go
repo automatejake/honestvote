@@ -20,6 +20,7 @@ func HandleFullRoutes() {
 	FullRouter.HandleFunc("/voters", GetVotersHandler).Methods("GET")
 	FullRouter.HandleFunc("/positions", GetPositionsHandler).Methods("GET")
 	FullRouter.HandleFunc("/tickets", GetTicketsHandler).Methods("GET")
+	// FullRouter.HandleFunc()
 
 	//this needs to be encrypted (send admin's public key and encrypted message containing email and public key)
 	FullRouter.HandleFunc("/registerElection/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")

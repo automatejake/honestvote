@@ -24,7 +24,11 @@ type Block struct {
 	Signatures  map[string]string `json:"signatures"`
 }
 
-type Transaction struct {
+type Transaction interface {
+	VerifySignature()
+}
+
+type Vote struct {
 	Sender    string   `json:"sender"`
 	Vote      int      `json:"vote"`
 	Type      string   `json:"type"`
@@ -35,7 +39,7 @@ type Transaction struct {
 
 type Election struct {
 	Name             string     `json:"name"`
-	RegisteredVoters string     `json:"registeredVoters"`
+	RegisteredVoters int64      `json:"registeredVoters"`
 	Start            string     `json:"start"`
 	End              string     `json:"end"`
 	Positions        []Position `json:"positions"`
