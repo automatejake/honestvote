@@ -24,20 +24,29 @@ type Block struct {
 	Signatures  map[string]string `json:"signatures"`
 }
 
+/*
+*  types of transactions:
+*	- becoming a consensus node
+*	- declaring an election
+*	- registering a student to vote
+*	- casting a vote
+ */
+
 type Transaction interface {
-	VerifySignature() bool
+	VerifySignature() bool //should create byte[] of transaction, hash it with SHA256, and then compare hash to signature
 }
 
 type Vote struct {
-	Vote      int       `json:"vote"`
-	Election  string    `json:"election"`
-	Receiver  []string  `json:"receiver"`
-	Sender    PublicKey `json:"sender"`
-	Signature string    `json:"signature"`
+	Value        int       `json:"vote"`
+	Registration string    `json:"registration"`
+	Election     string    `json:"election"`
+	Receiver     []string  `json:"receiver"`
+	Sender       PublicKey `json:"sender"`
+	Signature    string    `json:"signature"`
 }
 
 func (vote Vote) VerifySignature() bool {
-	vote_weight := strconv.Itoa(vote.Vote)
+	vote_weight := strconv.Itoa(vote.Value)
 	plaintext := vote_weight + vote.Election
 	for i, _ := range vote.Receiver {
 		plaintext += vote.Receiver[i]

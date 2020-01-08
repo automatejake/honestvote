@@ -51,7 +51,7 @@ func GenerateHeader(block database.Block) string {
 
 	if t, ok := block.Transaction.(database.Vote); ok {
 		header = string(block.Index) + block.Timestamp +
-			string(t.Sender) + string(t.Vote) + block.PrevHash
+			string(t.Sender) + string(t.Value) + block.PrevHash
 
 		for _, transaction := range t.Receiver {
 			header = header + transaction
