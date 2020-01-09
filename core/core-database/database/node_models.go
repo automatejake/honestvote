@@ -18,7 +18,7 @@ var EmailRegistrants string = "email_registrants"
 type Block struct {
 	Index       int               `json:"index"`
 	Timestamp   string            `json:"timestamp"`
-	Transaction Transaction       `json:"transaction"` // instead of interface, should be transaction
+	Transaction interface{}       `json:"transaction"` // instead of interface, should be transaction
 	Hash        string            `json:"hash"`
 	PrevHash    string            `json:"prevhash"`
 	Signatures  map[string]string `json:"signatures"`
@@ -37,27 +37,27 @@ type Transaction interface {
 }
 
 type Vote struct {
-	Value        int       `json:"vote"`
-	Registration string    `json:"registration"`
-	Election     string    `json:"election"`
-	Receiver     []string  `json:"receiver"`
-	Sender       PublicKey `json:"sender"`
-	Signature    string    `json:"signature"`
+	Value        int            `json:"vote"`
+	Registration string         `json:"registration"`
+	Election     string         `json:"election"`
+	Receiver     map[int]string `json:"receiver"`
+	Sender       PublicKey      `json:"sender"`
+	Signature    string         `json:"signature"`
 }
 
-func (vote Vote) VerifySignature() bool {
-	vote_weight := strconv.Itoa(vote.Value)
-	plaintext := vote_weight + vote.Election
-	for i, _ := range vote.Receiver {
-		plaintext += vote.Receiver[i]
-	}
+// func (vote Vote) VerifySignature() bool {
+// 	vote_weight := strconv.Itoa(vote.Value)
+// 	plaintext := vote_weight + vote.Election
+// 	for i, _ := range vote.Receiver {
+// 		plaintext += vote.Receiver[i]
+// 	}
 
-	// After decrypt method available: plaintext == crypto.Decrypt(vote.Signature, Sender)
-	if plaintext == vote.Signature {
-		return true
-	}
-	return false
-}
+// 	// After decrypt method available: plaintext == crypto.Decrypt(vote.Signature, Sender)
+// 	if plaintext == vote.Signature {
+// 		return true
+// 	}
+// 	return false
+// }
 
 type Election struct {
 	Name           string     `json:"name"`

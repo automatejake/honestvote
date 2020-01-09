@@ -20,6 +20,14 @@ func ProposeBlock(block database.Block, peers []net.Conn) {
 	write.Message = "verify"
 	write.Data = j
 
+	if t, ok := block.Transaction.(database.Vote); ok {
+		fmt.Println(t)
+		write.Type = "Vote"
+	} else if t, ok := block.Transaction.(database.Election); ok {
+		fmt.Println(t)
+		write.Type = "Election"
+	}
+
 	jWrite, err := json.Marshal(write)
 
 	if err == nil {
@@ -28,6 +36,22 @@ func ProposeBlock(block database.Block, peers []net.Conn) {
 			peer.Write(jWrite)
 		}
 	}
+}
+
+func DecideType(data []byte, mType string, conn net.Conn) {
+	var block database.Block
+
+	if mType == "Vote" {
+		vote := &database.Vote{}
+		block = database.Block{Transaction: vote}
+	} else if mType == "Election" {
+		election := &database.Election{}
+		block = database.Block{Transaction: election}
+	}
+
+	json.Unmarshal(data, &block)
+	logger.Println("peer_routes.go", "HandleConn()", "Verifying")
+	VerifyBlock(block, conn)
 }
 
 //Decide if the block sent is valid

@@ -52,7 +52,17 @@ func DecodeData(buffer *bytes.Buffer) {
 }
 
 //Get vote from full node and turn it into a block and propose
-func ReceiveTransaction(transaction database.Transaction) {
+func ReceiveTransaction(data []byte, mType string) {
+
+	var transaction interface{}
+
+	if mType == "Vote" {
+		//Temporary Variable, will be data unmarshalled
+		transaction = database.Vote{Sender: "0xcheese", Value: 1, Receiver: map[int]string{1: "0xsugar", 2: "0xpeanut"}}
+	} else if mType == "Election" {
+		//Temporary Variable, will be data unmarshalled
+		transaction = database.Election{Name: "WCU", EligibleVoters: 16345, Start: "3/23/2020", End: "3/30/2020"}
+	}
 
 	// if !crypto.Verify(){
 	//return

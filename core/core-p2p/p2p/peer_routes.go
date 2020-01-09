@@ -48,7 +48,7 @@ func HandleConn(conn net.Conn) {
 		case "get data":
 			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		case "transaction":
-			ReceiveTransaction(write.Transaction)
+			ReceiveTransaction(write.Data, write.Type)
 		case "register":
 			tcp_port := strconv.Itoa(TCP_PORT)
 			registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)
@@ -59,10 +59,7 @@ func HandleConn(conn net.Conn) {
 		case "new election":
 			//Create a new election
 		case "verify":
-			block := new(database.Block)
-			json.Unmarshal(write.Data, block)
-			logger.Println("peer_routes.go", "HandleConn()", "Verifying")
-			VerifyBlock(*block, conn)
+			DecideType(write.Data, write.Type, conn)
 		case "sign":
 			answer, err := strconv.ParseBool(string(write.Data))
 
