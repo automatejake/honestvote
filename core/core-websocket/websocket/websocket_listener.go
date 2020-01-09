@@ -1,4 +1,4 @@
-package main
+package websocket
 
 import (
 	"encoding/json"
@@ -50,7 +50,6 @@ func longLatHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad request", http.StatusTeapot)
 		return
 	}
-	log.Println("longlathandler")
 	defer r.Body.Close()
 	go writer(&coordinates)
 }
@@ -69,10 +68,10 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 func echo() {
 	for {
 		val := <-broadcast
-		latlong := fmt.Sprintf("%f %f %s", val.Lat, val.Long, "Jacob is so cool")
+		latlong := fmt.Sprintf("%f %f %s", val.Lat, val.Long, "fre")
 		// send to every client that is currently connected
 		for client := range clients {
-			err := client.WriteJSON([]byte(latlong))
+			err := client.WriteMessage(websocket.TextMessage, []byte(latlong))
 			if err != nil {
 				log.Printf("Websocket error: %s", err)
 				client.Close()
