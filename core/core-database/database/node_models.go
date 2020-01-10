@@ -1,10 +1,5 @@
 package database
 
-import (
-	"encoding/json"
-	"strconv"
-)
-
 var CollectionPrefix string = ""        // Multiple nodes can work on the same host using different collection prefixes
 var DatabaseName string = "honestvote"  // Database is the same for all nodes even for a test net
 var ElectionHistory string = "election" // Elections
@@ -32,10 +27,6 @@ type Block struct {
 *	- casting a vote
  */
 
-type Transaction interface {
-	VerifySignature() bool //should create byte[] of transaction, hash it with SHA256, and then compare hash to signature
-}
-
 type Vote struct {
 	Value        int            `json:"vote"`
 	Registration string         `json:"registration"`
@@ -45,20 +36,6 @@ type Vote struct {
 	Signature    string         `json:"signature"`
 }
 
-// func (vote Vote) VerifySignature() bool {
-// 	vote_weight := strconv.Itoa(vote.Value)
-// 	plaintext := vote_weight + vote.Election
-// 	for i, _ := range vote.Receiver {
-// 		plaintext += vote.Receiver[i]
-// 	}
-
-// 	// After decrypt method available: plaintext == crypto.Decrypt(vote.Signature, Sender)
-// 	if plaintext == vote.Signature {
-// 		return true
-// 	}
-// 	return false
-// }
-
 type Election struct {
 	Name           string     `json:"name"`
 	Start          string     `json:"start"`
@@ -67,22 +44,6 @@ type Election struct {
 	Positions      []Position `json:"positions"`
 	Sender         PublicKey  `json:"sender"`
 	Signature      string     `json:"signature"`
-}
-
-func (election Election) VerifySignature() bool {
-	eligible_voters := strconv.Itoa(election.EligibleVoters)
-	plaintext := election.Name + election.Start + election.End + eligible_voters
-	for i, _ := range election.Positions {
-		json_bytes, _ := json.Marshal(election.Positions[i])
-		plaintext += string(json_bytes)
-	}
-
-	// After decrypt method available: plaintext == crypto.Decrypt(vote.Signature, Sender)
-	if plaintext == election.Signature {
-		return true
-	}
-
-	return false
 }
 
 type Node struct {

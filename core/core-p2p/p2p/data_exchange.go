@@ -102,12 +102,16 @@ func CheckResponses(size int) {
 		for k, v2 := range v1 {
 			valid, err := crypto.Verify(checkBlock, k, v2)
 			if valid && err == nil && b {
+				fmt.Println("Everything is good.")
 				ProposedBlock.Signatures[k] = v2
 			} else {
+				fmt.Println("Not all are good")
 				counter--
 			}
 		}
 	}
+
+	fmt.Println(size, counter)
 
 	if size == counter {
 		j, err := json.Marshal(ProposedBlock)
