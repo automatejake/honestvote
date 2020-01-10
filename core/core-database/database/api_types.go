@@ -1,4 +1,4 @@
-package http
+package database
 
 type AppID string             // AppID is a generic string identifier used throughout the program
 type VoterID AppID            // VoterID is an identifier for a Voter
@@ -8,9 +8,10 @@ type TicketID AppID           // TicketID is an identifier for a Ticket
 type TicketEntryID AppID      // TicketEntryID is an identifier for a TicketEntry
 type ElectionPositionID AppID // ElectionPositionID is an identifier for an ElectionPosition
 type VotePriority int         // VotePriority is the priority for a vote. This is only used in non FPTP systems
+type ElectionType int         // The ElectionType is an enumeration of different possible election types
 
 // Election is a given election
-type Election struct {
+type API_Election struct {
 	ID                  ElectionID      `json:"id"`
 	ElectionName        string          `json:"displayName"`
 	ElectionDescription string          `json:"term"`
@@ -28,9 +29,6 @@ type ElectionOptions struct {
 	CanHaveMultiTicket         bool `json:"canHaveMultiTicket,omitempty"`
 	CandidateCanRunForMultiple bool `json:"candidateCanRunForMultiple,omitempty"`
 }
-
-// The ElectionType is an enumeration of different possible election types
-type ElectionType int
 
 // These constants represent different election types
 const (
@@ -52,7 +50,7 @@ type TicketEntry struct {
 // Ticket is a specific ticket associated with a list of candidates
 // running for this TicketEntry. For instance, you may have one ElectionPositionEntry
 // for a President, and another ElectionPositionEntry for a Vice-President
-type Ticket struct {
+type API_Ticket struct {
 	ID                      TicketID                `json:"id"`
 	ElectionPositionEntries []ElectionPositionEntry `json:"electionPositionEntries"`
 	Votes                   []Vote                  `json:"votes"`
@@ -65,20 +63,20 @@ type ElectionPositionEntry struct {
 }
 
 // Vote is a vote that can go toward a particular candidate
-type Vote struct {
+type API_Vote struct {
 	VoterID      VoterID      `json:"voterId"`
 	TicketID     TicketID     `json:"ticketId"`
 	VotePriority VotePriority `json:"votePriority"` // used in rank based voting. for now always 1
 }
 
 // ElectionPosition is a particular position
-type ElectionPosition struct {
+type API_ElectionPosition struct {
 	ID          ElectionPositionID `json:"id"`
 	DisplayName string             `json:"displayName"`
 }
 
 // Voter is a user that is able to vote
-type Voter struct {
+type API_Voter struct {
 	ID          VoterID          `json:"id"`
 	Permissions VoterPermissions `json:"permissions"`
 }
@@ -89,7 +87,7 @@ type VoterPermissions struct {
 }
 
 // Candidate is a candidate user that is publicly identified, and is able to run in an election
-type Candidate struct {
+type API_Candidate struct {
 	ID          CandidateID          `json:"id"`
 	FullName    string               `json:"fullName"`
 	Permissions CandidatePermissions `json:"permissions"`

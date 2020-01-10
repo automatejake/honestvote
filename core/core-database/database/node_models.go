@@ -39,12 +39,29 @@ type Vote struct {
 
 type Election struct {
 	Name           string     `json:"name"`
+	Description    string     `json:"description"`
 	Start          string     `json:"start"`
 	End            string     `json:"end"`
+	EmailDomain    string     `json:"emailDomain"`
 	EligibleVoters int        `json:"registeredVoters"`
 	Positions      []Position `json:"positions"`
 	Sender         PublicKey  `json:"sender"`
 	Signature      string     `json:"signature"`
+}
+
+func (e Election) ConvertForAPI() API_Election {
+
+	temp := API_Election{}
+	// temp.ID =
+	temp.ElectionName = e.Name
+	temp.ElectionDescription = e.Description
+	temp.StartDate = e.Start
+	temp.EndDate = e.End
+	temp.EmailDomain = e.EmailDomain
+	// temp.Type =
+	// temp.TicketEntries = e.Positions
+
+	return temp
 }
 
 type Node struct {

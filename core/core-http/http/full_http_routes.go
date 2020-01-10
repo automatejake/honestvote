@@ -4,11 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/jneubaum/honestvote/core/core-database/database"
-
-	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
-
 	"github.com/gorilla/mux"
+	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 )
 
 var FullRouter = mux.NewRouter()
