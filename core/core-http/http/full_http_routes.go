@@ -15,11 +15,16 @@ var FullRouter = mux.NewRouter()
 
 func HandleFullRoutes() {
 	FullRouter.HandleFunc("/candidates", GetCandidatesHandler).Methods("GET")
-	FullRouter.HandleFunc("/elections", GetElectionsHandler).Methods("GET")
+	FullRouter.HandleFunc("/election", GetElectionsHandler).Methods("GET")
 	FullRouter.HandleFunc("/voters", GetVotersHandler).Methods("GET")
 	FullRouter.HandleFunc("/positions", GetPositionsHandler).Methods("GET")
 	FullRouter.HandleFunc("/tickets", GetTicketsHandler).Methods("GET")
-	// FullRouter.HandleFunc()
+
+	// <Full Node IP Address>:<Full Node Port>/candidates
+	// <Full Node IP Address>:<Full Node Port>/election?id=<ElectionId>
+	// <Full Node IP Address>:<Full Node Port>/voters
+	// <Full Node IP Address>:<Full Node Port>/positions
+	// <Full Node IP Address>:<Full Node Port>/tickets
 
 	//this needs to be encrypted (send admin's public key and encrypted message containing email and public key)
 	FullRouter.HandleFunc("/registerElection/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")
@@ -30,27 +35,27 @@ func HandleFullRoutes() {
 
 func GetCandidatesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	json.NewEncoder(w).Encode(Candidates)
+	// json.NewEncoder(w).Encode(Candidates)
 }
 
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	json.NewEncoder(w).Encode(Elections)
+	// json.NewEncoder(w).Encode(Elections)
 }
 
 func GetVotersHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	json.NewEncoder(w).Encode(Voters)
+	// json.NewEncoder(w).Encode(Voters)
 }
 
 func GetPositionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	json.NewEncoder(w).Encode(Positions)
+	// json.NewEncoder(w).Encode(Positions)
 }
 
 func GetTicketsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	json.NewEncoder(w).Encode(Tickets)
+	// json.NewEncoder(w).Encode(Tickets)
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {

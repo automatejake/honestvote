@@ -1,53 +1,36 @@
 package http
 
-// AppID is a generic string identifier used throughout the program
-type AppID string
+type AppID string             // AppID is a generic string identifier used throughout the program
+type VoterID AppID            // VoterID is an identifier for a Voter
+type CandidateID AppID        // CandidateID is an identifier for a Candidate
+type ElectionID AppID         // ElectionID is an identifier for an Election
+type TicketID AppID           // TicketID is an identifier for a Ticket
+type TicketEntryID AppID      // TicketEntryID is an identifier for a TicketEntry
+type ElectionPositionID AppID // ElectionPositionID is an identifier for an ElectionPosition
+type VotePriority int         // VotePriority is the priority for a vote. This is only used in non FPTP systems
 
-// VoterID is an identifier for a Voter
-type VoterID AppID
-
-// CandidateID is an identifier for a Candidate
-type CandidateID AppID
-
-// ElectionID is an identifier for an Election
-type ElectionID AppID
-
-// TicketID is an identifier for a Ticket
-type TicketID AppID
-
-// TicketEntryID is an identifier for a TicketEntry
-type TicketEntryID AppID
-
-// ElectionPositionID is an identifier for an ElectionPosition
-type ElectionPositionID AppID
-
-// VotePriority is the priority for a vote. This is only used in non FPTP systems
-type VotePriority int
-
-// ElectionInfo is a brief description of a given election without including the whole structure
-type ElectionInfo struct {
-	ID          ElectionID   `json:"id"`
-	DisplayName string       `json:"displayName"`
-	Term        string       `json:"term"`
-	Type        ElectionType `json:"type"`
+type JSONData struct {
+	Data [][]byte `json:"data"`
 }
 
 // Election is a given election
 type Election struct {
-	ID            ElectionID      `json:"id"`
-	DisplayName   string          `json:"displayName"`
-	Term          string          `json:"term"`
-	Type          ElectionType    `json:"type"`
-	TicketEntries []TicketEntry   `json:"ballotEntries"`
-	Options       ElectionOptions `json:"options,omitempty"`
+	ID                  ElectionID      `json:"id"`
+	ElectionName        string          `json:"displayName"`
+	ElectionDescription string          `json:"term"`
+	InstitutionName     string          `json:"institutionName"`
+	StartDate           string          `json:"startDate"`
+	EndDate             string          `json:"endDate"`
+	EmailDomain         string          `json:"emailDomain"`
+	Type                ElectionType    `json:"type"`
+	TicketEntries       []TicketEntry   `json:"ballotEntries"`
+	Options             ElectionOptions `json:"options,omitempty"`
 }
 
 // ElectionOptions are options that apply to a given Election
 type ElectionOptions struct {
 	CanHaveMultiTicket         bool `json:"canHaveMultiTicket,omitempty"`
 	CandidateCanRunForMultiple bool `json:"candidateCanRunForMultiple,omitempty"`
-	CandidateCanVote           bool `json:"candidateCanVote,omitempty"`
-	CandidateCanVoteForSelf    bool `json:"candidateCanVoteForSelf,omitempty"`
 }
 
 // The ElectionType is an enumeration of different possible election types
@@ -85,17 +68,17 @@ type ElectionPositionEntry struct {
 	ElectionPositionID ElectionPositionID `json:"electionPositionId"`
 }
 
-// ElectionPosition is a particular position
-type ElectionPosition struct {
-	ID          ElectionPositionID `json:"id"`
-	DisplayName string             `json:"displayName"`
-}
-
 // Vote is a vote that can go toward a particular candidate
 type Vote struct {
 	VoterID      VoterID      `json:"voterId"`
 	TicketID     TicketID     `json:"ticketId"`
 	VotePriority VotePriority `json:"votePriority"` // used in rank based voting. for now always 1
+}
+
+// ElectionPosition is a particular position
+type ElectionPosition struct {
+	ID          ElectionPositionID `json:"id"`
+	DisplayName string             `json:"displayName"`
 }
 
 // Voter is a user that is able to vote
@@ -106,15 +89,13 @@ type Voter struct {
 
 // VoterPermissions are the permissions granted to a given Voter user
 type VoterPermissions struct {
-	CanCreateElection bool         `json:"canCreateElection"`
-	CanManageElection []ElectionID `json:"canManageElection"`
-	CanVote           []AppID      `json:"canVote"`
+	CanVote []AppID `json:"canVote"`
 }
 
 // Candidate is a candidate user that is publicly identified, and is able to run in an election
 type Candidate struct {
 	ID          CandidateID          `json:"id"`
-	DisplayName string               `json:"displayName"`
+	FullName    string               `json:"fullName"`
 	Permissions CandidatePermissions `json:"permissions"`
 }
 
