@@ -55,20 +55,20 @@ func DecodeData(buffer *bytes.Buffer) {
 func ReceiveTransaction(data []byte, mType string) {
 
 	var transaction interface{}
+	var blockType string
 
 	if mType == "Vote" {
 		//Temporary Variable, will be data unmarshalled
 		transaction = database.Vote{Sender: "0xcheese", Value: 1, Receiver: map[int]string{1: "0xsugar", 2: "0xpeanut"}}
+		blockType = "Vote"
 	} else if mType == "Election" {
 		//Temporary Variable, will be data unmarshalled
 		transaction = database.Election{Name: "WCU", EligibleVoters: 16345, Start: "3/23/2020", End: "3/30/2020"}
+		blockType = "Election"
 	}
 
-	// if !crypto.Verify(){
-	//return
-	// }
-
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, transaction, PublicKey)
+	block.Type = blockType
 
 	//Check if there is a proposed block currently, if so, add to the queue
 	if reflect.DeepEqual(ProposedBlock, database.Block{}) {

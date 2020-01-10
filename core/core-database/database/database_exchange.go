@@ -14,6 +14,7 @@ func UpdateBlockchain(client *mongo.Client, block Block) bool {
 	document := Block{
 		Index:       block.Index,
 		Timestamp:   block.Timestamp,
+		Type:        block.Type,
 		Transaction: block.Transaction,
 		Hash:        block.Hash,
 		PrevHash:    block.PrevHash,

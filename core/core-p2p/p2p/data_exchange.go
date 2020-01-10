@@ -19,14 +19,7 @@ func ProposeBlock(block database.Block, peers []net.Conn) {
 	write := new(Message)
 	write.Message = "verify"
 	write.Data = j
-
-	if t, ok := block.Transaction.(database.Vote); ok {
-		fmt.Println(t)
-		write.Type = "Vote"
-	} else if t, ok := block.Transaction.(database.Election); ok {
-		fmt.Println(t)
-		write.Type = "Election"
-	}
+	write.Type = block.Type
 
 	jWrite, err := json.Marshal(write)
 
