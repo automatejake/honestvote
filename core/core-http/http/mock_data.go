@@ -1,12 +1,24 @@
 package http
 
-var Can JSONData
+var WestChesterElection []Election = []Election{}
+var Voters []Voter = []Voter{}
+var Positions []ElectionPosition = []ElectionPosition{}
+var Tickets []Ticket = []Ticket{}
+
+// // Candidates is example data for candidates
+var Candidates []Candidate = []Candidate{
+	{ID: "candidate1", FullName: "James Brennen", Permissions: CandidatePermissions{CanRun: []AppID{"election1"}}},
+	{ID: "candidate2", FullName: "Mike Grimson", Permissions: CandidatePermissions{CanRun: []AppID{"election1"}}},
+	{ID: "candidate3", FullName: "Alicia Michaels", Permissions: CandidatePermissions{CanRun: []AppID{"election1"}}},
+	{ID: "candidate4", FullName: "Kelly Zimmerman", Permissions: CandidatePermissions{CanRun: []AppID{"election1"}}},
+}
 
 // <Full Node IP Address>:<Full Node Port>/candidates
 // <Full Node IP Address>:<Full Node Port>/election?id=<ElectionId>
 // <Full Node IP Address>:<Full Node Port>/voters
 // <Full Node IP Address>:<Full Node Port>/positions
 // <Full Node IP Address>:<Full Node Port>/tickets
+
 //
 // // Elections is example data for elections
 // var Elections []ElectionInfo = []ElectionInfo{
@@ -71,12 +83,4 @@ var Can JSONData
 // 			{VoterID: "voter8", TicketID: "ticket4", VotePriority: 1},
 // 		},
 // 	},
-// }
-
-// // Candidates is example data for candidates
-// var Candidates []Candidate = []Candidate{
-// 	{ID: "candidate1", DisplayName: "James Brennen", Permissions: CandidatePermissions{CanRun: []AppID{"election1"}}},
-// 	{ID: "candidate2", DisplayName: "Mike Grimson", Permissions: CandidatePermissions{CanRun: []AppID{"election1"}}},
-// 	{ID: "candidate3", DisplayName: "Alicia Michaels", Permissions: CandidatePermissions{CanRun: []AppID{"election1"}}},
-// 	{ID: "candidate4", DisplayName: "Kelly Zimmerman", Permissions: CandidatePermissions{CanRun: []AppID{"election1"}}},
 // }

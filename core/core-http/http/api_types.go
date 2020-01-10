@@ -9,10 +9,6 @@ type TicketEntryID AppID      // TicketEntryID is an identifier for a TicketEntr
 type ElectionPositionID AppID // ElectionPositionID is an identifier for an ElectionPosition
 type VotePriority int         // VotePriority is the priority for a vote. This is only used in non FPTP systems
 
-type JSONData struct {
-	Data [][]byte `json:"data"`
-}
-
 // Election is a given election
 type Election struct {
 	ID                  ElectionID      `json:"id"`
