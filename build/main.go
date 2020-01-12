@@ -30,8 +30,6 @@ var LOGGING bool = true
 
 //this file will be responsible for deploying the app
 func main() {
-	p2p.PrivateKey, p2p.PublicKey = crypto.GenerateKeyPair()
-
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Loading ENV Failed")
@@ -104,6 +102,9 @@ func main() {
 			p2p.PublicIP = os.Args[index+1]
 		}
 	}
+
+	p2p.PrivateKey, p2p.PublicKey = crypto.GenerateKeyPair()
+	p2p.SignatureMap = make(map[string]map[string]bool)
 
 	database.CollectionPrefix = COLLECTION_PREFIX
 	database.MongoDB = database.MongoConnect() // Connect to data store

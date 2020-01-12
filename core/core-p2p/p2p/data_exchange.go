@@ -91,12 +91,12 @@ func CheckResponses(size int) {
 		Iterate through nested map that holds boolean as first arg and
 		a map[string]string as its second
 	*/
-	for b, v1 := range SignatureMap {
-		for k, v2 := range v1 {
-			valid, err := crypto.Verify(checkBlock, k, v2)
+	for pKey, m := range SignatureMap {
+		for sig, b := range m {
+			valid, err := crypto.Verify(checkBlock, pKey, sig)
 			if valid && err == nil && b {
 				fmt.Println("Everything is good.")
-				ProposedBlock.Signatures[k] = v2
+				ProposedBlock.Signatures[pKey] = sig
 			} else {
 				fmt.Println("Not all are good")
 				counter--

@@ -84,25 +84,27 @@ func ReceiveTransaction(data []byte, mType string) {
 
 //Receive the responses given by all other peers deciding if a block is valid
 func ReceiveResponses(answer bool, sMap map[string]string) {
-
 	/*
 		Use answer and pair it with sMap which allows for accountability
 		of their choices
 
 		TODO: assumes that sMap is length 1, could be an issue????
 	*/
-	SignatureMap = make(map[bool]map[string]string)
 	for k, v := range sMap {
-		SignatureMap[answer] = make(map[string]string)
-		SignatureMap[answer][k] = v
+		SignatureMap[k] = make(map[string]bool)
+		SignatureMap[k][v] = answer
 	}
 
 	logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")
 
 	if len(SignatureMap) == len(Nodes) {
+		logger.Println("peer_routes.go", "HandleConn()", "Received Responses!!")
 		CheckResponses(len(SignatureMap)) //Go through the responses and see if block valid
 		SignatureMap = nil
 		ProposedBlock = database.Block{}
+	} else {
+		logger.Println("peer_routes.go", "HandleConn()", "Didn't Receiving Responses")
+		return
 	}
 
 	if len(BlockQueue) > 0 {

@@ -29,5 +29,5 @@ var Self database.Node
 var BlockQueue []database.Block
 
 //Nested to pair answer with public_key/signature
-var SignatureMap map[bool]map[string]string
+var SignatureMap map[string]map[string]bool
 var PublicIP string

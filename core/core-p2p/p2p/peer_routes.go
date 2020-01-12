@@ -74,6 +74,8 @@ func HandleConn(conn net.Conn) {
 				PrevIndex = block.Index
 				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
+		case "find":
+			database.FindDocument(database.MongoDB, database.CollectionPrefix+"blockchain", database.Vote{Value: 1}, "Vote")
 		}
 	}
 }
