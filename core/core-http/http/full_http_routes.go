@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/jneubaum/honestvote/tests/logger"
+
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
@@ -33,7 +35,12 @@ func HandleFullRoutes() {
 
 func GetCandidatesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	// json.NewEncoder(w).Encode(Candidates)
+	candidate := database.GetCandidates()
+	jsonCandidate, err := json.Marshal(candidate)
+	if err != nil {
+		logger.Println("", "", "")
+	}
+	json.NewEncoder(w).Encode(jsonCandidate)
 }
 
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {

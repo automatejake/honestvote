@@ -49,21 +49,6 @@ type Election struct {
 	Signature      string     `json:"signature"`
 }
 
-func (e Election) ConvertForAPI() API_Election {
-
-	temp := API_Election{}
-	// temp.ID =
-	temp.ElectionName = e.Name
-	temp.ElectionDescription = e.Description
-	temp.StartDate = e.Start
-	temp.EndDate = e.End
-	temp.EmailDomain = e.EmailDomain
-	// temp.Type =
-	// temp.TicketEntries = e.Positions
-
-	return temp
-}
-
 type Node struct {
 	Institution string
 	IPAddress   string
@@ -90,7 +75,7 @@ type Candidate struct {
 	Name      string `json:"name"`
 	PublicKey string `json:"key"`
 	Election  string `json:"election"`
-	Votes     int    `json:"votes"`
+	// Votes     int    `json:"votes"`
 }
 
 type AwaitingRegistration struct {
