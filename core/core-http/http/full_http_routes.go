@@ -35,32 +35,53 @@ func HandleFullRoutes() {
 
 func GetCandidatesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	candidate := database.GetCandidates()
-	jsonCandidate, err := json.Marshal(candidate)
+	candidates := database.GetCandidates()
+	jsonCandidates, err := json.Marshal(candidates)
 	if err != nil {
-		logger.Println("", "", "")
+		logger.Println("full_http_routes.go", "GetCandidatesHandler()", err.Error())
 	}
-	json.NewEncoder(w).Encode(jsonCandidate)
+	json.NewEncoder(w).Encode(jsonCandidates)
 }
 
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	// json.NewEncoder(w).Encode(Elections)
+	elections := database.GetElections()
+	jsonElections, err := json.Marshal(elections)
+	if err != nil {
+		logger.Println("full_http_routes.go", "GetElectionsHandler()", err.Error())
+	}
+	json.NewEncoder(w).Encode(jsonElections)
 }
 
 func GetVotersHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	// json.NewEncoder(w).Encode(Voters)
+	voters := database.GetVoters()
+	jsonVoters, err := json.Marshal(voters)
+	if err != nil {
+		logger.Println("full_http_routes.go", "GetElectionsHandler()", err.Error())
+	}
+	json.NewEncoder(w).Encode(jsonVoters)
 }
 
 func GetPositionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	// json.NewEncoder(w).Encode(Positions)
+	positions := database.GetPositions()
+	jsonPositions, err := json.Marshal(positions)
+	if err != nil {
+		logger.Println("full_http_routes.go", "GetElectionsHandler()", err.Error())
+	}
+	json.NewEncoder(w).Encode(jsonPositions)
+
 }
 
 func GetTicketsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	// json.NewEncoder(w).Encode(Tickets)
+	tickets := database.GetTickets()
+	jsonTickets, err := json.Marshal(tickets)
+	if err != nil {
+		logger.Println("full_http_routes.go", "GetElectionsHandler()", err.Error())
+	}
+	json.NewEncoder(w).Encode(jsonTickets)
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {

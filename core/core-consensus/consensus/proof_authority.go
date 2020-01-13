@@ -51,7 +51,7 @@ func GenerateHeader(block database.Block) string {
 
 	if t, ok := block.Transaction.(database.Vote); ok {
 		header = string(block.Index) + block.Timestamp +
-			string(t.Sender) + string(t.Value) + block.PrevHash
+			string(t.Sender) + block.PrevHash
 
 		fmt.Println(t)
 
@@ -60,7 +60,7 @@ func GenerateHeader(block database.Block) string {
 		}
 	} else if t, ok := block.Transaction.(*database.Vote); ok {
 		header = string(block.Index) + block.Timestamp +
-			string(t.Sender) + string(t.Value) + block.PrevHash
+			string(t.Sender) + block.PrevHash
 
 		fmt.Println(t)
 

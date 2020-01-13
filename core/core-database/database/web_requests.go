@@ -26,18 +26,27 @@ func GetCandidates() Candidate {
 	return Candidate{}
 }
 
-func GetElections() {
+func GetElections() []Election {
 	// collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
+
+	return nil
 }
 
-func GetElection() {
+func GetElection() API_Election {
 	// collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
+	return API_Election{}
 }
 
-func GetVoters() {
+func GetVoters() API_Voter {
 	// collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
+	return API_Voter{}
 }
 
-func GetTickets() {
+func GetPositions() []API_ElectionPosition {
+	return nil
+}
+
+func GetTickets() []TicketEntry {
 	// collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
+	return nil
 }

@@ -59,7 +59,7 @@ func ReceiveTransaction(data []byte, mType string) {
 
 	if mType == "Vote" {
 		//Temporary Variable, will be data unmarshalled
-		transaction = database.Vote{Sender: "0xcheese", Value: 1, Receiver: map[int]string{1: "0xsugar", 2: "0xpeanut"}}
+		transaction = database.Vote{Sender: "0xcheese", Receiver: map[int]string{1: "0xsugar", 2: "0xpeanut"}}
 		blockType = "Vote"
 	} else if mType == "Election" {
 		//Temporary Variable, will be data unmarshalled

@@ -21,21 +21,11 @@ type Block struct {
 }
 
 /*
-*  types of transactions:
-*	- becoming a consensus node
+*  three types of transactions:
 *	- declaring an election
 *	- registering a student to vote
 *	- casting a vote
  */
-
-type Vote struct {
-	Value        int            `json:"vote"`
-	Registration string         `json:"registration"`
-	Election     string         `json:"election"`
-	Receiver     map[int]string `json:"receiver"`
-	Sender       PublicKey      `json:"sender"`
-	Signature    string         `json:"signature"`
-}
 
 type Election struct {
 	Name           string     `json:"name"`
@@ -47,6 +37,24 @@ type Election struct {
 	Positions      []Position `json:"positions"`
 	Sender         PublicKey  `json:"sender"`
 	Signature      string     `json:"signature"`
+}
+
+type Registration struct {
+	// Value     int       `json:"vote"`
+	Election  string    `json:"election"`
+	Receiver  string    `json:"receiver"`
+	Identity  PublicKey `json:"sender"`
+	Signature string    `json:"signature"`
+}
+
+// valid votes are tied to registration transaction
+type Vote struct {
+	// Value        int            `json:"vote"`
+	Registration string         `json:"registration"`
+	Election     string         `json:"election"`
+	Receiver     map[int]string `json:"receiver"`
+	Sender       PublicKey      `json:"sender"`
+	Signature    string         `json:"signature"`
 }
 
 type Node struct {
