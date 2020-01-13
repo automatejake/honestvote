@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -21,7 +20,6 @@ func HandlePeerRoutes() {
 func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
-	fmt.Println("got here")
 	public_key, election, valid := database.IsValidRegistrationCode(params["id"])
 
 	if valid && params["verified"] == "true" {

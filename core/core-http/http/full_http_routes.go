@@ -15,7 +15,8 @@ var FullRouter = mux.NewRouter()
 
 func HandleFullRoutes() {
 	FullRouter.HandleFunc("/candidates", GetCandidatesHandler).Methods("GET")
-	FullRouter.HandleFunc("/election", GetElectionsHandler).Methods("GET")
+	FullRouter.HandleFunc("/elections", GetElectionsHandler).Methods("GET")
+	FullRouter.HandleFunc("/election", GetElectionHandler).Queries("id", "{id}")
 	FullRouter.HandleFunc("/voters", GetVotersHandler).Methods("GET")
 	FullRouter.HandleFunc("/positions", GetPositionsHandler).Methods("GET")
 	FullRouter.HandleFunc("/tickets", GetTicketsHandler).Methods("GET")
@@ -51,6 +52,18 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Println("full_http_routes.go", "GetElectionsHandler()", err.Error())
 	}
 	json.NewEncoder(w).Encode(jsonElections)
+}
+
+func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
+	params := mux.Vars(r)
+
+	election := database.GetElection(params["id"])
+	jsonElection, err := json.Marshal(election)
+	if err != nil {
+		logger.Println("full_http_routes.go", "GetElectionsHandler()", err.Error())
+	}
+	json.NewEncoder(w).Encode(jsonElection)
 }
 
 func GetVotersHandler(w http.ResponseWriter, r *http.Request) {

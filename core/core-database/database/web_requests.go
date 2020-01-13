@@ -32,7 +32,7 @@ func GetElections() []Election {
 	return nil
 }
 
-func GetElection() API_Election {
+func GetElection(query string) API_Election {
 	// collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 	return API_Election{}
 }
