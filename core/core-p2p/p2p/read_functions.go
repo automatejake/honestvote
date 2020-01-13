@@ -101,6 +101,7 @@ func ReceiveResponses(answer bool, sMap map[string]string) {
 		logger.Println("peer_routes.go", "HandleConn()", "Received Responses!!")
 		CheckResponses(len(SignatureMap)) //Go through the responses and see if block valid
 		SignatureMap = nil
+		SignatureMap = make(map[string]map[string]bool)
 		ProposedBlock = database.Block{}
 	} else {
 		logger.Println("peer_routes.go", "HandleConn()", "Didn't Receiving Responses")
