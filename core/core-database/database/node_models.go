@@ -3,7 +3,7 @@ package database
 var CollectionPrefix string = ""        // Multiple nodes can work on the same host using different collection prefixes
 var DatabaseName string = "honestvote"  // Database is the same for all nodes even for a test net
 var ElectionHistory string = "election" // Elections
-var Connections string = "connections"  // Nodes on network
+var Connections string = "node_list"    // Nodes on network
 
 type PublicKey string
 

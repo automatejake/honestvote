@@ -21,7 +21,7 @@ func ListenConn(port string, role string) {
 		logger.Println("listener.go", "ListenConn()", err.Error())
 	}
 
-	logger.Println("listener.go", "ListenConn()", "Peer running on port: "+port)
+	logger.Println("listener.go", "ListenConn()", "p2p service running on port: "+port)
 
 	TCP_PORT, err = strconv.Atoi(port)
 

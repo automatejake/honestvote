@@ -22,7 +22,7 @@ var TCP_PORT string = "7000"  //tcp PORT for peer to peer routes
 var UDP_PORT string = "7001"  //udp PORT for node discovery
 var HTTP_PORT string = "7002" //tcp PORT for light nodes to http routes
 
-var ROLE string = "peer" //options peer || full || registry
+var ROLE string = "producer" //options producer || full || registry
 var COLLECTION_PREFIX string = ""
 var REGISTRY_IP string
 var REGISTRY_PORT string = "7002"
@@ -80,13 +80,13 @@ func main() {
 	// accept optional flags that override environmental variables
 	for index, element := range os.Args {
 		switch element {
-		case "--tcp": //Set the default port for peer tcp PORT
+		case "--tcp": //Set the default port for node tcp PORT
 			TCP_PORT = os.Args[index+1]
 		case "--udp":
 			UDP_PORT = os.Args[index+1]
 		case "--http": //Set the default port for http PORT
 			HTTP_PORT = os.Args[index+1]
-		case "--role": //Set the role of the node options PEER || FULL || REGISTRY
+		case "--role": //Set the role of the node options producer || FULL || REGISTRY
 			ROLE = os.Args[index+1]
 		case "--collection-prefix": //Collection prefix (useful for starting up multiple nodes with same database)
 			COLLECTION_PREFIX = os.Args[index+1]
@@ -118,13 +118,13 @@ func main() {
 		logger.Logs = true
 	}
 
-	// udp PORT that sends connected peers to other peers
+	// udp PORT that sends connected producer to incoming nodes
 	if ROLE == "registry" {
 		registry.ListenConnections(UDP_PORT)
 	}
 
-	// find peers to talk to from registry node
-	if ROLE == "full" || ROLE == "peer" {
+	// find producers to talk to from registry node
+	if ROLE == "full" || ROLE == "producer" {
 		logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
 
 		go http.CreateServer(HTTP_PORT, ROLE)
