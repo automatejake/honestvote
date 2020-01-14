@@ -11,27 +11,17 @@ import (
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 )
 
-var FullRouter = mux.NewRouter()
-
 func HandleFullRoutes() {
-	FullRouter.HandleFunc("/candidates", GetCandidatesHandler).Methods("GET")
-	FullRouter.HandleFunc("/elections", GetElectionsHandler).Methods("GET")
-	FullRouter.HandleFunc("/election", GetElectionHandler).Queries("id", "{id}")
-	FullRouter.HandleFunc("/voters", GetVotersHandler).Methods("GET")
-	FullRouter.HandleFunc("/positions", GetPositionsHandler).Methods("GET")
-	FullRouter.HandleFunc("/tickets", GetTicketsHandler).Methods("GET")
-
-	// <Full Node IP Address>:<Full Node Port>/candidates
-	// <Full Node IP Address>:<Full Node Port>/election?id=<ElectionId>
-	// <Full Node IP Address>:<Full Node Port>/voters
-	// <Full Node IP Address>:<Full Node Port>/positions
-	// <Full Node IP Address>:<Full Node Port>/tickets
+	Router.HandleFunc("/candidates", GetCandidatesHandler).Methods("GET")
+	Router.HandleFunc("/elections", GetElectionsHandler).Methods("GET")
+	Router.HandleFunc("/election", GetElectionHandler).Queries("id", "{id}")
+	Router.HandleFunc("/voters", GetVotersHandler).Methods("GET")
+	Router.HandleFunc("/positions", GetPositionsHandler).Methods("GET")
+	Router.HandleFunc("/tickets", GetTicketsHandler).Methods("GET")
 
 	//this needs to be encrypted (send admin's public key and encrypted message containing email and public key)
-	FullRouter.HandleFunc("/registerElection/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")
-
-	FullRouter.HandleFunc("/registerElection", RegisterHandler).Methods("POST")
-	http.Handle("/", FullRouter)
+	Router.HandleFunc("/registerElection/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")
+	Router.HandleFunc("/registerElection", RegisterHandler).Methods("POST")
 }
 
 func GetCandidatesHandler(w http.ResponseWriter, r *http.Request) {

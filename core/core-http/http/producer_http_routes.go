@@ -9,12 +9,9 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-var PeerRouter = mux.NewRouter()
-
-func HandlePeerRoutes() {
-	PeerRouter.HandleFunc("/verifyCode/code={id}&verified={verified}&email={email}", VerifyEmailHandler).Methods("GET")
-	// Should not actually be here, only for testing.  PeerRouter.HandleFunc("/test/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")
-	http.Handle("/", PeerRouter)
+func HandleProducerRoutes() {
+	Router.HandleFunc("/verifyCode/code={id}&verified={verified}&email={email}", VerifyEmailHandler).Methods("GET")
+	// Should not actually be here, only for testing.  Router.HandleFunc("/test/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")
 }
 
 func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
