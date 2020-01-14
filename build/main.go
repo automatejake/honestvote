@@ -110,8 +110,8 @@ func main() {
 	database.MongoDB = database.MongoConnect() // Connect to data store
 
 	port, _ := strconv.Atoi(TCP_PORT)
-	identity := database.PublicKey(p2p.PublicKey)
-	p2p.Self = database.Node{Port: port, Role: ROLE, Identity: identity}
+	public_key := database.PublicKey(p2p.PublicKey)
+	p2p.Self = database.Node{Port: port, Role: ROLE, PublicKey: public_key}
 
 	// if logging is turned on
 	if LOGGING {

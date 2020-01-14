@@ -28,31 +28,32 @@ type Block struct {
  */
 
 type Election struct {
-	Name           string     `json:"name"`
+	Type           string     `json:"type"`
+	Name           string     `json:"name"` //Data Start
 	Description    string     `json:"description"`
 	Start          string     `json:"start"`
 	End            string     `json:"end"`
 	EmailDomain    string     `json:"emailDomain"`
 	EligibleVoters int        `json:"registeredVoters"`
-	Positions      []Position `json:"positions"`
+	Positions      []Position `json:"positions"` //Data End
 	Sender         PublicKey  `json:"sender"`
 	Signature      string     `json:"signature"`
 }
 
 type Registration struct {
-	// Value     int       `json:"vote"`
-	Election  string    `json:"election"`
-	Receiver  string    `json:"receiver"`
-	Identity  PublicKey `json:"sender"`
+	Type      string    `json:"type"`
+	Election  string    `json:"election"` //Data Start
+	Receiver  string    `json:"receiver"` //Data End
+	Sender    PublicKey `json:"sender"`
 	Signature string    `json:"signature"`
 }
 
 // valid votes are tied to registration transaction
 type Vote struct {
-	// Value        int            `json:"vote"`
-	Registration string         `json:"registration"`
+	Type         string         `json:"type"`
+	Registration string         `json:"registration"` //Data Start
 	Election     string         `json:"election"`
-	Receiver     map[int]string `json:"receiver"`
+	Receiver     map[int]string `json:"receiver"` //Data End
 	Sender       PublicKey      `json:"sender"`
 	Signature    string         `json:"signature"`
 }
@@ -62,7 +63,7 @@ type Node struct {
 	IPAddress   string
 	Port        int
 	Role        string // peer | full | registry
-	Identity    PublicKey
+	PublicKey   PublicKey
 	Signature   string
 }
 
