@@ -22,19 +22,19 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 		database.AddNode(node)
 	}
 
-	var message Message
-	data, err := json.Marshal(Self)
-	if err != nil {
-		logger.Println("read_functions.go", "AcceptConnectMessage()", err.Error())
-	}
-	message.Message = "connect response"
-	message.Data = data
-	data, err = json.Marshal(message)
-	if err != nil {
-		logger.Println("read_functions.go", "AcceptConnectMessage()", err.Error())
-	}
+	// var message Message
+	// data, err := json.Marshal(Self)
+	// if err != nil {
+	// 	logger.Println("read_functions.go", "AcceptConnectMessage()", err.Error())
+	// }
+	// message.Message = "connect response"
+	// message.Data = data
+	// data, err = json.Marshal(message)
+	// if err != nil {
+	// 	logger.Println("read_functions.go", "AcceptConnectMessage()", err.Error())
+	// }
 
-	conn.Write(data)
+	// conn.Write(data)
 
 	Nodes = append(Nodes, conn)
 

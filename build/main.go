@@ -26,6 +26,7 @@ var ROLE string = "producer" //options producer || full || registry
 var COLLECTION_PREFIX string = ""
 var REGISTRY_IP string
 var REGISTRY_PORT string = "7002"
+var REGISTRY bool = false // is producer registry node or not
 var LOGGING bool = true
 
 //this file will be responsible for deploying the app
@@ -56,6 +57,9 @@ func main() {
 	}
 	if os.Getenv("REGISTRY_PORT") != "" {
 		REGISTRY_PORT = os.Getenv("REGISTRY_PORT")
+	}
+	if os.Getenv("REGISTRY") != "" {
+		REGISTRY, _ = strconv.ParseBool(os.Getenv("REGISTRY"))
 	}
 	if os.Getenv("PRIVATE_KEY") != "" {
 		p2p.PrivateKey = os.Getenv("PRIVATE_KEY")
@@ -94,6 +98,8 @@ func main() {
 			REGISTRY_IP = os.Args[index+1]
 		case "--registry-port": //Sets the registry node port
 			REGISTRY_PORT = os.Args[index+1]
+		case "--registry":
+			REGISTRY, _ = strconv.ParseBool(os.Args[index+1])
 		case "--private-key": //Sets the private key
 			p2p.PrivateKey = os.Args[index+1]
 		case "--public-key": //Sets the public key
@@ -112,6 +118,9 @@ func main() {
 	port, _ := strconv.Atoi(TCP_PORT)
 	public_key := database.PublicKey(p2p.PublicKey)
 	p2p.Self = database.Node{Port: port, Role: ROLE, PublicKey: public_key}
+	if !database.DoesNodeExist(p2p.Self) {
+		database.AddNode(p2p.Self)
+	}
 
 	// if logging is turned on
 	if LOGGING {
@@ -123,15 +132,16 @@ func main() {
 		registry.ListenConnections(UDP_PORT)
 	}
 
-	// find producers to talk to from registry node
-	if ROLE == "full" || ROLE == "producer" {
-		logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
+	logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
 
-		go http.CreateServer(HTTP_PORT, ROLE)
-		go discovery.FindPeer(REGISTRY_IP, REGISTRY_PORT, TCP_PORT)
+	go http.CreateServer(HTTP_PORT, ROLE)
 
-		// accept incoming connections and handle p2p
-		p2p.ListenConn(TCP_PORT, ROLE)
+	if !REGISTRY {
+		fmt.Println("not registry service")
+		go discovery.FetchLatestPeers(REGISTRY_IP, REGISTRY_PORT, TCP_PORT)
 	}
+
+	// accept incoming connections and handle p2p
+	p2p.ListenConn(TCP_PORT, ROLE)
 
 }

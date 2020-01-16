@@ -16,7 +16,6 @@ func CreateServer(port string, server_type string) {
 		HandleProducerRoutes()
 		HandleFullRoutes()
 	}
-
 	if server_type == "full" {
 		HandleFullRoutes() // imported from routes
 	}
@@ -24,4 +23,8 @@ func CreateServer(port string, server_type string) {
 	http.Handle("/", Router)
 	http.ListenAndServe(":"+port, Router)
 
+}
+
+func EnableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }

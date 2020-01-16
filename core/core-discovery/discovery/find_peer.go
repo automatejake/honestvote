@@ -18,47 +18,50 @@ import (
 * 3) Send Connect Message to node
 *
 **/
-func FindPeer(registry_ip string, registry_port string, tcp_port string) {
-	logger.Println("find_peer.go", "FindPeer()", "Contacting: "+registry_ip+":"+registry_port)
+func FetchLatestPeers(registry_ip string, registry_port string, tcp_port string) {
+	// logger.Println("find_peer.go", "FetchLatestPeers()", "Contacting: "+registry_ip+":"+registry_port)
 
-	// Send findpeer message to registry node over raw udp socket (include TCP socket that you will be listening in on)
-	remote_address, err := net.ResolveUDPAddr("udp", registry_ip+":"+registry_port)
+	conn, err := net.Dial("tcp", registry_ip+":"+registry_port)
 	if err != nil {
-		logger.Println("find_peer.go", "FindPeer", err.Error())
+		logger.Println("find_peers.go", "FetchLatestPeers", err.Error())
 	}
+	if conn != nil {
+		logger.Println("find_peers.go", "FetchLatestPeers", "Dial Successful!")
 
-	conn, err := net.DialUDP("udp", nil, remote_address)
-	if err != nil {
-		logger.Println("find_peer.go", "FindPeer", err.Error())
-		return
-	}
-	defer conn.Close()
+		byteSelf, err := json.Marshal(p2p.Self)
+		if err != nil {
+			logger.Println("find_peer.go", "FetchLatestPeers", err.Error())
+		}
 
-	_, err = conn.Write([]byte("findpeer" + tcp_port))
-	if err != nil {
-		logger.Println("find_peer.go", "FindPeer", err.Error())
-	}
+		var write p2p.Message
+		write.Message = "send connected nodes"
+		write.Data = byteSelf
 
-	// Parse Peer from JSON to struct
-	peers_json := make([]byte, 2048)
-	n, _, err := conn.ReadFromUDP(peers_json) // n, udp_address, error
+		byteSelf, err = json.Marshal(write)
+		conn.Write(byteSelf)
 
-	var peers []database.Node
-	_ = json.Unmarshal(peers_json[0:n], &peers)
+		peers_json := make([]byte, 2048)
+		n, err := conn.Read(peers_json) // n, udp_address, error
 
-	//Send connect message to peer
-	for _, peer := range peers {
-		ConnectMessage(peer, tcp_port)
+		var peers []database.Node
+		err = json.Unmarshal(peers_json[0:n], &peers)
+
+		for _, peer := range peers {
+			if !database.DoesNodeExist(peer) {
+				database.AddNode(peer)
+			}
+			ConnectMessage(peer)
+		}
 	}
 
 }
 
-/*
-* 1) Attempt to connect to peer
-* 2) If unsuccessful, report to registry node
-* 3) If succsessful, Add Peer to database and connection to memory
- */
-func ConnectMessage(peer database.Node, tcp_port string) {
+// /*
+// * 1) Attempt to connect to peer
+// * 2) If unsuccessful, report to registry node
+// * 3) If succsessful, Add Peer to database and connection to memory
+//  */
+func ConnectMessage(peer database.Node) {
 	port := strconv.Itoa(peer.Port)
 
 	conn, err := net.Dial("tcp", peer.IPAddress+":"+port)

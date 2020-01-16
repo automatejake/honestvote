@@ -3,6 +3,7 @@ package p2p
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net"
 	"strconv"
 
@@ -35,12 +36,20 @@ func HandleConn(conn net.Conn) {
 			json.Unmarshal(write.Data, &node)
 
 			AcceptConnectMessage(node, conn)
-		case "connect response":
+		case "send connected nodes":
 			var node database.Node
 			json.Unmarshal(write.Data, &node)
-			node.IPAddress = conn.RemoteAddr().String()[0:9]
-			if !database.DoesNodeExist(node) {
-				database.AddNode(node)
+			tmp_peers := database.FindNodes()
+			fmt.Println(tmp_peers)
+			if tmp_peers != nil {
+				peers_json, err := json.Marshal(tmp_peers)
+				if err != nil {
+					logger.Println("peer_routes.go", "RegisterNode", err.Error())
+				}
+				_, err = conn.Write(peers_json)
+				if err != nil {
+					logger.Println("peer_routes.go", "RegisterNode", err.Error())
+				}
 			}
 		case "recieve data":
 			buffer := bytes.NewBuffer(write.Data)
@@ -75,6 +84,10 @@ func HandleConn(conn net.Conn) {
 				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
 		case "find":
+		default:
+			logger.Println("peer_routes.go", "HandleConn", "Recieved Bad Message")
+			conn.Close()
+			break
 			// database.FindDocument(database.MongoDB, database.CollectionPrefix+"blockchain", database.Vote{Value: 1}, "Vote")
 		}
 	}

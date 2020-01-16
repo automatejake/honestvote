@@ -1,9 +1,5 @@
 package http
 
-import (
-	"net/http"
-)
-
 func HandleFullRoutes() {
 	Router.HandleFunc("/candidates", GetCandidatesHandler).Methods("GET")
 	Router.HandleFunc("/elections", GetElectionsHandler).Methods("GET")
@@ -21,8 +17,4 @@ func HandleProducerRoutes() {
 	Router.HandleFunc("/verifyCode/code={id}&verified={verified}&email={email}", VerifyEmailHandler).Methods("GET")
 	Router.HandleFunc("/connectpeer", GetPeer).Methods("GET")
 	// Should not actually be here, only for testing.  Router.HandleFunc("/test/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")
-}
-
-func EnableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
