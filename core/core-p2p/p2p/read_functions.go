@@ -55,18 +55,26 @@ func DecodeData(buffer *bytes.Buffer) {
 func ReceiveTransaction(data []byte, mType string) {
 
 	var transaction interface{}
+	var blockType string
 
 	switch mType {
 	case "Vote":
-		transaction = database.Vote{Type: "Vote", Sender: "0xcheese", Receiver: map[int]string{1: "0xsugar", 2: "0xpeanut"}}
+		transaction = database.Vote{Sender: "0xcheese", Receiver: map[int]string{1: "0xsugar", 2: "0xpeanut"}}
+		blockType = "Vote"
 	case "Register":
 
 	case "Election":
 		//Temporary Variable, will be data unmarshalled
+<<<<<<< HEAD
+		transaction = database.Election{Name: "WCU", EligibleVoters: 16345, Start: "3/23/2020", End: "3/30/2020"}
+		blockType = "Election"
+=======
 		transaction = database.Election{Type: "Election", Institution: "WCU", EligibleVoters: 16345, Start: "3/23/2020", End: "3/30/2020"}
+>>>>>>> 1cce54992147fa8cb1e2d76cda73b081ada9fa32
 	}
 
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, transaction, PublicKey)
+	block.Type = blockType
 
 	//Check if there is a proposed block currently, if so, add to the queue
 	if reflect.DeepEqual(ProposedBlock, database.Block{}) {
@@ -96,6 +104,7 @@ func ReceiveResponses(answer bool, sMap map[string]string) {
 	logger.Println("peer_routes.go", "HandleConn()", "Receiving Responses")
 
 	if len(SignatureMap) == len(Nodes) {
+		logger.Println("peer_routes.go", "HandleConn()", "Received Responses!!")
 		CheckResponses(len(SignatureMap)) //Go through the responses and see if block valid
 		SignatureMap = nil
 		SignatureMap = make(map[string]map[string]bool)

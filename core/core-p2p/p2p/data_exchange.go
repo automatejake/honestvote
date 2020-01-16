@@ -19,12 +19,7 @@ func ProposeBlock(block database.Block, peers []net.Conn) {
 	write := new(Message)
 	write.Message = "verify"
 	write.Data = j
-
-	if t, ok := block.Transaction.(database.Vote); ok {
-		write.Type = t.Type
-	} else if t, ok := block.Transaction.(database.Election); ok {
-		write.Type = t.Type
-	}
+	write.Type = block.Type
 
 	jWrite, err := json.Marshal(write)
 
@@ -98,7 +93,6 @@ func CheckResponses(size int) {
 	*/
 	for pKey, m := range SignatureMap {
 		for sig, b := range m {
-			fmt.Println(len(m))
 			valid, err := crypto.Verify(checkBlock, pKey, sig)
 			if valid && err == nil && b {
 				fmt.Println("Everything is good.")
