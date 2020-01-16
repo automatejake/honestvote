@@ -28,7 +28,9 @@ type Block struct {
 
 type Election struct {
 	Type           string     `json:"type"`
-	Name           string     `json:"name"` //Data Start
+	ElectionId     string     `json:"id"` //Data Start
+	ElectionName   string     `json:"electionName"`
+	Institution    string     `json:"institutionName"`
 	Description    string     `json:"description"`
 	Start          string     `json:"start"`
 	End            string     `json:"end"`

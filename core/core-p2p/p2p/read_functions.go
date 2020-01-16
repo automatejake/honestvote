@@ -63,7 +63,7 @@ func ReceiveTransaction(data []byte, mType string) {
 
 	case "Election":
 		//Temporary Variable, will be data unmarshalled
-		transaction = database.Election{Type: "Election", Name: "WCU", EligibleVoters: 16345, Start: "3/23/2020", End: "3/30/2020"}
+		transaction = database.Election{Type: "Election", Institution: "WCU", EligibleVoters: 16345, Start: "3/23/2020", End: "3/30/2020"}
 	}
 
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, transaction, PublicKey)

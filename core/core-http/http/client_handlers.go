@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -11,6 +12,7 @@ import (
 
 func GetCandidatesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	fmt.Println("candidates")
 	candidates := database.GetCandidates()
 	jsonCandidates, err := json.Marshal(candidates)
 	if err != nil {
@@ -21,6 +23,7 @@ func GetCandidatesHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	fmt.Println("elections")
 	elections := database.GetElections()
 	jsonElections, err := json.Marshal(elections)
 	if err != nil {
@@ -33,7 +36,8 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
 
-	election := database.GetElection(params["id"])
+	fmt.Println("election")
+	election := database.GetElection(params["electionid"])
 	jsonElection, err := json.Marshal(election)
 	if err != nil {
 		logger.Println("full_http_routes.go", "GetElectionsHandler()", err.Error())
@@ -41,8 +45,9 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(jsonElection)
 }
 
-func GetVotersHandler(w http.ResponseWriter, r *http.Request) {
+func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	fmt.Println("voters")
 	voters := database.GetVoters()
 	jsonVoters, err := json.Marshal(voters)
 	if err != nil {
@@ -53,6 +58,7 @@ func GetVotersHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetPositionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	fmt.Println("positions")
 	positions := database.GetPositions()
 	jsonPositions, err := json.Marshal(positions)
 	if err != nil {
@@ -70,4 +76,8 @@ func GetTicketsHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Println("full_http_routes.go", "GetElectionsHandler()", err.Error())
 	}
 	json.NewEncoder(w).Encode(jsonTickets)
+}
+
+func GetPermissionsHandler(w http.ResponseWriter, r *http.Request) {
+
 }
