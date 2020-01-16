@@ -36,7 +36,7 @@ type Election struct {
 	End            string     `json:"end"`
 	EmailDomain    string     `json:"emailDomain"`
 	EligibleVoters int        `json:"registeredVoters"`
-	Positions      []Position `json:"positions"` //Data End
+	Positions      []Position `json:"ticketEntries"` //Data End
 	Sender         PublicKey  `json:"sender"`
 	Signature      string     `json:"signature"`
 }
@@ -76,8 +76,8 @@ func (node Node) VerifySignature() bool {
 }
 
 type Position struct {
+	PositionId string      `json:"id"`
 	Name       string      `json:"name"`
-	ID         int         `json:"id"`
 	Candidates []Candidate `json:"candidates"`
 }
 
