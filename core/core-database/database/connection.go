@@ -10,6 +10,7 @@ import (
 )
 
 var MongoDB *mongo.Client
+var Collection *mongo.Collection
 
 //Connect to MongoDB
 func MongoConnect() *mongo.Client {

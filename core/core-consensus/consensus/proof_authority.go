@@ -69,10 +69,10 @@ func GenerateHeader(block database.Block) string {
 		}
 	} else if t, ok := block.Transaction.(database.Election); ok {
 		header = string(block.Index) + block.Timestamp +
-			t.Name + string(t.EligibleVoters) + t.Start + t.End + block.PrevHash
+			t.ElectionName + string(t.EligibleVoters) + t.Start + t.End + block.PrevHash
 	} else if t, ok := block.Transaction.(*database.Election); ok {
 		header = string(block.Index) + block.Timestamp +
-			t.Name + string(t.EligibleVoters) + t.Start + t.End + block.PrevHash
+			t.ElectionName + string(t.EligibleVoters) + t.Start + t.End + block.PrevHash
 	} else {
 		fmt.Println(block.Transaction)
 	}

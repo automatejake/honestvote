@@ -28,7 +28,7 @@ func (e Election) ConvertForAPI() API_Election {
 
 	temp := API_Election{}
 	// temp.ID =
-	temp.ElectionName = e.Name
+	temp.ElectionName = e.ElectionName
 	temp.ElectionDescription = e.Description
 	temp.StartDate = e.Start
 	temp.EndDate = e.End
