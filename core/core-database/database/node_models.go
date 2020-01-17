@@ -27,21 +27,6 @@ type Block struct {
 *	- casting a vote
  */
 
-type Election struct {
-	Type           string     `json:"type"`
-	ElectionId     string     `json:"id"` //Data Start
-	ElectionName   string     `json:"electionName"`
-	Institution    string     `json:"institutionName"`
-	Description    string     `json:"description"`
-	Start          string     `json:"start"`
-	End            string     `json:"end"`
-	EmailDomain    string     `json:"emailDomain"`
-	EligibleVoters int        `json:"registeredVoters"`
-	Positions      []Position `json:"ticketEntries"` //Data End
-	Sender         PublicKey  `json:"sender"`
-	Signature      string     `json:"signature"`
-}
-
 type Registration struct {
 	Type      string    `json:"type"`
 	Election  string    `json:"election"` //Data Start
@@ -60,6 +45,32 @@ type Vote struct {
 	Signature    string         `json:"signature"`
 }
 
+type Election struct {
+	Type           string     `json:"type"`
+	ElectionName   string     `json:"electionName"` //Data Start
+	Institution    string     `json:"institutionName"`
+	Description    string     `json:"description"`
+	Start          string     `json:"startDate"`
+	End            string     `json:"endDate"`
+	EmailDomain    string     `json:"emailDomain"`
+	EligibleVoters int        `json:"registeredVoters"`
+	Positions      []Position `json:"ticketEntries"` //Data End
+	Sender         PublicKey  `json:"sender"`
+	Signature      string     `json:"id"`
+}
+
+type Position struct {
+	PositionId string      `json:"id"`
+	Name       string      `json:"displayName"`
+	Candidates []Candidate `json:"candidates"`
+}
+
+type Candidate struct {
+	Name      string `json:"name"`
+	PublicKey string `json:"key"`
+	Election  string `json:"election"`
+}
+
 type Node struct {
 	Institution string
 	IPAddress   string
@@ -74,19 +85,6 @@ func (node Node) VerifySignature() bool {
 		return true
 	}
 	return false
-}
-
-type Position struct {
-	PositionId string      `json:"id"`
-	Name       string      `json:"name"`
-	Candidates []Candidate `json:"candidates"`
-}
-
-type Candidate struct {
-	Name      string `json:"name"`
-	PublicKey string `json:"key"`
-	Election  string `json:"election"`
-	// Votes     int    `json:"votes"`
 }
 
 type AwaitingRegistration struct {
