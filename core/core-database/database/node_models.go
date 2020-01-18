@@ -67,7 +67,7 @@ type Position struct {
 
 type Candidate struct {
 	Name      string `json:"name"`
-	PublicKey string `json:"key"`
+	Recipient string `json:"key"`
 	Election  string `json:"election"`
 }
 
