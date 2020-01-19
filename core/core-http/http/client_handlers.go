@@ -26,9 +26,9 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	fmt.Println("voters")
-	// voters := database.GetVoters()
-	// json.NewEncoder(w).Encode(voters)
+	params := mux.Vars(r)
+	voters := database.GetVotes(params["electionid"])
+	json.NewEncoder(w).Encode(voters)
 }
 
 func GetPositionsHandler(w http.ResponseWriter, r *http.Request) {

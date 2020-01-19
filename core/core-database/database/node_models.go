@@ -28,20 +28,20 @@ type Block struct {
  */
 
 type Registration struct {
-	Type         string    `json:"type"`
-	ElectionName string    `json:"election"` //Data Start
-	Receiver     string    `json:"receiver"` //Data End
-	Sender       PublicKey `json:"sender"`
-	Signature    string    `json:"signature"`
+	Type      string    `json:"type"`
+	Election  string    `json:"election"` //Data Start
+	Receiver  string    `json:"receiver"` //Data End
+	Sender    PublicKey `json:"sender"`
+	Signature string    `json:"signature"`
 }
 
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
-	Type         string         `json:"type"`
-	ElectionName string         `json:"election"` //Data Start
-	Receiver     map[int]string `json:"receiver"` //Data End
-	Sender       PublicKey      `json:"sender"`
-	Signature    string         `json:"signature"`
+	Type      string         `json:"type"`
+	Election  string         `json:"election"` //Data Start
+	Receiver  map[int]string `json:"receiver"` //Data End
+	Sender    PublicKey      `json:"sender"`
+	Signature string         `json:"signature"`
 }
 
 type Election struct {
