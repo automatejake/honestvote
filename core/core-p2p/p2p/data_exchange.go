@@ -100,7 +100,7 @@ func CheckResponses(size int) {
 				fmt.Println("Everything is good.")
 				ProposedBlock.Signatures[pKey] = sig
 			} else {
-				fmt.Println("%t %t", valid, b)
+				// fmt.Println("%t %t", valid, b)
 				counter--
 			}
 		}

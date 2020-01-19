@@ -35,28 +35,27 @@ type Registration struct {
 	Signature string    `json:"signature"`
 }
 
-// valid votes are tied to registration transaction
+// valid votes have a corresponding registration transaction with the public key
 type Vote struct {
-	Type         string         `json:"type"`
-	Registration string         `json:"registration"` //Data Start
-	Election     string         `json:"election"`
-	Receiver     map[int]string `json:"receiver"` //Data End
-	Sender       PublicKey      `json:"sender"`
-	Signature    string         `json:"signature"`
+	Type      string         `json:"type"`
+	Election  string         `json:"election"` //Data Start
+	Receiver  map[int]string `json:"receiver"` //Data End
+	Sender    PublicKey      `json:"sender"`
+	Signature string         `json:"signature"`
 }
 
 type Election struct {
-	Type           string     `json:"type"`
-	ElectionName   string     `json:"electionName"` //Data Start
-	Institution    string     `json:"institutionName"`
-	Description    string     `json:"description"`
-	Start          string     `json:"startDate"`
-	End            string     `json:"endDate"`
-	EmailDomain    string     `json:"emailDomain"`
-	EligibleVoters int        `json:"registeredVoters"`
-	Positions      []Position `json:"ticketEntries"` //Data End
-	Sender         PublicKey  `json:"sender"`
-	Signature      string     `json:"id"`
+	Type              string     `json:"type"`
+	ElectionName      string     `json:"electionName"` //Data Start
+	Institution       string     `json:"institutionName"`
+	Description       string     `json:"description"`
+	Start             string     `json:"startDate"`
+	End               string     `json:"endDate"`
+	EmailDomain       string     `json:"emailDomain"`
+	Positions         []Position `json:"ticketEntries"` //Data End
+	AllowedCandidates []string   `json:"allowedCandidates"`
+	Sender            PublicKey  `json:"sender"`
+	Signature         string     `json:"id"`
 }
 
 type Position struct {
@@ -68,7 +67,6 @@ type Position struct {
 type Candidate struct {
 	Name      string `json:"name"`
 	Recipient string `json:"key"`
-	Election  string `json:"election"`
 }
 
 type Node struct {
