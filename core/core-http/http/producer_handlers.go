@@ -28,7 +28,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetPeer(w http.ResponseWriter, r *http.Request) {
+func GetEndpoint(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 }
 
