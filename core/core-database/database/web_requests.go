@@ -1,12 +1,8 @@
 package database
 
 import (
-	"context"
 	"fmt"
 	"reflect"
-
-	"github.com/jneubaum/honestvote/tests/logger"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func GetCandidates() Candidate {
@@ -35,23 +31,23 @@ func GetCandidates() Candidate {
 	return Candidate{}
 }
 
-func GetElections() []Election {
+func GetElections() Election {
 
 	fmt.Println(reflect.TypeOf(Collection))
-	return nil
+	return Election{}
 }
 
 func GetElection(electionid string) API_Election {
-	Collection = MongoDB.Database("honestvote").Collection(CollectionPrefix + ElectionHistory)
-	query := bson.M{"electionid": electionid}
+	// Collection = MongoDB.Database("honestvote").Collection(CollectionPrefix + ElectionHistory)
+	// query := bson.M{"electionid": electionid}
 
-	result, err := Collection.Find(context.TODO(), query)
-	if err != nil {
-		logger.Println("routing_table.go", "FindNode", err.Error())
-	}
+	// result, err := Collection.Find(context.TODO(), query)
+	// if err != nil {
+	// 	logger.Println("routing_table.go", "FindNode", err.Error())
+	// }
 
-	fmt.Println(reflect.TypeOf(Collection))
-	fmt.Println(reflect.TypeOf(result))
+	// fmt.Println(reflect.TypeOf(Collection))
+	// fmt.Println(reflect.TypeOf(result))
 
 	return API_Election{}
 }
