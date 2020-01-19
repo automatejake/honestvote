@@ -34,9 +34,9 @@ func GetElection(election_signature string) Election {
 	default:
 		fmt.Printf("%T\n", t)
 	}
-	a := block.Transaction.(primitive.D)
+	annoying_mongo_form := block.Transaction.(primitive.D)
 
-	mapstructure.Decode(a.Map(), &election)
+	mapstructure.Decode(annoying_mongo_form.Map(), &election)
 	result.Close(context.TODO())
 
 	return election
