@@ -117,7 +117,7 @@ func main() {
 
 	port, _ := strconv.Atoi(TCP_PORT)
 	public_key := database.PublicKey(p2p.PublicKey)
-	p2p.Self = database.Node{Port: port, Role: ROLE, PublicKey: public_key}
+	p2p.Self = database.Node{IPAddress: "127.0.0.1", Port: port, Role: ROLE, PublicKey: public_key}
 	if !database.DoesNodeExist(p2p.Self) {
 		database.AddNode(p2p.Self)
 	}

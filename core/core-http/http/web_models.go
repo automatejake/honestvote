@@ -15,3 +15,9 @@ type Vote struct {
 	Candidate string `json:"candidateId"`
 	Signature string `json:"signature"`
 }
+
+type Payload struct {
+	Status    string      `json:"status"`
+	Timestamp string      `json:"timestamp"`
+	Data      interface{} `json:"data"`
+}

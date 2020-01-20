@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -30,6 +31,14 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetEndpoint(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	endpoint := database.GetEndpoint()
+	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	payload := Payload{
+		Status:    "OK",
+		Timestamp: timestamp,
+		Data:      endpoint,
+	}
+	json.NewEncoder(w).Encode(payload)
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {

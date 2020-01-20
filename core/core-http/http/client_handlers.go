@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -21,14 +22,26 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
 	election := database.GetElection(params["electionid"])
-	json.NewEncoder(w).Encode(election)
+	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	payload := Payload{
+		Status:    "OK",
+		Timestamp: timestamp,
+		Data:      election,
+	}
+	json.NewEncoder(w).Encode(payload)
 }
 
 func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
 	voters := database.GetVotes(params["electionid"])
-	json.NewEncoder(w).Encode(voters)
+	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	payload := Payload{
+		Status:    "OK",
+		Timestamp: timestamp,
+		Data:      voters,
+	}
+	json.NewEncoder(w).Encode(payload)
 }
 
 func GetPositionsHandler(w http.ResponseWriter, r *http.Request) {

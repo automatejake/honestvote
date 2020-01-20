@@ -2,6 +2,8 @@ package database
 
 import (
 	"context"
+	"math/rand"
+	"strconv"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 	"github.com/mitchellh/mapstructure"
@@ -69,4 +71,31 @@ func GetVotes(election_signature string) []Vote {
 
 func GetPermissions(election_signature string) []Vote {
 	return []Vote{}
+}
+
+func GetEndpoint() string {
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "node_list")
+
+	var nodes []Node
+	var node Node
+
+	query := bson.M{}
+	result, err := collection.Find(context.TODO(), query)
+	if err != nil {
+		logger.Println("database_web", "GetEndpoint", err.Error())
+	}
+
+	for result.Next(context.TODO()) {
+		err = result.Decode(&node)
+		if err != nil {
+			logger.Println("database_web", "GetEndpoint", err.Error())
+		}
+		nodes = append(nodes, node)
+	}
+
+	randNode := rand.Intn(len(nodes))
+	port := strconv.Itoa(nodes[randNode].Port)
+	endpoint := nodes[randNode].IPAddress + ":" + port
+
+	return endpoint
 }
