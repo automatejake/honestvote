@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -13,20 +12,33 @@ import (
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 
-	// elections := database.GetElections()
-	// fmt.Println(elections)
-	// json.NewEncoder(w).Encode(elections)
+	elections, err := database.GetElections()
+	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	payload := Payload{
+		Timestamp: timestamp,
+	}
+	if err != nil {
+		payload.Status = "Bad Request"
+	} else {
+		payload.Status = "OK"
+		payload.Data = elections
+	}
+	json.NewEncoder(w).Encode(payload)
 }
 
 func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
-	election := database.GetElection(params["electionid"])
+	election, err := database.GetElection(params["electionid"])
 	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	payload := Payload{
-		Status:    "OK",
 		Timestamp: timestamp,
-		Data:      election,
+	}
+	if err != nil {
+		payload.Status = "Bad Request"
+	} else {
+		payload.Status = "OK"
+		payload.Data = election
 	}
 	json.NewEncoder(w).Encode(payload)
 }
@@ -34,26 +46,40 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
-	voters := database.GetVotes(params["electionid"])
+	voters, err := database.GetVotes(params["electionid"])
 	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	payload := Payload{
-		Status:    "OK",
 		Timestamp: timestamp,
-		Data:      voters,
+	}
+	if err != nil {
+		payload.Status = "Bad Request"
+	} else {
+		payload.Status = "OK"
+		payload.Data = voters
 	}
 	json.NewEncoder(w).Encode(payload)
 }
 
 func GetPositionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	fmt.Println("positions")
-	// positions := database.GetPositions()
-	// json.NewEncoder(w).Encode(positions)
 
 }
 
 func GetPermissionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	params := mux.Vars(r)
+	permissions, err := database.GetPermissions(params["publickey"])
+	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	payload := Payload{
+		Timestamp: timestamp,
+	}
+	if err != nil {
+		payload.Status = "Bad Request"
+	} else {
+		payload.Status = "OK"
+		payload.Data = permissions
+	}
+	json.NewEncoder(w).Encode(payload)
 }
 
 func PostPermissionsHandler(w http.ResponseWriter, r *http.Request) {

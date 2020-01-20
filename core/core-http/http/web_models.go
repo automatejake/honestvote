@@ -5,6 +5,13 @@ import "github.com/jneubaum/honestvote/core/core-database/database"
 type ElectionInfo struct {
 }
 
+// id: ElectionId
+// electionName: string
+// institutionName: string
+// description: string
+// startDate: string
+// endDate: string
+
 func Translate(e database.Election) ElectionInfo {
 	return ElectionInfo{}
 }

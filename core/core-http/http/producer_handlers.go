@@ -31,14 +31,20 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetEndpoint(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
-	endpoint := database.GetEndpoint()
+	endpoint, err := database.GetEndpoint()
 	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	payload := Payload{
-		Status:    "OK",
 		Timestamp: timestamp,
-		Data:      endpoint,
+	}
+	if err != nil {
+		payload.Status = "Bad Request"
+	} else {
+		payload.Status = "OK"
+		payload.Data = endpoint
+
 	}
 	json.NewEncoder(w).Encode(payload)
+
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
