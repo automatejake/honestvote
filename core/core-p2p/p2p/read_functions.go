@@ -65,7 +65,7 @@ func ReceiveTransaction(data []byte, mType string) {
 
 	case "Election":
 		//Temporary Variable, will be data unmarshalled
-		transaction = database.Election{ElectionName: "WCU", EligibleVoters: 16345, Start: "3/23/2020", End: "3/30/2020"}
+		transaction = database.Election{ElectionName: "WCU", Start: "3/23/2020", End: "3/30/2020"}
 		blockType = "Election"
 	}
 
