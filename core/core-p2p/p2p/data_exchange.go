@@ -75,6 +75,7 @@ func VerifyBlock(block database.Block, conn net.Conn) {
 
 	if err == nil {
 		logger.Println("peer_routes.go", "HandleConn()", "Sending response")
+		fmt.Println("Sending....")
 		conn.Write(jWrite)
 	}
 }

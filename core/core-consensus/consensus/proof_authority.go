@@ -33,6 +33,8 @@ func GenerateBlock(pIndex int, pHash string, transaction interface{}, pKey strin
 
 	newBlock.Hash = CalculateHash(header)
 
+	fmt.Println("%d", pIndex, newBlock)
+
 	return newBlock
 }
 
