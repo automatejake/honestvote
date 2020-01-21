@@ -13,6 +13,10 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 
 	elections, err := database.GetElections()
+	var electionInfos []database.ElectionInfo
+	for _, election := range elections {
+		electionInfos = append(electionInfos, election.ConvertInfo())
+	}
 	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	payload := Payload{
 		Timestamp: timestamp,
@@ -21,7 +25,7 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
-		payload.Data = elections
+		payload.Data = electionInfos
 	}
 	json.NewEncoder(w).Encode(payload)
 }
@@ -46,7 +50,12 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
-	voters, err := database.GetVotes(params["electionid"])
+	votes, err := database.GetVotes(params["electionid"])
+	var voteInfos []database.VoteInfo
+	for _, vote := range votes {
+		voteInfos = append(voteInfos, vote.ConvertInfo())
+	}
+
 	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	payload := Payload{
 		Timestamp: timestamp,
@@ -55,7 +64,7 @@ func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
-		payload.Data = voters
+		payload.Data = voteInfos
 	}
 	json.NewEncoder(w).Encode(payload)
 }
