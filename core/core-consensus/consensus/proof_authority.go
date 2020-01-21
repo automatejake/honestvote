@@ -40,10 +40,13 @@ func GenerateBlock(pIndex int, pHash string, transaction interface{}, pKey strin
 
 func VerifyHash(prevIndex int, prevHash string, block database.Block) bool {
 	if prevHash != block.PrevHash {
-		return false
-	} else if CalculateHash(GenerateHeader(block)) != block.Hash {
+		fmt.Println("Previous hash is wrong!")
 		return false
 	}
+	// else if strings.Compare(CalculateHash(GenerateHeader(block)), block.Hash) != 0 {
+	// 	fmt.Println("Block hash is wrong!", CalculateHash(GenerateHeader(block)))
+	// 	return false
+	// }
 
 	return true
 }
