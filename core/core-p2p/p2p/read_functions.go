@@ -9,6 +9,7 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-websocket/websocket"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -59,7 +60,9 @@ func ReceiveTransaction(data []byte, mType string) {
 
 	switch mType {
 	case "Vote":
-		transaction = database.Vote{Sender: "0xcheese", Receiver: map[int]string{1: "0xsugar", 2: "0xpeanut"}}
+		vote := database.Vote{Sender: "0xcheese", Receiver: map[int]string{1: "0xsugar", 2: "0xpeanut"}}
+		transaction = vote
+		websocket.Broadcast(vote)
 		blockType = "Vote"
 	case "Register":
 
