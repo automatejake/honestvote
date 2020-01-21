@@ -1,6 +1,15 @@
 package http
 
+import (
+	"net/http"
+
+	"github.com/jneubaum/honestvote/core/core-websocket/websocket"
+)
+
 func HandleFullRoutes() {
+	Router.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "websockets.html")
+	})
 	Router.HandleFunc("/elections", GetElectionsHandler).Methods("GET")
 	Router.HandleFunc("/election/{electionid}", GetElectionHandler).Methods("GET")          //good
 	Router.HandleFunc("/election/{electionid}/votes", GetVotesHandler).Methods("GET")       //good
@@ -8,7 +17,7 @@ func HandleFullRoutes() {
 	Router.HandleFunc("/election/{electionid}/vote", PostVoteHandler).Methods("POST")
 	Router.HandleFunc("/userpermissions/{publickey}/request", PostPermissionsHandler).Methods("POST")
 	Router.HandleFunc("/elections", PostElectionsHandler).Methods("POST")
-
+	Router.HandleFunc("/websocket", websocket.WebsocketHandler)
 	//this needs to be encrypted (send admin's public key and encrypted message containing email and public key)
 	Router.HandleFunc("/registerElection/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")
 	Router.HandleFunc("/registerElection", RegisterHandler).Methods("POST")

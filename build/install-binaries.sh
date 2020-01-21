@@ -6,8 +6,6 @@ go get go.mongodb.org/mongo-driver/mongo
 go get github.com/gorilla/mux
 go get github.com/mitchellh/mapstructure
 
-
-
 #this script should install binaries with go install
 cd ../core/core-administrator/administrator
 go install

@@ -1,83 +1,65 @@
+// websockets.go
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 )
 
-// 1
-type longLatStruct struct {
-	Long float64 `json:"longitude"`
-	Lat  float64 `json:"latitude"`
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
 }
 
-var clients = make(map[*websocket.Conn]bool)
-var broadcast = make(chan *longLatStruct)
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
+func HandleConn(conn *websocket.Conn) {
+
+	for {
+		time.Sleep(time.Second * 2)
+		if err := conn.WriteMessage(1, []byte("hello")); err != nil {
+			fmt.Println("connection closed")
+			conn.Close()
+			return
+		}
+		fmt.Println("message sent: hello")
+	}
+
 }
 
 func main() {
-	// 2
-	router := mux.NewRouter()
-	router.HandleFunc("/", rootHandler).Methods("GET")
-	router.HandleFunc("/longlat", longLatHandler).Methods("POST")
-	router.HandleFunc("/ws", wsHandler)
-	go echo()
+	// var m map[]string
 
-	log.Fatal(http.ListenAndServe(":8844", router))
-}
+	http.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
+		conn, _ := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
 
-func rootHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "home")
-}
+		go HandleConn(conn)
 
-func writer(coord *longLatStruct) {
-	broadcast <- coord
-}
+		for {
 
-func longLatHandler(w http.ResponseWriter, r *http.Request) {
-	var coordinates longLatStruct
-	if err := json.NewDecoder(r.Body).Decode(&coordinates); err != nil {
-		log.Printf("ERROR: %s", err)
-		http.Error(w, "Bad request", http.StatusTeapot)
-		return
-	}
-	log.Println("longlathandler")
-	defer r.Body.Close()
-	go writer(&coordinates)
-}
-
-func wsHandler(w http.ResponseWriter, r *http.Request) {
-	ws, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// register client
-	clients[ws] = true
-}
-
-// 3
-func echo() {
-	for {
-		val := <-broadcast
-		latlong := fmt.Sprintf("%f %f %s", val.Lat, val.Long, "Jacob is so cool")
-		// send to every client that is currently connected
-		for client := range clients {
-			err := client.WriteJSON([]byte(latlong))
+			// Read message from browser
+			msgType, msg, err := conn.ReadMessage()
 			if err != nil {
-				log.Printf("Websocket error: %s", err)
-				client.Close()
-				delete(clients, client)
+				conn.Close()
+				return
+			}
+
+			// Print the message to the console
+			fmt.Printf("%s sent: %s\n", conn.RemoteAddr(), string(msg))
+
+			fmt.Println(msgType)
+			// Write message back to browser
+			if err = conn.WriteMessage(msgType, msg); err != nil {
+				conn.Close()
+				return
 			}
 		}
-	}
+	})
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "websockets.html")
+	})
+
+	http.ListenAndServe(":8080", nil)
 }
