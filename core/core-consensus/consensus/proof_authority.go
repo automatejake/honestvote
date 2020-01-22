@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
+
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
@@ -79,4 +81,64 @@ func GenerateHeader(block database.Block) string {
 	}
 
 	return header
+}
+
+//THESE MIGHT BE MOVED TO DIFFERENT FILE
+
+func CreateSignature(transaction interface{}, privKey string) string {
+	var header string
+
+	if t, ok := transaction.(database.Vote); ok {
+		header = string(t.Sender)
+
+		for k, v := range t.Receiver {
+			header = header + k + v
+		}
+
+		sig, err := crypto.Sign([]byte(header), privKey)
+
+		if err == nil {
+			return sig
+		}
+	} else if t, ok := transaction.(database.Election); ok {
+		header = t.ElectionName + t.Start + t.End
+
+		sig, err := crypto.Sign([]byte(header), privKey)
+
+		if err == nil {
+			return sig
+		}
+	}
+
+	return "There was an error"
+}
+
+func VerifySignature(transaction interface{}, pubKey string) bool {
+	var header string
+
+	if t, ok := transaction.(*database.Vote); ok {
+		header = string(t.Sender)
+
+		for k, v := range t.Receiver {
+			header = header + k + v
+		}
+
+		correct, err := crypto.Verify([]byte(header), pubKey, t.Signature)
+
+		if err == nil {
+			fmt.Println("Signature is ", correct)
+			return correct
+		}
+	} else if t, ok := transaction.(*database.Election); ok {
+		header = t.ElectionName + t.Start + t.End
+
+		correct, err := crypto.Verify([]byte(header), pubKey, t.Signature)
+
+		if err == nil {
+			fmt.Println("Signature is ", correct)
+			return correct
+		}
+	}
+
+	return false
 }

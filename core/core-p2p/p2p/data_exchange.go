@@ -53,13 +53,24 @@ func DecideType(data []byte, mType string, conn net.Conn) {
 //Decide if the block sent is valid
 func VerifyBlock(block database.Block, conn net.Conn) {
 	var valid bool
+	var pubKey, sig string
 
-	if consensus.VerifyHash(PrevIndex, PrevHash, block) {
-		// fmt.Println("Hash was valid %v", block)
-		valid = true
+	//Grab the sender's public key and signature to verify with
+	for k, v := range block.Signatures {
+		pubKey = k
+		sig = v
+	}
+
+	if consensus.VerifySignature(block.Transaction, pubKey) {
+		if consensus.VerifyHash(PrevIndex, PrevHash, block) {
+			// fmt.Println("Hash was valid %v", block)
+			valid = true
+		} else {
+			// fmt.Println("Hash was not valid %v", block)
+			valid = false
+		}
 	} else {
-		// fmt.Println("Hash was not valid %v", block)
-		valid = false
+		fmt.Println("Signature is wrong: ", sig)
 	}
 
 	j, err := json.Marshal(block)
