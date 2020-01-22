@@ -35,6 +35,19 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 
 func PostElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	decoder := json.NewDecoder(r.Body)
+	var election database.Election
+	err := decoder.Decode(&election)
+	if err != nil {
+		panic(err)
+	}
+	election.Type = "Election"
+	e, err := json.Marshal(election)
+	if err != nil {
+
+	}
+
+	p2p.ReceiveTransaction(e, "Election")
 
 }
 

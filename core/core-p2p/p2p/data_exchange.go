@@ -55,10 +55,10 @@ func VerifyBlock(block database.Block, conn net.Conn) {
 	var valid bool
 
 	if consensus.VerifyHash(PrevIndex, PrevHash, block) {
-		fmt.Println("Hash was valid %v", block)
+		// fmt.Println("Hash was valid %v", block)
 		valid = true
 	} else {
-		fmt.Println("Hash was not valid %v", block)
+		// fmt.Println("Hash was not valid %v", block)
 		valid = false
 	}
 
@@ -104,7 +104,7 @@ func CheckResponses(size int) {
 				fmt.Println("Everything is good.")
 				ProposedBlock.Signatures[pKey] = sig
 			} else {
-				fmt.Println("%t %t", valid, b)
+				// fmt.Println("%t %t", valid, b)
 				counter--
 			}
 		}

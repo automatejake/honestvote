@@ -34,5 +34,9 @@ go install
 cd ../../core-registry/registry
 go install
 
+cd ../../core-websocket/websocket
+go install
+
 cd ../../../tests/logger
 go install
+
