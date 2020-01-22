@@ -60,7 +60,7 @@ func ReceiveTransaction(data []byte, mType string) {
 
 	switch mType {
 	case "Vote":
-		transaction = database.Vote{Sender: "0xcheese", Receiver: map[string]string{"1": "0xsugar", "2": "0xpeanut"}}
+		vote := database.Vote{Sender: "0xcheese", Receiver: map[string]string{"1": "0xsugar", "2": "0xpeanut"}}
 		transaction = vote
 		websocket.Broadcast(vote)
 		blockType = "Vote"
