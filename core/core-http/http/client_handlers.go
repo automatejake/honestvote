@@ -2,12 +2,41 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 )
+
+func PostPermissionsHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
+
+}
+
+func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
+	decoder := json.NewDecoder(r.Body)
+	var vote database.Vote
+	err := decoder.Decode(&vote)
+	if err != nil {
+		panic(err)
+	}
+	vote.Type = "Vote"
+	v, err := json.Marshal(vote)
+	if err != nil {
+
+	}
+
+	p2p.ReceiveTransaction(v, "Vote")
+}
+
+func PostElectionsHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
+
+}
 
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
@@ -16,6 +45,7 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	var electionInfos []database.ElectionInfo
 	for _, election := range elections {
 		electionInfos = append(electionInfos, election.ConvertInfo())
+		fmt.Println(election.ConvertInfo())
 	}
 	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	payload := Payload{
@@ -51,10 +81,10 @@ func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
 	votes, err := database.GetVotes(params["electionid"])
-	var voteInfos []database.VoteInfo
-	for _, vote := range votes {
-		voteInfos = append(voteInfos, vote.ConvertInfo())
-	}
+	// var voteInfos []database.VoteInfo
+	// for _, vote := range votes {
+	// 	voteInfos = append(voteInfos, vote.ConvertInfo())
+	// }
 
 	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	payload := Payload{
@@ -64,7 +94,7 @@ func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
-		payload.Data = voteInfos
+		payload.Data = votes
 	}
 	json.NewEncoder(w).Encode(payload)
 }
@@ -89,16 +119,4 @@ func GetPermissionsHandler(w http.ResponseWriter, r *http.Request) {
 		payload.Data = permissions
 	}
 	json.NewEncoder(w).Encode(payload)
-}
-
-func PostPermissionsHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
-}
-
-func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
-}
-
-func PostElectionsHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
 }
