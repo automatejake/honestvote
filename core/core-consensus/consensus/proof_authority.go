@@ -43,7 +43,7 @@ func VerifyHash(prevIndex int, prevHash string, block database.Block) bool {
 		fmt.Println("Previous hash is wrong!")
 		return false
 	}
-	// else if strings.Compare(CalculateHash(GenerateHeader(block)), block.Hash) != 0 {
+	// else if CalculateHash(GenerateHeader(block)) != block.Hash {
 	// 	fmt.Println("Block hash is wrong!", CalculateHash(GenerateHeader(block)))
 	// 	return false
 	// }
@@ -58,19 +58,15 @@ func GenerateHeader(block database.Block) string {
 		header = string(block.Index) + block.Timestamp +
 			string(t.Sender) + block.PrevHash
 
-		fmt.Println(t)
-
-		for _, v := range t.Receiver {
-			header = header + v
+		for k, v := range t.Receiver {
+			header = header + k + v
 		}
 	} else if t, ok := block.Transaction.(*database.Vote); ok {
 		header = string(block.Index) + block.Timestamp +
 			string(t.Sender) + block.PrevHash
 
-		fmt.Println(t)
-
-		for _, v := range t.Receiver {
-			header = header + v
+		for k, v := range t.Receiver {
+			header = header + k + v
 		}
 	} else if t, ok := block.Transaction.(database.Election); ok {
 		header = string(block.Index) + block.Timestamp +

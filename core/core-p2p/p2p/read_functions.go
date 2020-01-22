@@ -60,12 +60,13 @@ func ReceiveTransaction(data []byte, mType string) {
 
 	switch mType {
 	case "Vote":
-		vote := database.Vote{Sender: "0xcheese", Receiver: map[int]string{1: "0xsugar", 2: "0xpeanut"}}
+		transaction = database.Vote{Sender: "0xcheese", Receiver: map[string]string{"1": "0xsugar", "2": "0xpeanut"}}
 		transaction = vote
 		websocket.Broadcast(vote)
 		blockType = "Vote"
 	case "Register":
-
+		transaction = database.Registration{Election: "0xelection", Sender: "0xadmin", Receiver: "0xcheese"}
+		blockType = "Vote"
 	case "Election":
 		//Temporary Variable, will be data unmarshalled
 		transaction = database.Election{ElectionName: "WCU", Start: "3/23/2020", End: "3/30/2020"}

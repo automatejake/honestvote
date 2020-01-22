@@ -40,6 +40,9 @@ func DecideType(data []byte, mType string, conn net.Conn) {
 	} else if mType == "Election" {
 		election := &database.Election{}
 		block = database.Block{Transaction: election}
+	} else if mType == "Registration" {
+		registration := &database.Registration{}
+		block = database.Block{Transaction: registration}
 	}
 
 	json.Unmarshal(data, &block)
