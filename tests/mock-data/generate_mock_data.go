@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 )
@@ -13,13 +14,17 @@ func main() {
 	private_key, public_key := crypto.GenerateKeyPair()
 	fmt.Println("Admin Private Key:\n" + private_key + "\n")
 	fmt.Println("Admin Public Key\n" + public_key + "\n")
+
+	start := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	end := time.Now().AddDate(0, 0, 200).Format("Mon, 02 Jan 2006 15:04:05 MST") //200 days in  the future
+
 	var election Election = Election{
 		Type:         "Election",
 		ElectionName: "Student Government Elections",
 		Institution:  "West Chester University",
 		Description:  "Spring Elections",
-		Start:        "",
-		End:          "",
+		Start:        start,
+		End:          end,
 		EmailDomain:  "wcupa.edu",
 		Sender:       public_key,
 	}
