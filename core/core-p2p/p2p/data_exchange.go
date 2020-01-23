@@ -19,7 +19,7 @@ func ProposeBlock(block database.Block, peers []net.Conn) {
 	write := new(Message)
 	write.Message = "verify"
 	write.Data = j
-	write.Type = block.Type
+	write.Type = TransactionType(block.Transaction)
 
 	jWrite, err := json.Marshal(write)
 
@@ -61,12 +61,12 @@ func VerifyBlock(block database.Block, conn net.Conn) {
 		sig = v
 	}
 
-	if consensus.VerifySignature(block.Transaction, pubKey) {
+	if VerifySignature(block.Transaction, pubKey) {
 		if consensus.VerifyHash(PrevIndex, PrevHash, block) {
-			// fmt.Println("Hash was valid %v", block)
+			fmt.Println("Hash was valid %v", block)
 			valid = true
 		} else {
-			// fmt.Println("Hash was not valid %v", block)
+			fmt.Println("Hash was not valid %v", block)
 			valid = false
 		}
 	} else {

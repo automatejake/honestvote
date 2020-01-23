@@ -56,29 +56,24 @@ func DecodeData(buffer *bytes.Buffer) {
 func ReceiveTransaction(data []byte, mType string) {
 
 	var transaction interface{}
-	var blockType string
 
 	switch mType {
 	case "Vote":
-		vote := database.Vote{Sender: "0xcheese", Receiver: map[string]string{"1": "0xsugar", "2": "0xpeanut"}}
-		vote.Signature = consensus.CreateSignature(vote, PrivateKey)
+		vote := database.Vote{Type: mType, Sender: "0xcheese", Receiver: map[string]string{"1": "0xsugar", "2": "0xpeanut"}}
+		vote.Signature = CreateSignature(vote, PrivateKey)
 		transaction = vote
 		websocket.Broadcast(vote)
-		blockType = "Vote"
 	case "Register":
-		register := database.Registration{Election: "0xelection", Sender: "0xadmin", Receiver: "0xcheese"}
-		register.Signature = consensus.CreateSignature(register, PrivateKey)
-		blockType = "Register"
+		register := database.Registration{Type: mType, Election: "0xelection", Sender: "0xadmin", Receiver: "0xcheese"}
+		register.Signature = CreateSignature(register, PrivateKey)
 	case "Election":
 		//Temporary Variable, will be data unmarshalled
-		election := database.Election{ElectionName: "WCU", Start: "3/23/2020", End: "3/30/2020"}
-		election.Signature = consensus.CreateSignature(election, PrivateKey)
+		election := database.Election{Type: mType, ElectionName: "WCU", Start: "3/23/2020", End: "3/30/2020"}
+		election.Signature = CreateSignature(election, PrivateKey)
 		transaction = election
-		blockType = "Election"
 	}
 
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, transaction, PublicKey)
-	block.Type = blockType
 
 	//Check if there is a proposed block currently, if so, add to the queue
 	if reflect.DeepEqual(ProposedBlock, database.Block{}) {
