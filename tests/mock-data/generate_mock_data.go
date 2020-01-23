@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 	start := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	end := time.Now().AddDate(0, 0, 200).Format("Mon, 02 Jan 2006 15:04:05 MST") //200 days in  the future
 
-	var election Election = Election{
+	var election database.Election = database.Election{
 		Type:         "Election",
 		ElectionName: "Student Government Elections",
 		Institution:  "West Chester University",
@@ -26,23 +27,23 @@ func main() {
 		Start:        start,
 		End:          end,
 		EmailDomain:  "wcupa.edu",
-		Sender:       public_key,
+		Sender:       database.PublicKey(public_key),
 	}
 
-	election.Positions = []Position{
-		Position{
+	election.Positions = []database.Position{
+		database.Position{
 			PositionId: "demfrmeororev",
 			Name:       "Student Government President",
-			Candidates: []Candidate{
-				Candidate{
+			Candidates: []database.Candidate{
+				database.Candidate{
 					Name:      "John Doe",
 					Recipient: "test1",
 				},
-				Candidate{
+				database.Candidate{
 					Name:      "Sarah Jennings",
 					Recipient: "test2",
 				},
-				Candidate{
+				database.Candidate{
 					Name:      "Maximus Footless",
 					Recipient: "test3",
 				},
@@ -57,11 +58,11 @@ func main() {
 	}
 	election.Signature = signature
 
-	var registration Registration = Registration{
+	var registration database.Registration = database.Registration{
 		Type:     "Registration",
 		Election: election.Signature,
 		Receiver: "test3",
-		Sender:   public_key,
+		Sender:   database.PublicKey(public_key),
 	}
 
 	jsonRegistration, _ := json.Marshal(registration)
@@ -73,11 +74,11 @@ func main() {
 	registration.Signature = signature
 
 	private_key, public_key = crypto.GenerateKeyPair()
-	var vote Vote = Vote{
+	var vote database.Vote = database.Vote{
 		Type:     "Vote",
 		Election: election.Signature,
 		Receiver: map[string]string{"demfrmeororev": "test1"},
-		Sender:   public_key,
+		Sender:   database.PublicKey(public_key),
 	}
 
 	fmt.Println("Voter Private Key:\n" + private_key + "\n")
@@ -103,42 +104,42 @@ func main() {
 }
 
 // valid votes have a corresponding registration transaction with the public key
-type Vote struct {
-	Type      string            `json:"type"`
-	Election  string            `json:"election"` //Data Start
-	Receiver  map[string]string `json:"receiver"` //Data End
-	Sender    string            `json:"sender"`
-	Signature string            `json:"signature"`
-}
+// type Vote struct {
+// 	Type      string            `json:"type"`
+// 	Election  string            `json:"election"` //Data Start
+// 	Receiver  map[string]string `json:"receiver"` //Data End
+// 	Sender    string            `json:"sender"`
+// 	Signature string            `json:"signature"`
+// }
 
-type Registration struct {
-	Type      string `json:"type"`
-	Election  string `json:"election"` //Data Start
-	Receiver  string `json:"receiver"` //Data End
-	Sender    string `json:"sender"`
-	Signature string `json:"signature"`
-}
+// type Registration struct {
+// 	Type      string `json:"type"`
+// 	Election  string `json:"election"` //Data Start
+// 	Receiver  string `json:"receiver"` //Data End
+// 	Sender    string `json:"sender"`
+// 	Signature string `json:"signature"`
+// }
 
-type Election struct {
-	Type         string     `json:"type"`
-	ElectionName string     `json:"electionName"` //Data Start
-	Institution  string     `json:"institutionName"`
-	Description  string     `json:"description"`
-	Start        string     `json:"startDate"`
-	End          string     `json:"endDate"`
-	EmailDomain  string     `json:"emailDomain"`
-	Positions    []Position `json:"positions"` //Data End
-	Sender       string     `json:"sender"`
-	Signature    string     `json:"id"`
-}
+// type Election struct {
+// 	Type         string     `json:"type"`
+// 	ElectionName string     `json:"electionName"` //Data Start
+// 	Institution  string     `json:"institutionName"`
+// 	Description  string     `json:"description"`
+// 	Start        string     `json:"startDate"`
+// 	End          string     `json:"endDate"`
+// 	EmailDomain  string     `json:"emailDomain"`
+// 	Positions    []Position `json:"positions"` //Data End
+// 	Sender       string     `json:"sender"`
+// 	Signature    string     `json:"id"`
+// }
 
-type Position struct {
-	PositionId string      `json:"id"`
-	Name       string      `json:"displayName"`
-	Candidates []Candidate `json:"candidates"`
-}
+// type Position struct {
+// 	PositionId string      `json:"id"`
+// 	Name       string      `json:"displayName"`
+// 	Candidates []Candidate `json:"candidates"`
+// }
 
-type Candidate struct {
-	Name      string `json:"name"`
-	Recipient string `json:"key"`
-}
+// type Candidate struct {
+// 	Name      string `json:"name"`
+// 	Recipient string `json:"key"`
+// }

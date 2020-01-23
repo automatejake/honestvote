@@ -63,8 +63,8 @@ func ReceiveTransaction(data []byte, mType string) {
 		vote := database.Vote{Sender: "0xcheese", Receiver: map[string]string{"1": "0xsugar", "2": "0xpeanut"}}
 		vote.Signature = consensus.CreateSignature(vote, PrivateKey)
 		transaction = vote
-		websocket.Broadcast(vote)
 		blockType = "Vote"
+		websocket.Broadcast(vote)
 	case "Register":
 		register := database.Registration{Election: "0xelection", Sender: "0xadmin", Receiver: "0xcheese"}
 		register.Signature = consensus.CreateSignature(register, PrivateKey)

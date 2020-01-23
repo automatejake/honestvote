@@ -16,12 +16,12 @@ import (
 func ProposeBlock(block database.Block, peers []net.Conn) {
 	j, err := json.Marshal(block)
 
-	write := new(Message)
-	write.Message = "verify"
-	write.Data = j
-	write.Type = block.Type
+	message := new(Message)
+	message.Message = "verify"
+	message.Data = j
+	message.Type = block.Type
 
-	jWrite, err := json.Marshal(write)
+	jWrite, err := json.Marshal(message)
 
 	if err == nil {
 		fmt.Println(len(peers))
