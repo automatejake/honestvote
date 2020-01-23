@@ -45,17 +45,16 @@ type Vote struct {
 }
 
 type Election struct {
-	Type              string     `json:"type"`
-	ElectionName      string     `json:"electionName"` //Data Start
-	Institution       string     `json:"institutionName"`
-	Description       string     `json:"description"`
-	Start             string     `json:"startDate"`
-	End               string     `json:"endDate"`
-	EmailDomain       string     `json:"emailDomain"`
-	Positions         []Position `json:"positions"` //Data End
-	AllowedCandidates []string   `json:"allowedCandidates"`
-	Sender            PublicKey  `json:"sender"`
-	Signature         string     `json:"id"`
+	Type         string     `json:"type"`
+	ElectionName string     `json:"electionName"` //Data Start
+	Institution  string     `json:"institutionName"`
+	Description  string     `json:"description"`
+	Start        string     `json:"startDate"`
+	End          string     `json:"endDate"`
+	EmailDomain  string     `json:"emailDomain"`
+	Positions    []Position `json:"positions"` //Data End
+	Sender       PublicKey  `json:"sender"`
+	Signature    string     `json:"id"`
 }
 
 type Position struct {
