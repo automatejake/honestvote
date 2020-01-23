@@ -1,65 +1,95 @@
-// websockets.go
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"net/http"
-	"time"
 
-	"github.com/gorilla/websocket"
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-func HandleConn(conn *websocket.Conn) {
-
-	for {
-		time.Sleep(time.Second * 2)
-		if err := conn.WriteMessage(1, []byte("hello")); err != nil {
-			fmt.Println("connection closed")
-			conn.Close()
-			return
-		}
-		fmt.Println("message sent: hello")
+func main() {
+	private_key, public_key := crypto.GenerateKeyPair()
+	fmt.Println("Private Key" + private_key)
+	fmt.Println("Public Key" + public_key)
+	var election Election = Election{
+		Type:         "Election\n",
+		ElectionName: "Student Government Elections\n",
+		Institution:  "West Chester University\n",
+		Description:  "Spring Elections\n",
+		Start:        "\n",
+		End:          "\n",
+		EmailDomain:  "wcupa.edu\n",
+		Sender:       public_key,
 	}
 
+	election.Positions = []Position{
+		Position{
+			PositionId: "demfrmeororev",
+			Name:       "Student Government President\n",
+			Candidates: []Candidate{
+				Candidate{
+					Name:      "John Doe",
+					Recipient: "test1",
+				},
+				Candidate{
+					Name:      "Sarah Jennings",
+					Recipient: "test2",
+				},
+				Candidate{
+					Name:      "Maximus Footless",
+					Recipient: "test3\n",
+				},
+			},
+		},
+	}
+
+	jsonElection, _ := json.Marshal(election)
+	signature, err := crypto.Sign(jsonElection, private_key)
+	if err != nil {
+		fmt.Println(err)
+	}
+	election.Signature = signature
+
+	fmt.Printf("%+v\n", election)
 }
 
-func main() {
-	// var m map[]string
+type Election struct {
+	Type         string     `json:"type"`
+	ElectionName string     `json:"electionName"` //Data Start
+	Institution  string     `json:"institutionName"`
+	Description  string     `json:"description"`
+	Start        string     `json:"startDate"`
+	End          string     `json:"endDate"`
+	EmailDomain  string     `json:"emailDomain"`
+	Positions    []Position `json:"positions"` //Data End
+	Sender       string     `json:"sender"`
+	Signature    string     `json:"id"`
+}
 
-	http.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
-		conn, _ := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
+type Position struct {
+	PositionId string      `json:"id"`
+	Name       string      `json:"displayName"`
+	Candidates []Candidate `json:"candidates"`
+}
 
-		go HandleConn(conn)
+type Candidate struct {
+	Name      string `json:"name"`
+	Recipient string `json:"key"`
+}
 
-		for {
+type Registration struct {
+	Type      string `json:"type"`
+	Election  string `json:"election"` //Data Start
+	Receiver  string `json:"receiver"` //Data End
+	Sender    string `json:"sender"`
+	Signature string `json:"signature"`
+}
 
-			// Read message from browser
-			msgType, msg, err := conn.ReadMessage()
-			if err != nil {
-				conn.Close()
-				return
-			}
-
-			// Print the message to the console
-			fmt.Printf("%s sent: %s\n", conn.RemoteAddr(), string(msg))
-
-			fmt.Println(msgType)
-			// Write message back to browser
-			if err = conn.WriteMessage(msgType, msg); err != nil {
-				conn.Close()
-				return
-			}
-		}
-	})
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "websockets.html")
-	})
-
-	http.ListenAndServe(":8080", nil)
+// valid votes have a corresponding registration transaction with the public key
+type Vote struct {
+	Type      string            `json:"type"`
+	Election  string            `json:"election"` //Data Start
+	Receiver  map[string]string `json:"receiver"` //Data End
+	Sender    string            `json:"sender"`
+	Signature string            `json:"signature"`
 }
