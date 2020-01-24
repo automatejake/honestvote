@@ -20,25 +20,25 @@ func HandleConn(conn net.Conn) {
 
 	for {
 
-		var write Message
-		err := d.Decode(&write)
+		var message Message
+		err := d.Decode(&message)
 
 		if err != nil {
 			logger.Println("peer_routes.go", "HandleConn()", err.Error())
 			return
 		}
 
-		switch write.Message {
+		switch message.Message {
 		case "connect":
 			logger.Println("peer_routes.go", "HandleConn()", "Recieved Connect Message")
 
 			var node database.Node
-			json.Unmarshal(write.Data, &node)
+			json.Unmarshal(message.Data, &node)
 
 			AcceptConnectMessage(node, conn)
 		case "send connected nodes":
 			var node database.Node
-			json.Unmarshal(write.Data, &node)
+			json.Unmarshal(message.Data, &node)
 			tmp_peers := database.FindNodes()
 			fmt.Println(tmp_peers)
 			if tmp_peers != nil {
@@ -52,32 +52,30 @@ func HandleConn(conn net.Conn) {
 				}
 			}
 		case "recieve data":
-			buffer := bytes.NewBuffer(write.Data)
+			buffer := bytes.NewBuffer(message.Data)
 			DecodeData(buffer)
 		case "get data":
 			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		case "transaction":
-			ReceiveTransaction(write.Data, write.Type)
+			ReceiveTransaction(message.Data, message.Type)
 		case "register":
 			tcp_port := strconv.Itoa(TCP_PORT)
 			registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)
 		case "become peer":
 			var node database.Node
-			json.Unmarshal(write.Data, &node)
+			json.Unmarshal(message.Data, &node)
 			// administrator.ProposePeer(node)
-		case "new election":
-			//Create a new election
 		case "verify":
-			DecideType(write.Data, write.Type, conn)
+			DecideType(message.Data, message.Type, conn)
 		case "sign":
-			answer, err := strconv.ParseBool(string(write.Data))
+			answer, err := strconv.ParseBool(string(message.Data))
 
 			if err == nil {
-				ReceiveResponses(answer, write.Signature)
+				ReceiveResponses(answer, message.Signature)
 			}
 		case "update":
 			block := new(database.Block)
-			json.Unmarshal(write.Data, block)
+			json.Unmarshal(message.Data, block)
 			if database.UpdateBlockchain(database.MongoDB, *block) {
 				PrevHash = block.Hash
 				PrevIndex = block.Index
