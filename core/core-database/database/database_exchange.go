@@ -60,3 +60,20 @@ func FindDocument(client *mongo.Client, collection string, info interface{}, dTy
 
 	return nil
 }
+
+func CheckVote(client *mongo.Client, search bson.D) {
+
+	var object bson.M
+
+	collection := client.Database("honestvote").Collection(CollectionPrefix + "blockchain")
+
+	result := collection.FindOne(context.TODO(), search)
+
+	result.Decode(&object)
+
+	transcation := object["transaction"]
+
+	if t, ok := transcation.(primitive.M); ok {
+		fmt.Println(t["type"])
+	}
+}

@@ -10,6 +10,7 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-registration/registration"
 	"github.com/jneubaum/honestvote/tests/logger"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func HandleConn(conn net.Conn) {
@@ -81,6 +82,8 @@ func HandleConn(conn net.Conn) {
 				PrevIndex = block.Index
 				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
+		case "find":
+			database.CheckVote(database.MongoDB, bson.D{{"index", 2}})
 		default:
 			logger.Println("peer_routes.go", "HandleConn", "Recieved Bad Message")
 			conn.Close()
