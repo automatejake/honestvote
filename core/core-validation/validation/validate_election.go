@@ -1,8 +1,59 @@
 package validation
 
-import "github.com/jneubaum/honestvote/core/core-database/database"
+import (
+	"time"
 
-func IsValidElection(e database.Election) bool {
+	"github.com/jneubaum/honestvote/core/core-database/database"
+)
 
-	return false
+func IsValidElection(e database.Election) (bool, error) {
+	err := &ValidationError{
+		Time: time.Now(),
+	}
+	end := ", transaction is invalid"
+
+	//Check to see if Election type is correctly stored in transaction
+	if e.Type != "Election" {
+		err.Message = "Transaction is incorrect type" + end
+		return false, err
+	}
+
+	//Check to see if institution matches public key of sender
+	if e.ElectionName != "Election" {
+		err.Message = "Transaction is incorrect type" + end
+		return false, err
+	}
+
+	//Check to see if election end is valid
+
+	//Check to see if election contains postions with unique ids and candidates with uniqued recipient ids
+
+	//Check to see if sender matches the public keys of a legitimate administrator node
+
+	err = nil
+	return true, err
+}
+
+type Election struct {
+	Type         string     `json:"type"`
+	ElectionName string     `json:"electionName"` //Data Start
+	Institution  string     `json:"institutionName"`
+	Description  string     `json:"description"`
+	Start        string     `json:"startDate"`
+	End          string     `json:"endDate"`
+	EmailDomain  string     `json:"emailDomain"`
+	Positions    []Position `json:"positions"` //Data End
+	Sender       string     `json:"sender"`
+	Signature    string     `json:"id"`
+}
+
+type Position struct {
+	PositionId string      `json:"id"`
+	Name       string      `json:"displayName"`
+	Candidates []Candidate `json:"candidates"`
+}
+
+type Candidate struct {
+	Name      string `json:"name"`
+	Recipient string `json:"key"`
 }
