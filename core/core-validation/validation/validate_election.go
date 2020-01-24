@@ -18,20 +18,25 @@ func IsValidElection(e database.Election) (bool, error) {
 		return false, err
 	}
 
-	//Check to see if Election type is correctly stored in transaction
-	if e.Type != "Election" {
-		err.Message = "Transaction is incorrect type" + end
-		return false, err
-	}
-
 	//Check to see if institution matches public key of sender
 	if e.ElectionName != "Election" {
 		err.Message = "Transaction is incorrect type" + end
 		return false, err
 	}
 
+	//Check to see if Election type is correctly stored in transaction
+	if e.Type != "Election" {
+		err.Message = "Transaction is incorrect type" + end
+		return false, err
+	}
+
 	//Check to see if election end is valid
-	if e.End != "" {
+	check := time.Time{}
+	now, er := time.Parse(e.End, "")
+	if er != nil {
+
+	}
+	if check.Before(now) {
 		err.Message = "Transaction end date is already past" + end
 		return false, err
 	}
@@ -58,6 +63,7 @@ func IsValidElection(e database.Election) (bool, error) {
 		}
 	}
 
+	//if all passes, then transaction is valid
 	err = nil
 	return true, err
 }
