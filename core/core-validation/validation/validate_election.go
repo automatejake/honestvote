@@ -13,7 +13,7 @@ func IsValidElection(e database.Election) (bool, error) {
 	end := ", transaction is invalid"
 
 	//Check to see if sender matches the public key of a legitimate administrator node
-	if e.End != "" {
+	if e.Sender != "" {
 		err.Message = "" + end
 		return false, err
 	}
@@ -37,11 +37,15 @@ func IsValidElection(e database.Election) (bool, error) {
 	}
 
 	//Check to see if election contains postions with unique ids and candidates with uniqued recipient ids
-	if e.End != "" {
-
-		err.Message = "Transaction " + end
-		return false, err
+	for _, position := range e.Positions {
+		position.Name = ""
 	}
+
+	// if e.End != "" {
+
+	// 	err.Message = "Transaction blah" + end
+	// 	return false, err
+	// }
 
 	err = nil
 	return true, err
