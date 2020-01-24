@@ -83,7 +83,6 @@ func HandleConn(conn net.Conn) {
 				PrevIndex = block.Index
 				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
-		case "find":
 		default:
 			logger.Println("peer_routes.go", "HandleConn", "Recieved Bad Message")
 			conn.Close()
