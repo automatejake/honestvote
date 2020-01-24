@@ -30,7 +30,7 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	p2p.ReceiveTransaction(v, "Vote")
+	p2p.ReceiveTransaction(v, "Vote", nil)
 }
 
 func PostElectionsHandler(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +47,7 @@ func PostElectionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	p2p.ReceiveTransaction(e, "Election")
+	p2p.ReceiveTransaction(e, "Election", nil)
 
 }
 

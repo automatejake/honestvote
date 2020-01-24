@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -32,33 +31,6 @@ func UpdateBlockchain(client *mongo.Client, block Block) bool {
 	}
 
 	return true
-}
-
-//Find the document you're looking for
-func FindDocument(client *mongo.Client, collection string, info interface{}, dType string) interface{} {
-	var document bson.M
-
-	search := bson.D{info.(primitive.E)}
-
-	c := client.Database("honestvote").Collection(collection)
-
-	err := c.FindOne(context.TODO(), search).Decode(&document)
-
-	if err != nil {
-		fmt.Println("Document not found!")
-		return nil
-	}
-
-	j, err := json.Marshal(document)
-	if err == nil {
-		if dType == "Vote" {
-			vote := new(Vote)
-			json.Unmarshal(j, &vote)
-			fmt.Println(vote)
-		}
-	}
-
-	return nil
 }
 
 func CheckVote(client *mongo.Client) {

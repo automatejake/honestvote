@@ -57,7 +57,7 @@ func HandleConn(conn net.Conn) {
 		case "get data":
 			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
 		case "transaction":
-			ReceiveTransaction(message.Data, message.Type)
+			ReceiveTransaction(message.Data, message.Type, message.Transaction)
 		case "register":
 			tcp_port := strconv.Itoa(TCP_PORT)
 			registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)

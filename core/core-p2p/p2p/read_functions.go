@@ -9,7 +9,6 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
-	"github.com/jneubaum/honestvote/core/core-websocket/websocket"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -53,24 +52,22 @@ func DecodeData(buffer *bytes.Buffer) {
 }
 
 //Get vote from full node and turn it into a block and propose
-func ReceiveTransaction(data []byte, mType string) {
+func ReceiveTransaction(data []byte, mType string, transaction interface{}) {
 
-	var transaction interface{}
+	test, err := json.Marshal(transaction)
 
-	switch mType {
-	case "Vote":
-		vote := database.Vote{Type: mType, Sender: "0xcheese", Receiver: map[string]string{"1": "0xsugar", "2": "0xpeanut"}}
-		vote.Signature = CreateSignature(vote, PrivateKey)
-		transaction = vote
-		websocket.Broadcast(vote)
-	case "Register":
-		register := database.Registration{Type: mType, Election: "0xelection", Sender: "0xadmin", Receiver: "0xcheese"}
-		register.Signature = CreateSignature(register, PrivateKey)
-	case "Election":
-		//Temporary Variable, will be data unmarshalled
-		election := database.Election{Type: mType, ElectionName: "WCU", Start: "3/23/2020", End: "3/30/2020"}
-		election.Signature = CreateSignature(election, PrivateKey)
-		transaction = election
+	if mType == "Vote" && err == nil {
+		vote := &database.Vote{}
+		json.Unmarshal(test, vote)
+		transaction = *vote
+	} else if mType == "Election" && err == nil {
+		election := &database.Election{}
+		json.Unmarshal(test, election)
+		transaction = *election
+	} else if mType == "Registration" && err == nil {
+		registration := &database.Registration{}
+		json.Unmarshal(test, registration)
+		transaction = *registration
 	}
 
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, transaction, PublicKey)
