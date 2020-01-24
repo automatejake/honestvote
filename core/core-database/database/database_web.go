@@ -118,7 +118,10 @@ func GetPermissions(public_key string) ([]string, error) {
 		}
 
 		annoying_mongo_form := block.Transaction.(primitive.D)
-		mapstructure.Decode(annoying_mongo_form.Map(), &registration)
+		err = mapstructure.Decode(annoying_mongo_form.Map(), &registration)
+		if err != nil {
+			logger.Println("database_web", "GetElection", err.Error())
+		}
 
 		elections = append(elections, registration.Election)
 
