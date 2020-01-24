@@ -35,7 +35,7 @@ func CreateSignature(transaction interface{}, privKey string) string {
 	return "There was an error"
 }
 
-func VerifySignature(transaction interface{}, pubKey string) bool {
+func VerifySignature(transaction interface{}) bool {
 	var header string
 
 	if t, ok := transaction.(*database.Vote); ok {
@@ -45,7 +45,7 @@ func VerifySignature(transaction interface{}, pubKey string) bool {
 			header = header + k + v
 		}
 
-		correct, err := crypto.Verify([]byte(header), pubKey, t.Signature)
+		correct, err := crypto.Verify([]byte(header), string(t.Sender), t.Signature)
 
 		if err == nil {
 			fmt.Println("Signature is ", correct)
@@ -56,7 +56,7 @@ func VerifySignature(transaction interface{}, pubKey string) bool {
 	} else if t, ok := transaction.(*database.Election); ok {
 		header = t.ElectionName + t.Start + t.End
 
-		correct, err := crypto.Verify([]byte(header), pubKey, t.Signature)
+		correct, err := crypto.Verify([]byte(header), string(t.Sender), t.Signature)
 
 		if err == nil {
 			fmt.Println("Signature is ", correct)

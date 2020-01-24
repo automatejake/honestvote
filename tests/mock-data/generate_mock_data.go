@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"time"
 
+	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
+
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
@@ -52,11 +54,7 @@ func main() {
 	}
 
 	jsonElection, _ := json.Marshal(election)
-	signature, err := crypto.Sign(jsonElection, private_key)
-	if err != nil {
-		fmt.Println(err)
-	}
-	election.Signature = signature
+	election.Signature = p2p.CreateSignature(election, private_key)
 
 	var registration database.Registration = database.Registration{
 		Type:     "Registration",
@@ -66,12 +64,7 @@ func main() {
 	}
 
 	jsonRegistration, _ := json.Marshal(registration)
-	signature, err = crypto.Sign(jsonRegistration, private_key)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	registration.Signature = signature
+	registration.Signature = p2p.CreateSignature(registration, private_key)
 
 	private_key, public_key = crypto.GenerateKeyPair()
 	var vote database.Vote = database.Vote{
@@ -85,11 +78,7 @@ func main() {
 	fmt.Println("Voter Public Key\n" + public_key + "\n")
 
 	jsonVote, _ := json.Marshal(vote)
-	signature, err = crypto.Sign(jsonVote, private_key)
-	if err != nil {
-		fmt.Println(err)
-	}
-	vote.Signature = signature
+	vote.Signature = p2p.CreateSignature(vote, private_key)
 
 	jsonElection, _ = json.MarshalIndent(election, "", "\t")
 	jsonRegistration, _ = json.MarshalIndent(registration, "", "\t")
