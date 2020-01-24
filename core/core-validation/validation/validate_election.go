@@ -37,15 +37,26 @@ func IsValidElection(e database.Election) (bool, error) {
 	}
 
 	//Check to see if election contains postions with unique ids and candidates with uniqued recipient ids
+	positionSet := make(map[string]bool)
+	candidateSet := make(map[string]bool)
 	for _, position := range e.Positions {
-		position.Name = ""
+
+		if positionSet[position.PositionId] {
+			err.Message = "Transaction contains multiple position ids for a single transaction" + end
+			return false, err
+		}
+		positionSet[position.PositionId] = true
+
+		for _, candidate := range position.Candidates {
+			if candidate.Recipient == "" {
+				if candidateSet[candidate.Recipient] {
+					err.Message = "Transaction contains multiple recipients for a single transaction" + end
+					return false, err
+				}
+				candidateSet[candidate.Recipient] = true
+			}
+		}
 	}
-
-	// if e.End != "" {
-
-	// 	err.Message = "Transaction blah" + end
-	// 	return false, err
-	// }
 
 	err = nil
 	return true, err
