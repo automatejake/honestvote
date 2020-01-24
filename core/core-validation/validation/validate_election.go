@@ -12,6 +12,12 @@ func IsValidElection(e database.Election) (bool, error) {
 	}
 	end := ", transaction is invalid"
 
+	//Check to see if sender matches the public key of a legitimate administrator node
+	if e.End != "" {
+		err.Message = "" + end
+		return false, err
+	}
+
 	//Check to see if Election type is correctly stored in transaction
 	if e.Type != "Election" {
 		err.Message = "Transaction is incorrect type" + end
@@ -25,10 +31,17 @@ func IsValidElection(e database.Election) (bool, error) {
 	}
 
 	//Check to see if election end is valid
+	if e.End != "" {
+		err.Message = "Transaction end date is already past" + end
+		return false, err
+	}
 
 	//Check to see if election contains postions with unique ids and candidates with uniqued recipient ids
+	if e.End != "" {
 
-	//Check to see if sender matches the public keys of a legitimate administrator node
+		err.Message = "Transaction " + end
+		return false, err
+	}
 
 	err = nil
 	return true, err
