@@ -61,19 +61,27 @@ func FindDocument(client *mongo.Client, collection string, info interface{}, dTy
 	return nil
 }
 
-func CheckVote(client *mongo.Client, search bson.D) {
+func CheckVote(client *mongo.Client) {
 
 	var object bson.M
 
 	collection := client.Database("honestvote").Collection(CollectionPrefix + "blockchain")
 
-	result := collection.FindOne(context.TODO(), search)
+	result, err := collection.Find(context.TODO(), bson.D{})
 
-	result.Decode(&object)
+	if err != nil {
+		fmt.Println("Database Error! ", err)
+	}
 
-	transcation := object["transaction"]
+	for result.Next(context.TODO()) {
+		result.Decode(&object)
 
-	if t, ok := transcation.(primitive.M); ok {
-		fmt.Println(t["type"])
+		transcation := object["transaction"]
+
+		if t, ok := transcation.(primitive.M); ok {
+			if t["type"] == "Vote" && t["sender"] == "0xcheese" {
+				fmt.Println(t)
+			}
+		}
 	}
 }
