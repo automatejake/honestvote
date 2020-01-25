@@ -1,8 +1,10 @@
 package validation
 
 import (
+	"encoding/json"
 	"time"
 
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
@@ -11,6 +13,17 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 		Time: time.Now(),
 	}
 	ending := ", invalid tranaction fails"
+
+	//Check to see if signature is valid
+	registration, err := json.Marshal(r)
+	if err != nil {
+
+	}
+	valid, err := crypto.Verify(registration, r.Sender, r.Signature)
+	if !valid {
+		customErr.Message = "Registration transaction contains invalid signature" + ending
+		return false, customErr
+	}
 
 	//Check to see if election exists
 	election, err := database.GetElection(r.Election)

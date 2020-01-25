@@ -1,8 +1,10 @@
 package validation
 
 import (
+	"encoding/json"
 	"time"
 
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
@@ -11,6 +13,17 @@ func IsValidVote(v database.Vote) (bool, error) {
 		Time: time.Now(),
 	}
 	ending := ", invalid transaction fails"
+
+	//Check to see if signature is valid
+	vote, err := json.Marshal(v)
+	if err != nil {
+
+	}
+	valid, err := crypto.Verify(vote, v.Sender, v.Signature)
+	if !valid {
+		customErr.Message = "Vote transaction contains invalid signature" + ending
+		return false, customErr
+	}
 
 	//Check to see if election is a valid election
 	election, err := database.GetElection(v.Election)
@@ -42,8 +55,6 @@ func IsValidVote(v database.Vote) (bool, error) {
 			customErr.Message = "Vote transaction must be for a legitimate candidate" + ending
 			return false, customErr
 		}
-		// }
-
 	}
 
 	//Check to see if Vote type is correctly stored in transaction
@@ -63,12 +74,4 @@ func ContainsCandidate(p database.Position, c string) bool {
 		}
 	}
 	return false
-}
-
-type Vote struct {
-	Type      string             `json:"type"`
-	Election  string             `json:"election"` //Data Start
-	Receiver  map[string]string  `json:"receiver"` //Data End
-	Sender    database.PublicKey `json:"sender"`
-	Signature string             `json:"signature"`
 }
