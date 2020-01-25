@@ -54,28 +54,27 @@ func VerifyHash(prevIndex int, prevHash string, block database.Block) bool {
 func GenerateHeader(block database.Block) string {
 	var header string
 
-	if t, ok := block.Transaction.(database.Vote); ok {
+	switch t := block.Transaction.(type) {
+	case database.Vote:
 		header = string(block.Index) + block.Timestamp +
 			string(t.Sender) + block.PrevHash
 
 		for k, v := range t.Receiver {
 			header = header + k + v
 		}
-	} else if t, ok := block.Transaction.(*database.Vote); ok {
+	case *database.Vote:
 		header = string(block.Index) + block.Timestamp +
 			string(t.Sender) + block.PrevHash
 
 		for k, v := range t.Receiver {
 			header = header + k + v
 		}
-	} else if t, ok := block.Transaction.(database.Election); ok {
+	case database.Election:
 		header = string(block.Index) + block.Timestamp +
 			t.ElectionName + t.Start + t.End + block.PrevHash
-	} else if t, ok := block.Transaction.(*database.Election); ok {
+	case *database.Election:
 		header = string(block.Index) + block.Timestamp +
 			t.ElectionName + t.Start + t.End + block.PrevHash
-	} else {
-		fmt.Println(block.Transaction)
 	}
 
 	return header

@@ -7,38 +7,11 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func CreateSignature(transaction interface{}, privKey string) string {
-	var header string
-
-	if t, ok := transaction.(database.Vote); ok {
-		header = string(t.Sender)
-
-		for k, v := range t.Receiver {
-			header = header + k + v
-		}
-
-		sig, err := crypto.Sign([]byte(header), privKey)
-
-		if err == nil {
-			return sig
-		}
-	} else if t, ok := transaction.(database.Election); ok {
-		header = t.ElectionName + t.Start + t.End
-
-		sig, err := crypto.Sign([]byte(header), privKey)
-
-		if err == nil {
-			return sig
-		}
-	}
-
-	return "There was an error"
-}
-
 func VerifySignature(transaction interface{}) bool {
 	var header string
 
-	if t, ok := transaction.(*database.Vote); ok {
+	switch t := transaction.(type) {
+	case *database.Vote:
 		header = string(t.Sender)
 
 		for k, v := range t.Receiver {
@@ -50,10 +23,8 @@ func VerifySignature(transaction interface{}) bool {
 		if err == nil {
 			fmt.Println("Signature is ", correct)
 			return correct
-		} else {
-			fmt.Println("Error!")
 		}
-	} else if t, ok := transaction.(*database.Election); ok {
+	case *database.Election:
 		header = t.ElectionName + t.Start + t.End
 
 		correct, err := crypto.Verify([]byte(header), string(t.Sender), t.Signature)
@@ -61,8 +32,6 @@ func VerifySignature(transaction interface{}) bool {
 		if err == nil {
 			fmt.Println("Signature is ", correct)
 			return correct
-		} else {
-			fmt.Println("Error!")
 		}
 	}
 
@@ -71,12 +40,15 @@ func VerifySignature(transaction interface{}) bool {
 
 func TransactionType(transaction interface{}) string {
 
-	if _, ok := transaction.(database.Vote); ok {
+	switch t := transaction.(type) {
+	case database.Vote:
 		return "Vote"
-	} else if _, ok := transaction.(database.Registration); ok {
+	case database.Registration:
 		return "Registration"
-	} else if _, ok := transaction.(database.Election); ok {
+	case database.Election:
 		return "Election"
+	default:
+		fmt.Println(t)
 	}
 
 	return ""
