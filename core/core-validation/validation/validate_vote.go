@@ -36,11 +36,14 @@ func IsValidVote(v database.Vote) (bool, error) {
 	}
 
 	//Check to see if vote went to valid candidates
-	for _, position := range election.Positions {
-		for _, _ = range position.Candidates {
-			// if candidate.Recipient ==
+	for i, _ := range election.Positions {
+		// if ContainsPositionCandidate(v.Receiver[election.Positions[i].PositionId]) {
+		if !ContainsCandidate(election.Positions[i], v.Receiver[election.Positions[i].PositionId]) {
+			customErr.Message = "Vote transaction must be for a legitimate candidate" + ending
+			return false, customErr
 		}
-		// if v.Receiver[position.PositionId] !=
+		// }
+
 	}
 
 	//Check to see if Vote type is correctly stored in transaction
@@ -51,6 +54,15 @@ func IsValidVote(v database.Vote) (bool, error) {
 
 	customErr = nil
 	return true, customErr
+}
+
+func ContainsCandidate(p database.Position, c string) bool {
+	for _, candidate := range p.Candidates {
+		if c == candidate.Recipient {
+			return true
+		}
+	}
+	return false
 }
 
 type Vote struct {
