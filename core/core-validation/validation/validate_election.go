@@ -69,27 +69,3 @@ func IsValidElection(e database.Election) (bool, error) {
 	err = nil
 	return true, err
 }
-
-type Election struct {
-	Type         string     `json:"type"`
-	ElectionName string     `json:"electionName"` //Data Start
-	Institution  string     `json:"institutionName"`
-	Description  string     `json:"description"`
-	Start        string     `json:"startDate"`
-	End          string     `json:"endDate"`
-	EmailDomain  string     `json:"emailDomain"`
-	Positions    []Position `json:"positions"` //Data End
-	Sender       string     `json:"sender"`
-	Signature    string     `json:"id"`
-}
-
-type Position struct {
-	PositionId string      `json:"id"`
-	Name       string      `json:"displayName"`
-	Candidates []Candidate `json:"candidates"`
-}
-
-type Candidate struct {
-	Name      string `json:"name"`
-	Recipient string `json:"key"`
-}
