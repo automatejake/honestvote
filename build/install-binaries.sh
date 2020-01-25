@@ -34,6 +34,9 @@ go install
 cd ../../core-registry/registry
 go install
 
+cd ../../core-validation/validation
+go install
+
 cd ../../core-websocket/websocket
 go install
 
