@@ -20,6 +20,14 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 		return false, customErr
 	}
 
+	//Check to see if election is still ongoing
+	now := time.Now()
+	electionEnd, err := time.Parse(election.End, "Mon, 02 Jan 2006 15:04:05 MST")
+	if now.After(electionEnd) {
+		customErr.Message = "Registration transactions must occur for elections that are still ongoing"
+		return false, customErr
+	}
+
 	//Check to see if registration was sent by the administrator that declared the election
 	if r.Sender != election.Sender {
 		customErr.Message = "Registration transactions must be delcared by an administrator" + ending
