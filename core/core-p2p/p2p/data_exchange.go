@@ -103,7 +103,7 @@ func CheckResponses(size int) {
 	*/
 	for pKey, m := range SignatureMap {
 		for sig, b := range m {
-			valid, err := crypto.Verify(checkBlock, pKey, sig)
+			valid, err := crypto.Verify(checkBlock, database.PublicKey(pKey), sig)
 			if valid && err == nil && b {
 				fmt.Println("Everything is good.")
 				ProposedBlock.Signatures[pKey] = sig

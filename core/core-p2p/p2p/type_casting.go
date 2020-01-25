@@ -60,7 +60,7 @@ func VerifySignature(transaction interface{}) bool {
 			header = header + k + v
 		}
 
-		correct, err := crypto.Verify([]byte(header), string(t.Sender), t.Signature)
+		correct, err := crypto.Verify([]byte(header), t.Sender, t.Signature)
 
 		if err == nil {
 			fmt.Println("Signature is ", correct)
@@ -71,7 +71,7 @@ func VerifySignature(transaction interface{}) bool {
 			string(t.Sender) + t.Signature + t.Type + t.Start +
 			t.End
 
-		correct, err := crypto.Verify([]byte(header), string(t.Sender), t.Signature)
+		correct, err := crypto.Verify([]byte(header), t.Sender, t.Signature)
 
 		if err == nil {
 			fmt.Println("Signature is ", correct)
@@ -81,7 +81,7 @@ func VerifySignature(transaction interface{}) bool {
 		header = t.Election + t.Receiver + string(t.Sender) + t.Signature +
 			t.Type
 
-		correct, err := crypto.Verify([]byte(header), string(t.Sender), t.Signature)
+		correct, err := crypto.Verify([]byte(header), t.Sender, t.Signature)
 
 		if err == nil {
 			fmt.Println("Signature is ", correct)
