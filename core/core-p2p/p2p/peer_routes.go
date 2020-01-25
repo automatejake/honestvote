@@ -81,9 +81,6 @@ func HandleConn(conn net.Conn) {
 				PrevIndex = block.Index
 				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
 			}
-		//This case statement is for testing purposes only
-		case "find":
-			database.CheckVote(database.MongoDB)
 		default:
 			logger.Println("peer_routes.go", "HandleConn", "Recieved Bad Message")
 			conn.Close()
