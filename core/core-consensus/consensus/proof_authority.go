@@ -57,24 +57,36 @@ func GenerateHeader(block database.Block) string {
 	switch t := block.Transaction.(type) {
 	case database.Vote:
 		header = string(block.Index) + block.Timestamp +
-			string(t.Sender) + block.PrevHash
+			string(t.Sender) + t.Election + t.Signature +
+			t.Type + block.PrevHash
 
 		for k, v := range t.Receiver {
 			header = header + k + v
 		}
 	case *database.Vote:
 		header = string(block.Index) + block.Timestamp +
-			string(t.Sender) + block.PrevHash
+			string(t.Sender) + t.Election + t.Signature +
+			t.Type + block.PrevHash
 
 		for k, v := range t.Receiver {
 			header = header + k + v
 		}
 	case database.Election:
 		header = string(block.Index) + block.Timestamp +
-			t.ElectionName + t.Start + t.End + block.PrevHash
+			t.ElectionName + t.EmailDomain + t.Institution +
+			string(t.Sender) + t.Signature + t.Type + t.Start +
+			t.End + block.PrevHash
 	case *database.Election:
 		header = string(block.Index) + block.Timestamp +
-			t.ElectionName + t.Start + t.End + block.PrevHash
+			t.ElectionName + t.EmailDomain + t.Institution +
+			string(t.Sender) + t.Signature + t.Type + t.Start +
+			t.End + block.PrevHash
+	case database.Registration:
+		header = string(block.Index) + block.Timestamp + t.Election +
+			t.Receiver + string(t.Sender) + t.Signature + t.Type
+	case *database.Registration:
+		header = string(block.Index) + block.Timestamp + t.Election +
+			t.Receiver + string(t.Sender) + t.Signature + t.Type
 	}
 
 	return header
