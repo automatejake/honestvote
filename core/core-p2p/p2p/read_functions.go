@@ -54,22 +54,47 @@ func DecodeData(buffer *bytes.Buffer) {
 //Get vote from full node and turn it into a block and propose
 func ReceiveTransaction(data []byte, mType string, transaction interface{}) {
 
-	test, err := json.Marshal(transaction)
+	j, err := json.Marshal(transaction)
 
-	if mType == "Vote" && err == nil {
-		vote := &database.Vote{}
-		json.Unmarshal(test, vote)
-		transaction = *vote
-	} else if mType == "Election" && err == nil {
-		election := &database.Election{}
-		json.Unmarshal(test, election)
-		transaction = *election
-	} else if mType == "Registration" && err == nil {
-		registration := &database.Registration{}
-		json.Unmarshal(test, registration)
-		transaction = *registration
+	if err != nil {
+		return
 	}
 
+	switch mType {
+	case "Vote":
+		vote := &database.Vote{}
+		json.Unmarshal(j, vote)
+		transaction = *vote
+		CreateBlock(transaction)
+		//valid, err := validation.IsValidVote(*vote)
+		// if valid && err == nil {
+		// 	transaction = *vote
+		// 	CreateBlock(transaction)
+		// }
+	case "Election":
+		election := &database.Election{}
+		json.Unmarshal(j, election)
+		transaction = *election
+		CreateBlock(transaction)
+		//valid, err := validation.IsValidElection(*election)
+		// if valid && err == nil {
+		// 	transaction = *election
+		// 	CreateBlock(transaction)
+		// }
+	case "Registration":
+		registration := &database.Registration{}
+		json.Unmarshal(j, registration)
+		transaction = *registration
+		CreateBlock(transaction)
+		//valid, err := validation.IsValidRegistration(*registration)
+		// if valid && err == nil {
+		// 	transaction = *registration
+		// 	CreateBlock(transaction)
+		// }
+	}
+}
+
+func CreateBlock(transaction interface{}) {
 	block := consensus.GenerateBlock(PrevIndex, PrevHash, transaction, PublicKey)
 
 	//Check if there is a proposed block currently, if so, add to the queue
