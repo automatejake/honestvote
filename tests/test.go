@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"time"
+
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
 func main() {
-	check := time.Time{}
-	// start := time.Now().AddDate(1, 1, 1)
-	end := time.Now().AddDate(5, 5, 50)
-	if check.Before(end) {
-		fmt.Println(end)
-	}
+	database.MongoDB = database.MongoConnect()
+	database.CollectionPrefix = "a_"
+	fmt.Println(database.FindNode("tests").Role == "producer")
+
 }

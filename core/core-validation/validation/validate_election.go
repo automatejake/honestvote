@@ -10,17 +10,18 @@ func IsValidElection(e database.Election) (bool, error) {
 	err := &ValidationError{
 		Time: time.Now(),
 	}
-	end := ", transaction is invalid"
+	end := ", invalid transaction fails"
 
 	//Check to see if sender matches the public key of a legitimate administrator node
-	if e.Sender != "" {
-		err.Message = "" + end
+	node := database.FindNode(string(e.Sender))
+	if node.PublicKey != "producer" {
+		err.Message = "Transaction is not permitted by node without administrator capabilities" + end
 		return false, err
 	}
 
 	//Check to see if institution matches public key of sender
-	if e.ElectionName != "Election" {
-		err.Message = "Transaction is incorrect type" + end
+	if e.Institution != node.Institution {
+		err.Message = "Transaction must come from the correct institution" + end
 		return false, err
 	}
 
@@ -32,9 +33,10 @@ func IsValidElection(e database.Election) (bool, error) {
 
 	//Check to see if election end is valid
 	check := time.Time{}
-	now, er := time.Parse(e.End, "")
+	now, er := time.Parse(e.End, "Mon, 02 Jan 2006 15:04:05 MST")
 	if er != nil {
-
+		err.Message = "Transaction contains an invalid date format"
+		return false, err
 	}
 	if check.Before(now) {
 		err.Message = "Transaction end date is already past" + end
