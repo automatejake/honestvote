@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -15,11 +14,15 @@ func IsValidVote(v database.Vote) (bool, error) {
 	ending := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	vote, err := json.Marshal(v)
+	voteHeaders := v.Type + v.Election
+	for key, value := range v.Receiver {
+		voteHeaders += key + value
+	}
+
+	valid, err := crypto.Verify([]byte(voteHeaders), v.Sender, v.Signature)
 	if err != nil {
 
 	}
-	valid, err := crypto.Verify(vote, v.Sender, v.Signature)
 	if !valid {
 		customErr.Message = "Vote transaction contains invalid signature" + ending
 		return false, customErr

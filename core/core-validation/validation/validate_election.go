@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -15,11 +14,18 @@ func IsValidElection(e database.Election) (bool, error) {
 	end := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	election, err := json.Marshal(e)
+	electionHeaders := e.Type + e.ElectionName + e.Institution + e.Description + e.Start + e.End + e.EmailDomain
+	for _, position := range e.Positions {
+		electionHeaders += position.PositionId + position.Name
+		for _, candidate := range position.Candidates {
+			electionHeaders += candidate.Name + candidate.Recipient
+		}
+	}
+
+	valid, err := crypto.Verify([]byte(electionHeaders), e.Sender, e.Signature)
 	if err != nil {
 
 	}
-	valid, err := crypto.Verify(election, e.Sender, e.Signature)
 	if !valid {
 		customErr.Message = "Election transaction contains invalid signature" + end
 		return false, customErr
