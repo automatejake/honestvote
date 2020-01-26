@@ -27,13 +27,13 @@ func GenerateBlock(pIndex int, pHash string, transaction interface{}, pKey strin
 	newBlock.PrevHash = pHash
 
 	newBlock.Signatures = make(map[string]string)
-	newBlock.Signatures[pKey] = "Validator"
 
 	header := GenerateHeader(newBlock)
 
 	newBlock.Hash = CalculateHash(header)
+	newBlock.Signatures[pKey] = newBlock.Hash
 
-	fmt.Println("%d", pIndex, newBlock)
+	fmt.Println(pIndex, newBlock)
 
 	return newBlock
 }

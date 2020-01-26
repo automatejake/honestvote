@@ -52,12 +52,11 @@ func DecodeData(buffer *bytes.Buffer) {
 }
 
 //Get vote from full node and turn it into a block and propose
-func ReceiveTransaction(data []byte, mType string, transaction interface{}) {
+func ReceiveTransaction(data []byte, mType string, transaction interface{}) error {
 
 	j, err := json.Marshal(transaction)
-
 	if err != nil {
-		return
+		return err
 	}
 
 	switch mType {
@@ -92,6 +91,7 @@ func ReceiveTransaction(data []byte, mType string, transaction interface{}) {
 		// 	CreateBlock(transaction)
 		// }
 	}
+	return nil
 }
 
 func CreateBlock(transaction interface{}) {
