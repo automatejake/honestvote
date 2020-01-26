@@ -54,16 +54,12 @@ func DecideType(data []byte, mType string, conn net.Conn) {
 func VerifyBlock(block database.Block, conn net.Conn) {
 	var valid bool
 
-	if VerifySignature(block.Transaction) {
-		if consensus.VerifyHash(PrevIndex, PrevHash, block) {
-			fmt.Println("Hash was valid ", block)
-			valid = true
-		} else {
-			fmt.Println("Hash was not valid ", block)
-			valid = false
-		}
+	if consensus.VerifyHash(PrevIndex, PrevHash, block) {
+		fmt.Println("Hash was valid ", block)
+		valid = true
 	} else {
-		fmt.Println("Signature is wrong: ", block)
+		fmt.Println("Hash was not valid ", block)
+		valid = false
 	}
 
 	j, err := json.Marshal(block)
@@ -108,7 +104,6 @@ func CheckResponses(size int) {
 				fmt.Println("Everything is good.")
 				ProposedBlock.Signatures[pKey] = sig
 			} else {
-				// fmt.Println("%t %t", valid, b)
 				counter--
 			}
 		}
