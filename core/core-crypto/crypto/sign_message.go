@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"errors"
 	"math/big"
+
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
 // signature is a structure for storing signature obtained from ecdsa.Sign
@@ -56,9 +58,9 @@ func Sign(hash []byte, private_key_hex string) (signature_hex string, err error)
 }
 
 // Verify verifies a previously generated signature for byte array hash using hex-encoded public key
-func Verify(hash []byte, public_key_hex, signature_hex string) (result bool, err error) {
+func Verify(hash []byte, public_key_hex database.PublicKey, signature_hex string) (result bool, err error) {
 	// decode public key from hex
-	public_key_bytes, err := hex.DecodeString(public_key_hex)
+	public_key_bytes, err := hex.DecodeString(string(public_key_hex))
 	if err != nil {
 		return false, nil
 	}

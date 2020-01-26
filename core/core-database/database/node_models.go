@@ -37,8 +37,8 @@ type Registration struct {
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
 	Type      string            `json:"type"`
-	Election  string            `json:"election"` //Data Start
-	Receiver  map[string]string `json:"receiver"` //Data End
+	Election  string            `json:"electionId"` //Data Start
+	Receiver  map[string]string `json:"recievers"`  //Data End
 	Sender    PublicKey         `json:"sender"`
 	Signature string            `json:"signature"`
 }
@@ -53,12 +53,12 @@ type Election struct {
 	EmailDomain  string     `json:"emailDomain"`
 	Positions    []Position `json:"positions"` //Data End
 	Sender       PublicKey  `json:"sender"`
-	Signature    string     `json:"id"`
+	Signature    string     `json:"signature"`
 }
 
 type Position struct {
 	PositionId string      `json:"id"`
-	Name       string      `json:"displayName"`
+	Name       string      `json:"positionName"`
 	Candidates []Candidate `json:"candidates"`
 }
 
