@@ -56,41 +56,34 @@ func ReceiveTransaction(data []byte, mType string, transaction interface{}) erro
 
 	j, err := json.Marshal(transaction)
 	if err != nil {
-		return err
+		logger.Println("", "", "")
 	}
 
+	var valid bool
 	switch mType {
 	case "Vote":
 		vote := &database.Vote{}
 		json.Unmarshal(j, vote)
 		transaction = *vote
-		CreateBlock(transaction)
-		//valid, err := validation.IsValidVote(*vote)
-		// if valid && err == nil {
-		// 	transaction = *vote
-		// 	CreateBlock(transaction)
-		// }
+		// valid, err = validation.IsValidVote(*vote)
 	case "Election":
 		election := &database.Election{}
 		json.Unmarshal(j, election)
 		transaction = *election
-		CreateBlock(transaction)
-		//valid, err := validation.IsValidElection(*election)
-		// if valid && err == nil {
-		// 	transaction = *election
-		// 	CreateBlock(transaction)
-		// }
+		// valid, err = validation.IsValidElection(*election)
 	case "Registration":
 		registration := &database.Registration{}
 		json.Unmarshal(j, registration)
 		transaction = *registration
-		CreateBlock(transaction)
-		//valid, err := validation.IsValidRegistration(*registration)
-		// if valid && err == nil {
-		// 	transaction = *registration
-		// 	CreateBlock(transaction)
-		// }
+		// valid, err = validation.IsValidRegistration(*registration)
 	}
+	valid = true
+	if valid {
+		CreateBlock(transaction)
+	} else {
+		logger.Println("", "", "")
+	}
+
 	return nil
 }
 

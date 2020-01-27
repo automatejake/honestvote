@@ -106,7 +106,7 @@ func CheckResponses(size int) {
 			valid, err := crypto.Verify(checkBlock, database.PublicKey(pKey), sig)
 			if valid && err == nil && b {
 				fmt.Println("Everything is good.")
-				ProposedBlock.Signatures[pKey] = sig
+				// ProposedBlock.Signatures[pKey] = sig
 			} else {
 				// fmt.Println("%t %t", valid, b)
 				counter--
