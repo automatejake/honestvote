@@ -38,10 +38,26 @@ func LastIndex(client *mongo.Client) int64 {
 	index, err := collection.CountDocuments(context.TODO(), bson.M{})
 
 	if err == nil {
-		fmt.Println(index)
+		GrabDocuments(client, 1)
 
 		return index
 	}
 
 	return 0
+}
+
+func GrabDocuments(client *mongo.Client, old_index int64) {
+	collection := client.Database("honestvote").Collection(CollectionPrefix + "blockchain")
+
+	result, err := collection.Find(context.TODO(), bson.M{"index": bson.M{"$gt": old_index}})
+
+	if err != nil {
+		return
+	}
+
+	for result.Next(context.TODO()) {
+		var document bson.M
+		err = result.Decode(&document)
+		fmt.Println(document)
+	}
 }
