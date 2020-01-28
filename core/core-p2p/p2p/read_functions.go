@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-	"reflect"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -14,27 +13,11 @@ import (
 
 //Adds new connection to database and local Node array
 func AcceptConnectMessage(node database.Node, conn net.Conn) {
-	//ADD TO DATABASE AS WELL
-	// Nodes[port] = true
 
 	node.IPAddress = conn.RemoteAddr().String()[0:9]
 	if !database.DoesNodeExist(node) {
 		database.AddNode(node)
 	}
-
-	// var message Message
-	// data, err := json.Marshal(Self)
-	// if err != nil {
-	// 	logger.Println("read_functions.go", "AcceptConnectMessage()", err.Error())
-	// }
-	// message.Message = "connect response"
-	// message.Data = data
-	// data, err = json.Marshal(message)
-	// if err != nil {
-	// 	logger.Println("read_functions.go", "AcceptConnectMessage()", err.Error())
-	// }
-
-	// conn.Write(data)
 
 	Nodes = append(Nodes, conn)
 
@@ -52,87 +35,58 @@ func DecodeData(buffer *bytes.Buffer) {
 }
 
 //Get vote from full node and turn it into a block and propose
-func ReceiveTransaction(data []byte, mType string, transaction interface{}) error {
+func ReceiveTransaction(mType string, data []byte) error {
 
-	j, err := json.Marshal(transaction)
-	if err != nil {
-		logger.Println("", "", "")
-	}
-
+	fmt.Println("recieved")
 	var valid bool
+	valid = true
 	switch mType {
 	case "Vote":
-		vote := &database.Vote{}
-		json.Unmarshal(j, vote)
-		transaction = *vote
-		// valid, err = validation.IsValidVote(*vote)
+		var vote database.Vote
+		json.Unmarshal(data, &vote)
+		if valid {
+			AddToBlock(data)
+		} else {
+			logger.Println("", "", "")
+		}
+		// valid, err = validation.IsValidVote(vote)
 	case "Election":
+		fmt.Println("identified election")
 		election := &database.Election{}
-		json.Unmarshal(j, election)
-		transaction = *election
-		// valid, err = validation.IsValidElection(*election)
+		json.Unmarshal(data, election)
+		// valid, err = validation.IsValidElection(election)
+		if valid {
+			AddToBlock(election)
+		} else {
+			logger.Println("", "", "")
+		}
 	case "Registration":
 		registration := &database.Registration{}
-		json.Unmarshal(j, registration)
-		transaction = *registration
-		// valid, err = validation.IsValidRegistration(*registration)
-	}
-	valid = true
-	if valid {
-		CreateBlock(transaction)
-	} else {
-		logger.Println("", "", "")
+		json.Unmarshal(data, &registration)
+		// valid, err = validation.IsValidRegistration(registration)
+		if valid {
+			AddToBlock(registration)
+		} else {
+			logger.Println("", "", "")
+		}
 	}
 
 	return nil
 }
 
-func CreateBlock(transaction interface{}) {
-	block := consensus.GenerateBlock(PrevIndex, PrevHash, transaction, PublicKey)
+func AddToBlock(transaction interface{}) {
+	block := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey)
 
+	fmt.Println("created block")
 	//Check if there is a proposed block currently, if so, add to the queue
-	if reflect.DeepEqual(ProposedBlock, database.Block{}) {
-		logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
-		ProposedBlock = block
-		ProposeBlock(ProposedBlock, Nodes)
+
+	logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
+
+	err := database.AddBlock(block)
+	if err != nil {
 	} else {
-		logger.Println("peer_routes.go", "HandleConn()", "Not Empty, sending to queue.")
-		BlockQueue = append(BlockQueue, block)
-		fmt.Println(BlockQueue)
-	}
-}
-
-//Receive the responses given by all other peers deciding if a block is valid
-func ReceiveResponses(answer bool, sMap map[string]string) {
-	/*
-		Use answer and pair it with sMap which allows for accountability
-		of their choices
-
-		TODO: assumes that sMap is length 1, could be an issue????
-	*/
-	for k, v := range sMap {
-		SignatureMap[k] = make(map[string]bool)
-		SignatureMap[k][v] = answer
+		PreviousBlock = block
+		ProposeBlock(block)
 	}
 
-	if len(SignatureMap) == len(Nodes) {
-		logger.Println("peer_routes.go", "HandleConn()", "Received Responses!!")
-		CheckResponses(len(SignatureMap)) //Go through the responses and see if block valid
-		SignatureMap = nil
-		SignatureMap = make(map[string]map[string]bool)
-		ProposedBlock = database.Block{}
-	} else {
-		logger.Println("peer_routes.go", "HandleConn()", "Didn't Receiving Responses")
-		return
-	}
-
-	if len(BlockQueue) > 0 {
-		//Propose the next block
-		ProposedBlock = BlockQueue[0]
-		//TODO: get rid of first item in slice
-		ProposeBlock(ProposedBlock, Nodes)
-	} else {
-		//Wait for the next vote
-		logger.Println("peer_routes.go", "HandleConn()", "Everything is up to date.")
-	}
 }

@@ -8,15 +8,15 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func GenerateBlock(pIndex int, pHash string, transaction interface{}, pKey string) database.Block {
+func GenerateBlock(prevBlock database.Block, transaction interface{}, pKey string) database.Block {
 	var newBlock database.Block
 
-	newBlock.Index = pIndex + 1
+	newBlock.Index = prevBlock.Index + 1
 	newBlock.Timestamp = time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
 	newBlock.Transaction = transaction
 	newBlock.MerkleRoot = CalculateMerkleRoot(transaction)
 	newBlock.Validator = pKey
-	newBlock.PrevHash = pHash
+	newBlock.PrevHash = prevBlock.Hash
 
 	index := strconv.Itoa(newBlock.Index)
 	header := index + newBlock.Timestamp + newBlock.MerkleRoot + newBlock.Validator + newBlock.PrevHash

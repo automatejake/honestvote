@@ -11,7 +11,7 @@ import (
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 )
 
-func PostPermissionsHandler(w http.ResponseWriter, r *http.Request) {
+func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 
 }
@@ -30,10 +30,10 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	p2p.ReceiveTransaction(v, "Vote", nil)
+	p2p.ReceiveTransaction("Vote", v)
 }
 
-func PostElectionsHandler(w http.ResponseWriter, r *http.Request) {
+func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	decoder := json.NewDecoder(r.Body)
 	var election database.Election
@@ -47,7 +47,7 @@ func PostElectionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	p2p.ReceiveTransaction(e, "Election", nil)
+	p2p.ReceiveTransaction("Election", e)
 
 }
 
