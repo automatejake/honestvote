@@ -53,11 +53,14 @@ func HandleConn(conn net.Conn) {
 					logger.Println("peer_routes.go", "RegisterNode", err.Error())
 				}
 			}
-		case "recieve data":
+		case "receive data":
 			buffer := bytes.NewBuffer(message.Data)
 			DecodeData(buffer)
-		case "get data":
-			database.MoveDocuments(Nodes, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
+		case "grab data":
+			blocks := database.GrabDocuments(database.MongoDB, string(message.Data))
+			if blocks != nil {
+				MoveDocuments(conn, blocks)
+			}
 		case "transaction":
 			fmt.Println("recieved transaction")
 			ReceiveTransaction(message.Type, message.Data)
@@ -79,6 +82,9 @@ func HandleConn(conn net.Conn) {
 				}
 				PreviousBlock = block
 			}
+		case "find":
+			//Catch up on latest blockchain
+			SendIndex(database.LastIndex(database.MongoDB), Nodes[0])
 		default:
 			logger.Println("peer_routes.go", "HandleConn", "Recieved Bad Message")
 			conn.Close()

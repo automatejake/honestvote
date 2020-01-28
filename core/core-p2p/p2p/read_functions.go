@@ -26,11 +26,11 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 
 //Decoding the data sent from another peer, this data is from a database
 func DecodeData(buffer *bytes.Buffer) {
-	tmpArray := new([]database.Candidate)
+	tmpArray := new([]database.Block)
 	js := json.NewDecoder(buffer)
 	err := js.Decode(tmpArray)
 	if err == nil {
-		database.UpdateMongo(database.MongoDB, *tmpArray, database.DatabaseName, database.CollectionPrefix+database.ElectionHistory)
+		database.UpdateMongo(database.MongoDB, *tmpArray)
 	}
 }
 

@@ -9,10 +9,23 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
+	"github.com/jneubaum/honestvote/core/core-registration/registration"
 )
 
 func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	// decoder := json.NewDecoder(r.Body)
+
+	if registration.VerifyStudent() {
+
+		registration := database.Registration{}
+		transaction, err := json.Marshal(registration)
+		if err != nil {
+
+		}
+		p2p.ReceiveTransaction("Registration", transaction)
+
+	}
 
 }
 

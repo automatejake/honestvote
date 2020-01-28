@@ -13,6 +13,21 @@ type ElectionInfo struct {
 	Signature    string `json:"id"`
 }
 
+type RegistrationInfo struct {
+	Election  string    `json:"election"` //Data Start
+	Receiver  string    `json:"receiver"` //Data End
+	Sender    PublicKey `json:"sender"`
+	Signature string    `json:"signature"`
+}
+
+// publicKey: string,
+// emailAddress: Election,
+// firstName: string,
+// lastName: string,
+// dateOfBirth: string,
+// electionName: string,
+// electionAdmin: string,
+
 func (e Election) ConvertInfo() ElectionInfo {
 	return ElectionInfo{
 		ElectionName: e.ElectionName,
