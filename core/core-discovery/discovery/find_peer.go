@@ -4,11 +4,15 @@ import (
 	"encoding/json"
 	"net"
 	"strconv"
+	"sync"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
+
+//Used to update the blockchain only once per producer
+var doOnce sync.Once
 
 /***
 * Find Nodes to talk to in the network, 2 Step Process
@@ -69,6 +73,9 @@ func ConnectMessage(peer database.Node) {
 		logger.Println("find_peer.go", "ConnectMessage", err.Error())
 	}
 	if conn != nil {
+
+		//Catch up on latest blockchain and only run it once
+		doOnce.Do(func() { p2p.SendIndex(database.LastIndex(database.MongoDB), conn) })
 
 		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 

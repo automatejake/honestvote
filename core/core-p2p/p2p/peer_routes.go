@@ -82,9 +82,6 @@ func HandleConn(conn net.Conn) {
 				}
 				PreviousBlock = block
 			}
-		case "find":
-			//Catch up on latest blockchain
-			SendIndex(database.LastIndex(database.MongoDB), Nodes[0])
 		default:
 			logger.Println("peer_routes.go", "HandleConn", "Recieved Bad Message")
 			conn.Close()

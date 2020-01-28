@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -44,7 +45,11 @@ func GrabDocuments(client *mongo.Client, old_index string) []Block {
 	index, _ := strconv.Atoi(old_index)
 	current, err := collection.CountDocuments(context.TODO(), bson.M{})
 
-	if current != int64(index) && err == nil {
+	difference := current - int64(index)
+
+	if difference > 0 && err == nil {
+		fmt.Println("Here's the difference: ", difference)
+
 		result, err := collection.Find(context.TODO(), bson.M{"index": bson.M{"$gt": index}})
 
 		if err != nil {
@@ -58,6 +63,8 @@ func GrabDocuments(client *mongo.Client, old_index string) []Block {
 		}
 
 		return blocks
+	} else {
+		fmt.Println("Indexes are equal!")
 	}
 
 	return nil
