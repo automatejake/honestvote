@@ -1,13 +1,16 @@
 package p2p
 
 import (
-	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net"
+	"strconv"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func SendIndex(index int64, conn net.Conn) {
@@ -22,17 +25,42 @@ func SendIndex(index int64, conn net.Conn) {
 	}
 }
 
-//Send the data to the full/peer node
-func MoveDocuments(conn net.Conn, blocks []database.Block) {
+//GrabDocuments is here due to circular import error in database_exchange
+func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 
-	buffer := new(bytes.Buffer)
-	tmpArray := blocks
-	js := json.NewEncoder(buffer)
-	err := js.Encode(tmpArray)
+	var block database.Block
+
+	collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
+
+	index, _ := strconv.Atoi(old_index)
+	current, err := collection.CountDocuments(context.TODO(), bson.M{})
+
+	difference := current - int64(index)
+
+	if difference > 0 && err == nil {
+		fmt.Println("Here's the difference: ", difference)
+
+		result, err := collection.Find(context.TODO(), bson.M{"index": bson.M{"$gt": index}})
+
+		if err != nil {
+			logger.Println("database_exchange.go", "GrabDocuments()", err.Error())
+		}
+
+		for result.Next(context.TODO()) {
+			err = result.Decode(&block)
+			MoveDocuments(conn, block)
+		}
+	} else {
+		fmt.Println("Indexes are equal!")
+	}
+}
+
+//Send the data to the full/peer node
+func MoveDocuments(conn net.Conn, block database.Block) {
 
 	write := new(Message)
 	write.Message = "receive data"
-	write.Data = buffer.Bytes()
+	write.Data, _ = json.Marshal(block)
 
 	jWrite, err := json.Marshal(write)
 

@@ -1,7 +1,6 @@
 package p2p
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -54,13 +53,9 @@ func HandleConn(conn net.Conn) {
 				}
 			}
 		case "receive data":
-			buffer := bytes.NewBuffer(message.Data)
-			DecodeData(buffer)
+			DecodeData(message.Data)
 		case "grab data":
-			blocks := database.GrabDocuments(database.MongoDB, string(message.Data))
-			if blocks != nil {
-				MoveDocuments(conn, blocks)
-			}
+			GrabDocuments(database.MongoDB, conn, string(message.Data))
 		case "transaction":
 			fmt.Println("recieved transaction")
 			ReceiveTransaction(message.Type, message.Data)

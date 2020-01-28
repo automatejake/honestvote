@@ -1,7 +1,6 @@
 package p2p
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -25,12 +24,12 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 }
 
 //Decoding the data sent from another peer, this data is from a database
-func DecodeData(buffer *bytes.Buffer) {
-	tmpArray := new([]database.Block)
-	js := json.NewDecoder(buffer)
-	err := js.Decode(tmpArray)
+func DecodeData(data []byte) {
+	var block database.Block
+
+	err := json.Unmarshal(data, &block)
 	if err == nil {
-		database.UpdateMongo(database.MongoDB, *tmpArray)
+		database.UpdateMongo(database.MongoDB, block)
 	}
 }
 
