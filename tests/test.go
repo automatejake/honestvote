@@ -1,22 +1,17 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/jneubaum/honestvote/core/core-database/database"
-)
-
 func main() {
-	vote := database.Vote{
-		Type:     "Vote",
-		Election: "Chester",
-		Receiver: map[string]string{"cool": "beans"},
-	}
+	// vote := database.Vote{
+	// 	Type:     "Vote",
+	// 	Election: "Chester",
+	// 	Receiver: map[string]string{"cool": "beans"},
+	// }
 
-	voteHeaders := vote.Type + vote.Election
-	for key, value := range vote.Receiver {
-		voteHeaders += key + value
-	}
+	// voteHeaders := vote.Type + vote.Election
+	// for key, value := range vote.Receiver {
+	// 	voteHeaders += key + value
+	// }
 
-	fmt.Println([]byte(voteHeaders))
+	// fmt.Println([]byte(voteHeaders))
+
 }

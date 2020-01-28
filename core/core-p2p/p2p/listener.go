@@ -7,14 +7,6 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-type Message struct {
-	Message     string            `json:"message"`
-	Data        []byte            `json:"data"`
-	Type        string            `json:"type"`
-	Signature   map[string]string `json:"signature"`
-	Transaction interface{}       `json:"transaction"`
-}
-
 func ListenConn(port string, role string) {
 	listen, err := net.Listen("tcp", ":"+port)
 	if err != nil {

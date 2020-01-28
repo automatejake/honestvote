@@ -27,7 +27,7 @@ var COLLECTION_PREFIX string = ""
 var REGISTRY_IP string
 var REGISTRY_PORT string = "7002"
 var REGISTRY bool = false // is producer registry node or not
-var LOGGING bool = true
+var LOGGING bool = false
 
 //this file will be responsible for deploying the app
 func main() {

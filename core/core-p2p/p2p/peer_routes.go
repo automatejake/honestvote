@@ -7,6 +7,7 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-registration/registration"
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -27,6 +28,7 @@ func HandleConn(conn net.Conn) {
 			logger.Println("peer_routes.go", "HandleConn()", err.Error())
 			return
 		}
+		fmt.Println(message)
 
 		switch message.Message {
 		case "connect":
@@ -60,7 +62,8 @@ func HandleConn(conn net.Conn) {
 				MoveDocuments(conn, blocks)
 			}
 		case "transaction":
-			ReceiveTransaction(message.Data, message.Type, message.Transaction)
+			fmt.Println("recieved transaction")
+			ReceiveTransaction(message.Type, message.Data)
 		case "register":
 			tcp_port := strconv.Itoa(TCP_PORT)
 			registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)
@@ -68,21 +71,16 @@ func HandleConn(conn net.Conn) {
 			var node database.Node
 			json.Unmarshal(message.Data, &node)
 			// administrator.ProposePeer(node)
-		case "verify":
-			DecideType(message.Data, message.Type, conn)
-		case "sign":
-			answer, err := strconv.ParseBool(string(message.Data))
-
-			if err == nil {
-				ReceiveResponses(answer, message.Signature)
+		case "verify transaction":
+			var block database.Block
+			err := json.Unmarshal(message.Data, &block)
+			if err != nil {
 			}
-		case "update":
-			block := new(database.Block)
-			json.Unmarshal(message.Data, block)
-			if database.UpdateBlockchain(database.MongoDB, *block) {
-				PrevHash = block.Hash
-				PrevIndex = block.Index
-				logger.Println("peer_routes.go", "HandleConn()", string(PrevIndex)+" "+PrevHash)
+			if consensus.IsBlockValid(PreviousBlock, block) {
+				err = database.AddBlock(block)
+				if err != nil {
+				}
+				PreviousBlock = block
 			}
 		case "find":
 			//Catch up on latest blockchain

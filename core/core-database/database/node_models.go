@@ -11,12 +11,13 @@ type PublicKey string
 var EmailRegistrants string = "email_registrants"
 
 type Block struct {
-	Index       int               `json:"index"`
-	Timestamp   string            `json:"timestamp"`
-	Transaction interface{}       `json:"transaction"` // instead of interface, should be transaction
-	Hash        string            `json:"hash"`
-	PrevHash    string            `json:"prevhash"`
-	Signatures  map[string]string `json:"signatures"`
+	Index       int         `json:"index"`
+	Timestamp   string      `json:"timestamp"`
+	Transaction interface{} `json:"transaction"` // not  included in the hash
+	MerkleRoot  string      `json:"merkleRoot"`
+	Validator   string      `json:"validator"`
+	PrevHash    string      `json:"prevhash"`
+	Hash        string      `json:"hash"`
 }
 
 /*

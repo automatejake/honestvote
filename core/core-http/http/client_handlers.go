@@ -9,10 +9,23 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
+	"github.com/jneubaum/honestvote/core/core-registration/registration"
 )
 
-func PostPermissionsHandler(w http.ResponseWriter, r *http.Request) {
+func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	// decoder := json.NewDecoder(r.Body)
+
+	if registration.VerifyStudent() {
+
+		registration := database.Registration{}
+		transaction, err := json.Marshal(registration)
+		if err != nil {
+
+		}
+		p2p.ReceiveTransaction("Registration", transaction)
+
+	}
 
 }
 
@@ -30,10 +43,10 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	p2p.ReceiveTransaction(v, "Vote", nil)
+	p2p.ReceiveTransaction("Vote", v)
 }
 
-func PostElectionsHandler(w http.ResponseWriter, r *http.Request) {
+func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	decoder := json.NewDecoder(r.Body)
 	var election database.Election
@@ -47,7 +60,7 @@ func PostElectionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	p2p.ReceiveTransaction(e, "Election", nil)
+	p2p.ReceiveTransaction("Election", e)
 
 }
 

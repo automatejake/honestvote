@@ -19,8 +19,8 @@ func HandleFullRoutes() {
 
 	//POSTS
 	Router.HandleFunc("/election/{electionid}/vote", PostVoteHandler).Methods("POST")
-	Router.HandleFunc("/userpermissions/{publickey}/request", PostPermissionsHandler).Methods("POST")
-	Router.HandleFunc("/elections", PostElectionsHandler).Methods("POST")
+	Router.HandleFunc("/election/{electionid}/register", PostRegisterHandler).Methods("POST")
+	Router.HandleFunc("/election", PostElectionHandler).Methods("POST")
 
 	//WEBSOCKET
 	Router.HandleFunc("/websocket", websocket.WebsocketHandler) //good
