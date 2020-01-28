@@ -3,7 +3,6 @@ package consensus
 import (
 	"crypto/sha256"
 	"encoding/base64"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -39,18 +38,6 @@ func CalculateMerkleRoot(transaction interface{}) string {
 	// switch t := block.Transaction.(type)
 	// case database.Vote
 	return ""
-}
-
-func VerifyHash(prevIndex int, prevHash string, block database.Block) bool {
-	if prevHash != block.PrevHash {
-		fmt.Println("Previous hash is wrong!")
-		return false
-	} else if CalculateHash(GenerateHeader(block)) != block.Hash {
-		fmt.Println("Block hash is wrong!", CalculateHash(GenerateHeader(block)))
-		return false
-	}
-
-	return true
 }
 
 func GenerateHeader(block database.Block) string {
