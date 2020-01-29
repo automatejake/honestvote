@@ -18,7 +18,7 @@ func SaveRegistrationCode(registrant AwaitingRegistration) {
 	logger.Println("email_registration.go", "SaveRegistrationCode()", "inserted document successfully")
 }
 
-func IsValidRegistrationCode(code string) (string, string, bool) {
+func IsValidRegistrationCode(code string) (AwaitingRegistration, error) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	query := bson.M{"code": code}
 
@@ -29,7 +29,7 @@ func IsValidRegistrationCode(code string) (string, string, bool) {
 		if err.Error() != "mongo: no documents in result" {
 			logger.Println("routing_table.go", "ExistsInTable()", err.Error())
 		}
-		return "", "no registration code exists", false
+		return AwaitingRegistration{}, err
 	}
 
 	fmt.Println(result.Timestamp)
@@ -42,12 +42,16 @@ func IsValidRegistrationCode(code string) (string, string, bool) {
 
 	var HOURS float64 = 4
 	if time.Now().Sub(start).Hours() > HOURS {
-		return "", "registration code has expired", false
+		customErr := &CustomError{
+			Time:    time.Now(),
+			Message: "Election is not still ongoing",
+		}
+		return AwaitingRegistration{}, customErr
 	}
 
 	// make sure that public key is correct
 
 	// make sure that election is still ongoing / valid
 
-	return result.PublicKey, result.PublicKey, true
+	return result, nil
 }

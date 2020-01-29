@@ -14,7 +14,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	ending := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	voteHeaders := v.Type + v.Election
+	voteHeaders := v.Election
 	for key, value := range v.Receiver {
 		voteHeaders += key + value
 	}

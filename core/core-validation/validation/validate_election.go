@@ -14,7 +14,7 @@ func IsValidElection(e database.Election) (bool, error) {
 	end := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	electionHeaders := e.Type + e.ElectionName + e.Institution + e.Description + e.Start + e.End + e.EmailDomain
+	electionHeaders := e.ElectionName + e.Institution + e.Description + e.Start + e.End + e.EmailDomain
 	for _, position := range e.Positions {
 		electionHeaders += position.PositionId + position.Name
 		for _, candidate := range position.Candidates {

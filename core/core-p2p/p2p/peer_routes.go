@@ -4,11 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-	"strconv"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
-	"github.com/jneubaum/honestvote/core/core-registration/registration"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -60,8 +58,8 @@ func HandleConn(conn net.Conn) {
 			fmt.Println("recieved transaction")
 			ReceiveTransaction(message.Type, message.Data)
 		case "register":
-			tcp_port := strconv.Itoa(TCP_PORT)
-			registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)
+			// tcp_port := strconv.Itoa(TCP_PORT)
+			// registration.EmailRegistration("jacob@neubaum.com (senders_email)", "election_name", "senders_public_key", PublicIP, tcp_port)
 		case "become peer":
 			var node database.Node
 			json.Unmarshal(message.Data, &node)

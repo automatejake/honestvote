@@ -14,7 +14,7 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 	ending := ", invalid tranaction fails"
 
 	//Check to see if signature is valid
-	registrationHeaders := []byte(r.Type + r.Election + r.Receiver)
+	registrationHeaders := []byte(r.Election + r.Receiver)
 
 	valid, err := crypto.Verify(registrationHeaders, r.Sender, r.Signature)
 	if !valid {

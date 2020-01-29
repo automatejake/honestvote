@@ -2,7 +2,6 @@ package registration
 
 import (
 	"net/smtp"
-	"time"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 
@@ -10,45 +9,48 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func EmailRegistration(registrantEmail string, election string, public_key string, public_ip string, tcp_port string) {
+/*
+*  Send data to administrator node
+*  Make sure election is still ongoing
+*  Make sure email checks regex format and has not already been registered
+*  Create registration code
+*  Save AwaitingRegistration object to database
+*  Send confirmation email with code and link
+*  Recieve confirmation link response
+*  Verify registrant is a student from national clearinghouse
+*  Delete student from database and store record of their email in hashed format
+*  Send registration transaction
+ */
 
-	//check if valid election
-	if !isValidElection(election) {
-		return
+func IsValidRegistrant(registrant *database.AwaitingRegistration) bool {
+	if !isElectionOngoing(registrant.Email) {
+		return false
 	}
 
-	//regex check and check if student has already voted
-	if !isValidEmail(registrantEmail) {
-		return
+	if !isValidEmail(registrant.Email) {
+		return false
 	}
 
-	// save registration code in database
-	code, _ := crypto.RandomHex(100)
-
-	registrant := database.AwaitingRegistration{
-		Election:  election,
-		PublicKey: public_key,
-		Code:      code,
-		Timestamp: time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST"),
-	}
-
-	database.SaveRegistrationCode(registrant)
-
-	// send email verification code
-	SendRegistrationCode(registrantEmail, election, code, public_ip, tcp_port)
+	return true
 
 }
 
+//Make sure election is ongoing
+func isElectionOngoing(email string) bool {
+	return true
+}
+
+//Make sure email checks regex format and has not already been registered
 func isValidEmail(email string) bool {
 	return true
 }
 
-func isValidElection(election string) bool {
-	return true
-}
+// Create registration code, save to database, send email with code and link
+func SendRegistrationCode(registrant database.AwaitingRegistration, public_ip string, tcp_port string) {
+	registrant.Code, _ = crypto.RandomHex(100)
+	database.SaveRegistrationCode(registrant)
 
-func SendRegistrationCode(email string, election string, code string, public_ip string, tcp_port string) {
-
+	email := registrant.Email
 	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
 	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
 	to := email
@@ -56,8 +58,8 @@ func SendRegistrationCode(email string, election string, code string, public_ip 
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
 		"Subject:  " + "HonestVote Registration Code" + "\n\n" +
-		"Click this link if you requested to register for the upcoming" + election + "election: \n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + code + "&verified=true&email=null\n" +
-		"If this is incorrect, please click here:\n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + code + "&verified=false&email=" + email
+		"Click this link if you requested to register for the upcoming" + registrant.ElectionName + "election: \n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + registrant.Code + "&verified=true&email=null\n" +
+		"If this is incorrect, please click here:\n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + registrant.Code + "&verified=false&email=" + registrant.Email
 
 	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
 	if err != nil {

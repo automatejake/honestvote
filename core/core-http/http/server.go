@@ -8,6 +8,7 @@ import (
 )
 
 var Router = mux.NewRouter()
+var HTTP_Port string
 
 func CreateServer(port string, server_type string) {
 	logger.Println("server.go", "main", "HTTP server running on port: "+port)
@@ -20,6 +21,7 @@ func CreateServer(port string, server_type string) {
 		HandleFullRoutes() // imported from routes
 	}
 
+	HTTP_Port = port
 	http.Handle("/", Router)
 	http.ListenAndServe(":"+port, Router)
 

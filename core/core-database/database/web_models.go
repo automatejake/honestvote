@@ -1,7 +1,22 @@
 package database
 
+import (
+	"fmt"
+	"time"
+)
+
 type API_Type interface {
 	ConvertInfo()
+}
+
+type CustomError struct {
+	Time    time.Time
+	Message string
+}
+
+func (e *CustomError) Error() string {
+	return fmt.Sprintf("at %v, %s",
+		e.Time, e.Message)
 }
 
 type ElectionInfo struct {
@@ -12,21 +27,6 @@ type ElectionInfo struct {
 	End          string `json:"endDate"`
 	Signature    string `json:"id"`
 }
-
-type RegistrationInfo struct {
-	Election  string    `json:"election"` //Data Start
-	Receiver  string    `json:"receiver"` //Data End
-	Sender    PublicKey `json:"sender"`
-	Signature string    `json:"signature"`
-}
-
-// publicKey: string,
-// emailAddress: Election,
-// firstName: string,
-// lastName: string,
-// dateOfBirth: string,
-// electionName: string,
-// electionAdmin: string,
 
 func (e Election) ConvertInfo() ElectionInfo {
 	return ElectionInfo{

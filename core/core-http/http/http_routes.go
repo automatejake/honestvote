@@ -25,9 +25,6 @@ func HandleFullRoutes() {
 	//WEBSOCKET
 	Router.HandleFunc("/websocket", websocket.WebsocketHandler) //good
 
-	//this needs to be encrypted (send admin's public key and encrypted message containing email and public key)
-	Router.HandleFunc("/registerElection/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")
-	Router.HandleFunc("/registerElection", RegisterHandler).Methods("POST")
 }
 
 func HandleProducerRoutes() {

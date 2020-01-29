@@ -14,16 +14,18 @@ import (
 func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
-	public_key, election, valid := database.IsValidRegistrationCode(params["id"])
+	registrant, err := database.IsValidRegistrationCode(params["id"])
+	if err != nil {
+		return
+	}
+	if params["verified"] == "true" {
+		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is registered to vote for "+registrant.ElectionName)
+		if registration.VerifyStudent(registrant) {
 
-	if valid && params["verified"] == "true" {
-		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", public_key+" is registered to vote for "+election)
-
-		// p2p.ReceiveTransaction(1)
+		}
 	} else if params["verified"] == "false" {
-		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", public_key+" is not supposed to be registered to vote for "+election)
-		// implement logic to allow email to register again
-		registration.SendWarningEmail(params["email"], election)
+		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is not supposed to be registered to vote for "+registrant.ElectionName)
+		registration.SendWarningEmail(params["email"], registrant.ElectionName)
 	}
 
 }

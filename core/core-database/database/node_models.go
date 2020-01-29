@@ -32,7 +32,21 @@ type Registration struct {
 	Election  string    `json:"election"` //Data Start
 	Receiver  string    `json:"receiver"` //Data End
 	Sender    PublicKey `json:"sender"`
+	SenderSig string    `json:"senderSig"`
 	Signature string    `json:"signature"`
+}
+
+type AwaitingRegistration struct {
+	Email         string    `json:"emailAddress"`
+	FirstName     string    `json:"firstName"`
+	LastName      string    `json:"lastName"`
+	DateOfBirth   string    `json:"dateOfBirth"`
+	ElectionName  string    `json:"electionName"`
+	ElectionAdmin string    `json:"electionAdmin"`
+	Sender        PublicKey `json:"publicKey"`
+	SenderSig     string    `json:"senderSig"`
+	Code          string    `json:"code"`
+	Timestamp     string    `json:"timestamp"`
 }
 
 // valid votes have a corresponding registration transaction with the public key
@@ -82,12 +96,4 @@ func (node Node) VerifySignature() bool {
 		return true
 	}
 	return false
-}
-
-type AwaitingRegistration struct {
-	Email     string `json:"email"`
-	Election  string `json:"election"`
-	Code      string
-	PublicKey string `json:"publicKey"`
-	Timestamp string
 }
