@@ -44,7 +44,7 @@ func IsValidRegistrationCode(code string) (AwaitingRegistration, error) {
 	if time.Now().Sub(start).Hours() > HOURS {
 		customErr := &CustomError{
 			Time:    time.Now(),
-			Message: "Election is not still ongoing",
+			Message: "Registration Code is too young",
 		}
 		return AwaitingRegistration{}, customErr
 	}

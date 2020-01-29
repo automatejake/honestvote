@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -16,16 +17,20 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	registrant, err := database.IsValidRegistrationCode(params["id"])
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
+
+	fmt.Println("Made it all the way here!")
 	if params["verified"] == "true" {
 		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is registered to vote for "+registrant.ElectionName)
 		if registration.VerifyStudent(registrant) {
-
+			fmt.Println("Made it past here!")
+			registration.SendRegistrationTransaction(registrant)
 		}
 	} else if params["verified"] == "false" {
 		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is not supposed to be registered to vote for "+registrant.ElectionName)
-		registration.SendWarningEmail(params["email"], registrant.ElectionName)
+		registration.SendWarningEmail(registrant.Email, registrant.ElectionName)
 	}
 
 }

@@ -28,7 +28,7 @@ func HandleFullRoutes() {
 }
 
 func HandleProducerRoutes() {
-	Router.HandleFunc("/verifyCode/code={id}&verified={verified}&email={email}", VerifyEmailHandler).Methods("GET")
+	Router.HandleFunc("/verifyCode/code={id}&verified={verified}", VerifyEmailHandler).Methods("GET")
 	Router.HandleFunc("/endpoint", GetEndpoint).Methods("GET") //good
 	// Should not actually be here, only for testing.  Router.HandleFunc("/test/email={email}&public_key={public_key}&election={election}", RegisterHandler).Methods("GET")
 }
