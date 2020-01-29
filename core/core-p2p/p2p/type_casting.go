@@ -35,7 +35,7 @@ func CreateSignature(transaction interface{}, privKey string) string {
 			return sig
 		}
 	case database.Registration:
-		header = t.Election + t.Receiver + string(t.Sender) + t.Signature +
+		header = t.Election + string(t.Receiver) + string(t.Sender) + t.Signature +
 			t.Type
 
 		sig, err := crypto.Sign([]byte(header), privKey)

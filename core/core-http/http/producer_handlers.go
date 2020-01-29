@@ -21,11 +21,9 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Made it all the way here!")
 	if params["verified"] == "true" {
 		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is registered to vote for "+registrant.ElectionName)
 		if registration.VerifyStudent(registrant) {
-			fmt.Println("Made it past here!")
 			registration.SendRegistrationTransaction(registrant)
 		}
 	} else if params["verified"] == "false" {

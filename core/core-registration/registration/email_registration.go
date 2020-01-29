@@ -2,6 +2,7 @@ package registration
 
 import (
 	"net/smtp"
+	"time"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 
@@ -47,6 +48,7 @@ func isValidEmail(email string) bool {
 
 // Create registration code, save to database, send email with code and link
 func SendRegistrationCode(registrant database.AwaitingRegistration, public_ip string, tcp_port string) {
+	registrant.Timestamp = time.Now().Format(time.RFC3339)
 	registrant.Code, _ = crypto.RandomHex(100)
 	database.SaveRegistrationCode(registrant)
 
@@ -58,8 +60,8 @@ func SendRegistrationCode(registrant database.AwaitingRegistration, public_ip st
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
 		"Subject:  " + "HonestVote Registration Code" + "\n\n" +
-		"Click this link if you requested to register for the upcoming" + registrant.ElectionName + "election: \n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + registrant.Code + "&verified=true&email=null\n" +
-		"If this is incorrect, please click here:\n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + registrant.Code + "&verified=false&email=" + registrant.Email
+		"Click this link if you requested to register for the upcoming" + registrant.ElectionName + "election: \n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + registrant.Code + "&verified=true\n" +
+		"If this is incorrect, please click here:\n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + registrant.Code + "&verified=false"
 
 	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
 	if err != nil {

@@ -35,13 +35,13 @@ func IsValidRegistrationCode(code string) (AwaitingRegistration, error) {
 	fmt.Println(result.Timestamp)
 
 	// determine if registration code is young enough
-	start, err := time.Parse(time.RFC1123, result.Timestamp)
+	linkAge, err := time.Parse(time.RFC1123, result.Timestamp)
 	if err != nil {
 		logger.Println("email_registration.go", "IsValidRegistrationCode()", err.Error())
 	}
 
-	var HOURS float64 = 4
-	if time.Now().Sub(start).Hours() > HOURS {
+	expiryTime := 4 * time.Hour
+	if linkAge.Add(expiryTime).After(time.Now()) {
 		customErr := &CustomError{
 			Time:    time.Now(),
 			Message: "Registration Code is too young",

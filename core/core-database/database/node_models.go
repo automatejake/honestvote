@@ -28,12 +28,12 @@ type Block struct {
  */
 
 type Registration struct {
-	Type      string    `json:"type"`
-	Election  string    `json:"election"` //Data Start
-	Receiver  string    `json:"receiver"` //Data End
-	Sender    PublicKey `json:"sender"`
-	SenderSig string    `json:"senderSig"`
-	Signature string    `json:"signature"`
+	Type        string    `json:"type"`
+	Election    string    `json:"election"` //Data Start
+	Receiver    PublicKey `json:"receiver"` //Data End
+	RecieverSig string    `json:"recieverSig"`
+	Sender      PublicKey `json:"sender"`
+	Signature   string    `json:"signature"`
 }
 
 type AwaitingRegistration struct {
