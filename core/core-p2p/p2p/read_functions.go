@@ -41,10 +41,10 @@ func ReceiveTransaction(mType string, data []byte) error {
 	valid = true
 	switch mType {
 	case "Vote":
-		var vote database.Vote
-		json.Unmarshal(data, &vote)
+		vote := &database.Vote{}
+		json.Unmarshal(data, vote)
 		if valid {
-			AddToBlock(data)
+			AddToBlock(vote)
 		} else {
 			logger.Println("", "", "")
 		}
