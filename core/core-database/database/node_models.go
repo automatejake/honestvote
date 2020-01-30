@@ -53,7 +53,7 @@ type AwaitingRegistration struct {
 type Vote struct {
 	Type      string            `json:"type"`
 	Election  string            `json:"electionName"` //Data Start
-	Receiver  map[string]string `json:"recievers"`    //Data End
+	Receiver  map[string]string `json:"receivers"`    //Data End
 	Sender    PublicKey         `json:"sender"`
 	Signature string            `json:"signature"`
 }
