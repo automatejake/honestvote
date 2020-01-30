@@ -65,17 +65,21 @@ func FetchLatestPeers(registry_ip string, registry_port string, tcp_port string)
 // * 2) If unsuccessful, report to registry node
 // * 3) If succsessful, Add Peer to database and connection to memory
 //  */
-func ConnectMessage(peer database.Node) {
+func ConnectMessage(peer database.Node) { //is run
 	port := strconv.Itoa(peer.Port)
 
-	conn, err := net.Dial("tcp", peer.IPAddress+":"+port)
+	conn, err := net.Dial("tcp", peer.IPAddress+":"+port) //dials up the other two nodes
 	if err != nil {
 		logger.Println("find_peer.go", "ConnectMessage", err.Error())
 	}
-	if conn != nil {
+	if conn != nil { //you dont want to run this unless at least one connection is made
 
 		//Catch up on latest blockchain and only run it once
 		doOnce.Do(func() { p2p.SendIndex(database.LastIndex(database.MongoDB), conn) })
+		//when you have new cons you have multithreading
+		//
+		doOnce.Do(func() { p2p.LatestHashAndIndex(database.MongoDB) })
+		//
 
 		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 

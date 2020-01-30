@@ -118,7 +118,7 @@ func DecideType(data []byte, mType string, conn net.Conn) {
 func VerifyBlock(block database.Block, conn net.Conn) {
 
 }
-func LatestHashAndIndex(client *mongo.Client) (string, int) {
+func LatestHashAndIndex(client *mongo.Client) {
 	var block database.Block
 
 	collection := client.Database("honestvote").Collection("b_blockchain")
@@ -139,18 +139,21 @@ func LatestHashAndIndex(client *mongo.Client) (string, int) {
 		// Decode the document
 		if err := cursor.Decode(&block); err != nil {
 			log.Fatal("cursor. Decode ERROR:", err)
-			return "", 0
+			//return "", 0
+			return
 		}
 	}
 	// //stores the last block as PreviousBlock
-	// PreviousBlock = block
+	PreviousBlock = block
+	fmt.Println(PreviousBlock)
 
-	PreviousBlock.Hash = block.PrevHash
-	PreviousBlock.Index = block.Index - 1
+	//DELETE, dont need to return
+	// PreviousBlock.Hash = block.Hash//return aactual hash
+	// PreviousBlock.Index = block.Index
 
-	// //returns the previous block's hash and current index
-	// return block.PrevHash, block.Index
+	//returns the previous block's hash and current index
+	//return block.PrevHash, block.Index //DELETE
 
 	//returns the previous block's hash and previous block index
-	return block.PrevHash, block.Index - 1
+	//return block.Hash, block.Index
 }
