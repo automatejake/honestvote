@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net"
 	"strconv"
 
@@ -116,4 +117,40 @@ func DecideType(data []byte, mType string, conn net.Conn) {
 //Decide if the block sent is valid
 func VerifyBlock(block database.Block, conn net.Conn) {
 
+}
+func LatestHashAndIndex(client *mongo.Client) (string, int) {
+	var block database.Block
+
+	collection := client.Database("honestvote").Collection("b_blockchain")
+	//collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
+
+	ctx := context.Background()
+	var bsonMap bson.M
+
+	filter := bson.M{"xx": bsonMap}
+
+	// Pass the filter to Find() to return a MongoDB cursor
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		log.Fatal("collection. Find ERROR:", err)
+	}
+	// iterate through all documents
+	for cursor.Next(ctx) {
+		// Decode the document
+		if err := cursor.Decode(&block); err != nil {
+			log.Fatal("cursor. Decode ERROR:", err)
+			return "", 0
+		}
+	}
+	// //stores the last block as PreviousBlock
+	// PreviousBlock = block
+
+	PreviousBlock.Hash = block.PrevHash
+	PreviousBlock.Index = block.Index - 1
+
+	// //returns the previous block's hash and current index
+	// return block.PrevHash, block.Index
+
+	//returns the previous block's hash and previous block index
+	return block.PrevHash, block.Index - 1
 }
