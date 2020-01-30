@@ -11,3 +11,7 @@ func CalculateHash(input string) string {
 	sum := hash.Sum(nil)
 	return base64.URLEncoding.EncodeToString(sum)
 }
+
+func SignBlock(header string, privKey string) (string, error) {
+	return Sign([]byte(header), privKey)
+}

@@ -16,6 +16,7 @@ type Block struct {
 	Transaction interface{} `json:"transaction"` // not  included in the hash
 	MerkleRoot  string      `json:"merkleRoot"`
 	Validator   string      `json:"validator"`
+	Signature   string      `json:"signature"`
 	PrevHash    string      `json:"prevhash"`
 	Hash        string      `json:"hash"`
 }
