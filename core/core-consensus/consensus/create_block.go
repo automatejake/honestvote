@@ -25,8 +25,9 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 	sig, err := crypto.SignBlock(header, privKey)
 	if err != nil {
 		newBlock.Signature = "None"
+	} else {
+		newBlock.Signature = sig
 	}
-	newBlock.Signature = sig
 
 	return newBlock
 }
