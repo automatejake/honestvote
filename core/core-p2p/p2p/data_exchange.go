@@ -139,21 +139,10 @@ func LatestHashAndIndex(client *mongo.Client) {
 		// Decode the document
 		if err := cursor.Decode(&block); err != nil {
 			log.Fatal("cursor. Decode ERROR:", err)
-			//return "", 0
 			return
 		}
 	}
-	// //stores the last block as PreviousBlock
 	PreviousBlock = block
 	fmt.Println(PreviousBlock)
 
-	//DELETE, dont need to return
-	// PreviousBlock.Hash = block.Hash//return aactual hash
-	// PreviousBlock.Index = block.Index
-
-	//returns the previous block's hash and current index
-	//return block.PrevHash, block.Index //DELETE
-
-	//returns the previous block's hash and previous block index
-	//return block.Hash, block.Index
 }
