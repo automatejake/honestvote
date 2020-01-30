@@ -74,7 +74,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 }
 
 func AddToBlock(transaction interface{}) {
-	block := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey)
+	block := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey, PrivateKey)
 
 	fmt.Println("created block")
 	//Check if there is a proposed block currently, if so, add to the queue
