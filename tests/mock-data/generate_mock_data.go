@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
+	"os"
 	"time"
 
-	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
+	"github.com/jneubaum/honestvote/core/core-validation/validation"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -54,7 +55,9 @@ func main() {
 	}
 
 	jsonElection, _ := json.Marshal(election)
-	election.Signature = p2p.CreateSignature(election, private_key)
+
+	headers := validation.GenerateElectionHeaders(election)
+	election.Signature, _ = crypto.Sign([]byte(headers), private_key)
 
 	var registration database.Registration = database.Registration{
 		Type:     "Registration",
@@ -64,7 +67,8 @@ func main() {
 	}
 
 	jsonRegistration, _ := json.Marshal(registration)
-	registration.Signature = p2p.CreateSignature(registration, private_key)
+	headers = validation.GenerateRegistrationHeaders(registration)
+	registration.Signature, _ = crypto.Sign([]byte(headers), private_key)
 
 	private_key, public_key = crypto.GenerateKeyPair()
 	var vote database.Vote = database.Vote{
@@ -78,7 +82,7 @@ func main() {
 	fmt.Println("Voter Public Key\n" + public_key + "\n")
 
 	jsonVote, _ := json.Marshal(vote)
-	vote.Signature = p2p.CreateSignature(vote, private_key)
+	// vote.Signature = p2p.CreateSignature(vote, private_key)
 
 	jsonElection, _ = json.MarshalIndent(election, "", "\t")
 	jsonRegistration, _ = json.MarshalIndent(registration, "", "\t")
@@ -86,8 +90,21 @@ func main() {
 
 	// jsonData, _ := json.Marshal(jsonArray)
 
-	filename := "_mock_data.json"
-	_ = ioutil.WriteFile("election"+filename, jsonElection, 777)
-	_ = ioutil.WriteFile("registration"+filename, jsonRegistration, 777)
-	_ = ioutil.WriteFile("vote"+filename, jsonVote, 777)
+	filename := "mock_data.json"
+	// _ = ioutil.WriteFile(filename, jsonElection, 0644)
+	// _ = ioutil.WriteFile(filename, jsonRegistration, 0644)
+	// _ = ioutil.WriteFile(filename, jsonVote, 0644)
+
+	file, _ := os.Create(filename)
+	defer file.Close()
+
+	_, _ = io.WriteString(file, "Election Transaction:\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
+		string(jsonElection)+"' http://localhost:7003/election\n\n\n\n")
+	_, _ = io.WriteString(file, "Registration Transaction:\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
+		string(jsonRegistration)+"' http://localhost:7003/test/registration\n\n\n\n")
+	_, _ = io.WriteString(file, "Vote Transaction:\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
+		string(jsonVote)+"' http://localhost:7003/test/vote\n\n\n\n")
+
 }
+
+// os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644

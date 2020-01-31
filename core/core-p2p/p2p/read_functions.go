@@ -42,37 +42,43 @@ func ReceiveTransaction(mType string, data []byte) error {
 	switch mType {
 	case "Vote":
 		vote := &database.Vote{}
-		json.Unmarshal(data, vote)
+		err := json.Unmarshal(data, vote)
+		if err != nil {
+
+		}
+
+		valid, err = validation.IsValidVote(*vote)
 		if valid {
 			AddToBlock(vote)
 		} else {
-			logger.Println("", "", "")
+			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
-		// valid, err = validation.IsValidVote(vote)
+
 	case "Election":
 		election := &database.Election{}
-
 		err := json.Unmarshal(data, election)
 		if err != nil {
 
 		}
+
 		valid, err = validation.IsValidElection(*election)
-		if err != nil {
-			fmt.Println(err.Error())
-		}
 		if valid {
 			AddToBlock(election)
 		} else {
-			logger.Println("", "", "")
+			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 	case "Registration":
 		registration := &database.Registration{}
-		json.Unmarshal(data, &registration)
-		// valid, err = validation.IsValidRegistration(registration)
+		err := json.Unmarshal(data, &registration)
+		if err != nil {
+
+		}
+
+		valid, err = validation.IsValidRegistration(*registration)
 		if valid {
 			AddToBlock(registration)
 		} else {
-			logger.Println("", "", "")
+			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 	}
 
