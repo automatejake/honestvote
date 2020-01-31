@@ -7,6 +7,7 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-validation/validation"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -38,7 +39,6 @@ func ReceiveTransaction(mType string, data []byte) error {
 
 	fmt.Println("recieved")
 	var valid bool
-	valid = true
 	switch mType {
 	case "Vote":
 		vote := &database.Vote{}
@@ -50,10 +50,16 @@ func ReceiveTransaction(mType string, data []byte) error {
 		}
 		// valid, err = validation.IsValidVote(vote)
 	case "Election":
-		fmt.Println("identified election")
 		election := &database.Election{}
-		json.Unmarshal(data, election)
-		// valid, err = validation.IsValidElection(election)
+
+		err := json.Unmarshal(data, election)
+		if err != nil {
+
+		}
+		valid, err = validation.IsValidElection(*election)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 		if valid {
 			AddToBlock(election)
 		} else {

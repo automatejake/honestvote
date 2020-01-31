@@ -13,11 +13,7 @@ import (
 
 //Used to update the blockchain only once per producer
 var doOnce sync.Once
-<<<<<<< HEAD
-var doAgain sync.Once
-=======
 var doAnother sync.Once
->>>>>>> 0e99bd9a5ec0dd85fd3f678b806c7bdbccff007e
 
 /***
 * Find Nodes to talk to in the network, 2 Step Process
@@ -81,13 +77,9 @@ func ConnectMessage(peer database.Node) { //is run
 
 		doOnce.Do(func() { p2p.SendIndex(database.LastIndex(database.MongoDB), conn) })
 
-<<<<<<< HEAD
-		doAgain.Do(func() { p2p.LatestHashAndIndex(database.MongoDB) })
-=======
 		//when you have new cons you have multithreading
 		//TODO see if you can use doOnce a second time
 		doAnother.Do(func() { p2p.LatestHashAndIndex(database.MongoDB) })
->>>>>>> 0e99bd9a5ec0dd85fd3f678b806c7bdbccff007e
 
 		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 

@@ -24,20 +24,12 @@ func main() {
 	// 	fmt.Println("We made it")
 	// }
 	// time.RFC3339
-	blah := time.Now().Format(time.RFC3339) //"Dec 29, 2014 at 7:54pm (SGT)"
-	start, _ := time.Parse(time.RFC3339, blah)
-	end := start.Add(4 * time.Hour)
-	now := time.Now()
-	// time.Sleep(3 * time.Second)
-
-	fmt.Println(start)
-	fmt.Println(end)
-	fmt.Println(now)
-	if end.Before(now.Add()) {
-		fmt.Println("made it here")
-	} else {
-		fmt.Println("made it fear")
+	blah := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	_, err := time.Parse("Mon, 02 Jan 2006 15:04:05 MST", blah)
+	if err != nil {
+		fmt.Println(err.Error())
 	}
+	// fmt.Println(blah)
 
 	// vote := database.Vote{
 	// 	Type:     "Vote",

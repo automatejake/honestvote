@@ -8,6 +8,7 @@ import (
 )
 
 func ListenConn(port string, role string) {
+
 	listen, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		logger.Println("listener.go", "ListenConn()", err.Error())

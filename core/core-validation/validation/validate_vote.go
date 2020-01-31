@@ -66,8 +66,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 		return false, customErr
 	}
 
-	customErr = nil
-	return true, customErr
+	return true, nil
 }
 
 func ContainsCandidate(p database.Position, c string) bool {
