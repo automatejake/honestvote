@@ -7,6 +7,14 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
+func GenerateVoteHeaders(v database.Vote) string {
+	headers := v.Election
+	for key, value := range v.Receiver {
+		headers += key + value
+	}
+	return headers
+}
+
 func IsValidVote(v database.Vote) (bool, error) {
 	customErr := &ValidationError{
 		Time: time.Now(),

@@ -4,8 +4,20 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
+
+func GenerateElectionHeaders(e database.Election) string {
+	headers := e.ElectionName + e.Institution + e.Description + e.Start + e.End + e.EmailDomain
+	for _, position := range e.Positions {
+		headers += position.PositionId + position.Name
+		for _, candidate := range position.Candidates {
+			headers += candidate.Name + candidate.Recipient
+		}
+	}
+	return headers
+}
 
 func IsValidElection(e database.Election) (bool, error) {
 	customErr := &ValidationError{
@@ -14,22 +26,15 @@ func IsValidElection(e database.Election) (bool, error) {
 	end := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	electionHeaders := e.ElectionName + e.Institution + e.Description + e.Start + e.End + e.EmailDomain
-	for _, position := range e.Positions {
-		electionHeaders += position.PositionId + position.Name
-		for _, candidate := range position.Candidates {
-			electionHeaders += candidate.Name + candidate.Recipient
-		}
+	electionHeaders := GenerateElectionHeaders(e)
+	valid, err := crypto.Verify([]byte(electionHeaders), e.Sender, e.Signature)
+	if err != nil {
+		return false, customErr
 	}
-
-	// valid, err := crypto.Verify([]byte(electionHeaders), e.Sender, e.Signature)
-	// if err != nil {
-	// 	return false, customErr
-	// }
-	// if !valid {
-	// 	customErr.Message = "Election transaction contains invalid signature" + end
-	// 	return false, customErr
-	// }
+	if !valid {
+		customErr.Message = "Election transaction contains invalid signature" + end
+		return false, customErr
+	}
 
 	//Check to see if sender matches the public key of a legitimate administrator node
 	node := database.FindNode(string(e.Sender))
@@ -64,26 +69,26 @@ func IsValidElection(e database.Election) (bool, error) {
 	}
 
 	//Check to see if election contains postions with unique ids and candidates with uniqued recipient ids
-	// positionSet := make(map[string]bool)
-	// candidateSet := make(map[string]bool)
-	// for _, position := range e.Positions {
+	positionSet := make(map[string]bool)
+	candidateSet := make(map[string]bool)
+	for _, position := range e.Positions {
 
-	// 	if positionSet[position.PositionId] {
-	// 		customErr.Message = "Election transaction contains multiple position ids for a single transaction" + end
-	// 		return false, customErr
-	// 	}
-	// 	positionSet[position.PositionId] = true
+		if positionSet[position.PositionId] {
+			customErr.Message = "Election transaction contains multiple position ids for a single transaction" + end
+			return false, customErr
+		}
+		positionSet[position.PositionId] = true
 
-	// 	for _, candidate := range position.Candidates {
-	// 		if candidate.Recipient == "" {
-	// 			if candidateSet[candidate.Recipient] {
-	// 				customErr.Message = "Election transaction contains multiple recipients for a single transaction" + end
-	// 				return false, customErr
-	// 			}
-	// 			candidateSet[candidate.Recipient] = true
-	// 		}
-	// 	}
-	// }
+		for _, candidate := range position.Candidates {
+			if candidate.Recipient == "" {
+				if candidateSet[candidate.Recipient] {
+					customErr.Message = "Election transaction contains multiple recipients for a single transaction" + end
+					return false, customErr
+				}
+				candidateSet[candidate.Recipient] = true
+			}
+		}
+	}
 
 	//if all passes, then transaction is valid
 

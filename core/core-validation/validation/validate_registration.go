@@ -7,6 +7,10 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
+func GenerateRegistrationHeaders(r database.Registration) string {
+	return r.Election + string(r.Receiver) + string(r.RecieverSig)
+}
+
 func IsValidRegistration(r database.Registration) (bool, error) {
 	customErr := &ValidationError{
 		Time: time.Now(),
