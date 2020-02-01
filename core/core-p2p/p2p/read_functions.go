@@ -7,6 +7,7 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-validation/validation"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
@@ -48,7 +49,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 
 		valid, err = validation.IsValidVote(*vote)
 		if valid {
-			AddToBlock(vote)
+			AddToBlock(vote, crypto.CalculateHash(vote.Signature))
 		} else {
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
@@ -62,7 +63,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 
 		valid, err = validation.IsValidElection(*election)
 		if valid {
-			AddToBlock(election)
+			AddToBlock(election, crypto.CalculateHash(election.Signature))
 		} else {
 			fmt.Println(err.Error())
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
@@ -78,7 +79,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 
 		valid, err = validation.IsValidRegistration(*registration)
 		if valid {
-			AddToBlock(registration)
+			AddToBlock(registration, crypto.CalculateHash(registration.Signature))
 		} else {
 			fmt.Println(err)
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
@@ -88,8 +89,9 @@ func ReceiveTransaction(mType string, data []byte) error {
 	return nil
 }
 
-func AddToBlock(transaction interface{}) {
+func AddToBlock(transaction interface{}, hash string) {
 	block := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey, PrivateKey)
+	block.MerkleRoot = hash
 
 	fmt.Println("created block")
 	//Check if there is a proposed block currently, if so, add to the queue

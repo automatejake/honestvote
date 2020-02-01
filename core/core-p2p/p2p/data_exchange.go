@@ -11,6 +11,7 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -49,6 +50,10 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 
 		for result.Next(context.TODO()) {
 			err = result.Decode(&block)
+			if t, ok := block.Transaction.(primitive.D); ok{
+				tempMap := t.Map()
+				block.Transaction = tempMap
+			}
 			MoveDocuments(conn, block)
 		}
 	} else {
