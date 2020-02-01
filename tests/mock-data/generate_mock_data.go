@@ -115,9 +115,9 @@ func main() {
 	_, _ = io.WriteString(file, "Election Transaction:\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
 		string(jsonElection)+"' http://localhost:7003/election\n\n\n\n")
 	_, _ = io.WriteString(file, "Registration Transaction:\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
-		string(jsonRegistration)+"' http://localhost:7003/test/registration\n\n\n\n")
+		string(jsonRegistration)+"' http://localhost:7003/election/test/register\n\n\n\n")
 	_, _ = io.WriteString(file, "Vote Transaction:\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
-		string(jsonVote)+"' http://localhost:7003/test/vote\n\n\n\n")
+		string(jsonVote)+"' http://localhost:7003/election/test/vote\n\n\n\n")
 
 }
 

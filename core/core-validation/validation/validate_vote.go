@@ -74,6 +74,8 @@ func IsValidVote(v database.Vote) (bool, error) {
 		return false, customErr
 	}
 
+	//Make sure that vote does not occur twice
+
 	return true, nil
 }
 

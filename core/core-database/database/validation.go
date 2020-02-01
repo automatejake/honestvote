@@ -24,3 +24,20 @@ func CorrespondingRegistration(v Vote) Registration {
 
 	return registration
 }
+
+func DoesRegistrationExist(sender PublicKey, election string) (bool, error) {
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
+	var block Block
+	var registration Registration
+
+	query := bson.M{"transaction.type": "Registration", "transaction.sender": sender, "transaction.election": election}
+	result := collection.FindOne(context.TODO(), query)
+	result.Decode(&block)
+
+	annoying_mongo_form := block.Transaction.(primitive.D)
+	err := mapstructure.Decode(annoying_mongo_form.Map(), &registration)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

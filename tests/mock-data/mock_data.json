@@ -47,7 +47,7 @@ curl --header "Content-Type: application/json" --request POST --data '{
 	"senderSig": "",
 	"code": "",
 	"timestamp": ""
-}' http://localhost:7003/test/registration
+}' http://localhost:7003/test/register
 
 
 
@@ -61,7 +61,7 @@ curl --header "Content-Type: application/json" --request POST --data '{
 	},
 	"sender": "3059301306072a8648ce3d020106082a8648ce3d030107034200042e623074b24532f0c9f9e5b8287d46e9dd3986835a3218fa4d3ae4efe5dd4070201cb6347e8220d0c197d259d07a1f8f0b8a1f60a804155e8f92c959fb87338b",
 	"signature": ""
-}' http://localhost:7003/test/vote
+}' http://localhost:7003/election/test/vote
 
 
 
