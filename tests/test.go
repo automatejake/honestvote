@@ -2,46 +2,18 @@ package main
 
 import (
 	"fmt"
-	"time"
+
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
 func main() {
-	// blah := time.Now()
-	// start := time.Now().String()
-	// // Thu, 01 Dec 1994 16:00:00 GMT
-
-	// end, err := time.Parse("2006-01-02T15:04:05.000Z", start)
-	// if err != nil {
-	// 	logger.Println("email_registration.go", "IsValidRegistrationCode()", err.Error())
-	// }
-
-	// fmt.Println(blah, "\n", start, "\n", end)
-
-	// var HOURS float64 = 4
-	// if time.Now().Sub(end).Hours() > HOURS {
-	// 	fmt.Println("We didnt make it")
-	// } else {
-	// 	fmt.Println("We made it")
-	// }
-	// time.RFC3339
-	blah := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
-	_, err := time.Parse("Mon, 02 Jan 2006 15:04:05 MST", blah)
+	database.MongoDB = database.MongoConnect()
+	database.CollectionPrefix = "a_"
+	s, err := database.GetElection("7b2252223a33353633333231323031373231353131303836373037323633323534373934303639333530303531383135323536373332303635333533363832343333363531393933303132383339303536382c2253223a31303334383733323037313037353435373832303238313939373734363731393137313532373133323131363630363739383336333335363035363439333534373038313931333334353432377d")
 	if err != nil {
-		fmt.Println(err.Error())
+
+	} else {
+		fmt.Println(s)
 	}
-	// fmt.Println(blah)
-
-	// vote := database.Vote{
-	// 	Type:     "Vote",
-	// 	Election: "Chester",
-	// 	Receiver: map[string]string{"cool": "beans"},
-	// }
-
-	// voteHeaders := vote.Type + vote.Election
-	// for key, value := range vote.Receiver {
-	// 	voteHeaders += key + value
-	// }
-
-	// fmt.Println([]byte(voteHeaders))
 
 }
