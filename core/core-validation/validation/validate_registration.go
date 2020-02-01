@@ -50,13 +50,13 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 		return false, customErr
 	}
 
-	// //Check to see if registration was sent by the administrator that declared the election
+	// Check to see if registration was sent by the administrator that declared the election
 	if r.Sender != election.Sender {
 		customErr.Message = "Registration transactions must be delcared by an administrator" + ending
 		return false, customErr
 	}
 
-	// //Check to see if registration is for a valid public key
+	// Check to see if registration is for a valid public key
 	if r.Sender == "" {
 		customErr.Message = "Registration transactions must come from a voter with a valid public key" + ending
 		return false, customErr
@@ -65,6 +65,13 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 	//Check to see if Registration type is correctly stored in transaction
 	if r.Type != "Registration" {
 		customErr.Message = "Registration transaction is incorrect type" + ending
+		return false, customErr
+	}
+
+	//Check to see if same person has already registered to vote
+	alreadyVoted, err := database.DoesRegistrationExist(r.Sender, r.Election)
+	if alreadyVoted {
+		customErr.Message = "Registration transaction already exists for this voter" + ending
 		return false, customErr
 	}
 
