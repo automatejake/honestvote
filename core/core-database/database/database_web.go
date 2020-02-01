@@ -46,25 +46,24 @@ func GetElection(election_signature string) (Election, error) {
 	var block Block
 	var election Election
 
+	// fmt.Println("\n\n\n" + election_signature + "\n\n\n")
+
 	query := bson.M{"transaction.type": "Election", "transaction.signature": election_signature}
 
-	result, err := collection.Find(context.TODO(), query)
+	result := collection.FindOne(context.TODO(), query)
+
+	err := result.Decode(&block)
 	if err != nil {
 		logger.Println("database_web", "GetElection", err.Error())
 	}
 
-	for result.Next(context.TODO()) {
-		err = result.Decode(&block)
-		if err != nil {
-			logger.Println("database_web", "GetElection", err.Error())
-		}
+	annoying_mongo_form := block.Transaction.(primitive.D).Map()
+	// fmt.Println(annoying_mongo_form["Positions"])
+	// annoying_mongo_form2 := annoying_mongo_form["positions"]
 
-	}
-
-	annoying_mongo_form := block.Transaction.(primitive.D)
-
-	mapstructure.Decode(annoying_mongo_form.Map(), &election)
-	result.Close(context.TODO())
+	// fmt.Println(annoying_mongo_form)
+	mapstructure.Decode(annoying_mongo_form, &election)
+	// fmt.Println(annoying_mongo_form.Map())
 
 	return election, nil
 }

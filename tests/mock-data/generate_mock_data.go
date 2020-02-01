@@ -59,16 +59,31 @@ func main() {
 	headers := validation.GenerateElectionHeaders(election)
 	election.Signature, _ = crypto.Sign([]byte(headers), private_key)
 
-	var registration database.Registration = database.Registration{
-		Type:     "Registration",
-		Election: election.Signature,
-		Receiver: "test3",
-		Sender:   database.PublicKey(public_key),
+	var registration database.AwaitingRegistration = database.AwaitingRegistration{
+		Email:         "jacob@neubaum.com",
+		FirstName:     "Jacob",
+		LastName:      "Neubaum",
+		DateOfBirth:   "3/9/1999",
+		ElectionName:  election.Signature,
+		ElectionAdmin: string(election.Sender),
+		Sender:        database.PublicKey(public_key),
+		SenderSig:     "",
+		Code:          "",
+		Timestamp:     "",
 	}
 
+	// Email         string    `json:"emailAddress"`
+	// FirstName     string    `json:"firstName"`
+	// LastName      string    `json:"lastName"`
+	// DateOfBirth   string    `json:"dateOfBirth"`
+	// ElectionName  string    `json:"electionName"`
+	// ElectionAdmin string    `json:"electionAdmin"`
+	// Sender        PublicKey `json:"publicKey"`
+	// SenderSig     string    `json:"senderSig"`
+	// Code          string    `json:"code"`
+	// Timestamp     string    `json:"timestamp"`
+
 	jsonRegistration, _ := json.Marshal(registration)
-	headers = validation.GenerateRegistrationHeaders(registration)
-	registration.Signature, _ = crypto.Sign([]byte(headers), private_key)
 
 	private_key, public_key = crypto.GenerateKeyPair()
 	var vote database.Vote = database.Vote{
@@ -82,7 +97,6 @@ func main() {
 	fmt.Println("Voter Public Key\n" + public_key + "\n")
 
 	jsonVote, _ := json.Marshal(vote)
-	// vote.Signature = p2p.CreateSignature(vote, private_key)
 
 	jsonElection, _ = json.MarshalIndent(election, "", "\t")
 	jsonRegistration, _ = json.MarshalIndent(registration, "", "\t")

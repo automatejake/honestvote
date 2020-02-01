@@ -37,7 +37,6 @@ func DecodeData(data []byte) {
 //Get vote from full node and turn it into a block and propose
 func ReceiveTransaction(mType string, data []byte) error {
 
-	fmt.Println("recieved")
 	var valid bool
 	switch mType {
 	case "Vote":
@@ -65,9 +64,12 @@ func ReceiveTransaction(mType string, data []byte) error {
 		if valid {
 			AddToBlock(election)
 		} else {
+			fmt.Println(err.Error())
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 	case "Registration":
+		fmt.Println("recieved registration")
+
 		registration := &database.Registration{}
 		err := json.Unmarshal(data, &registration)
 		if err != nil {
@@ -78,6 +80,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		if valid {
 			AddToBlock(registration)
 		} else {
+			fmt.Println(err)
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 	}

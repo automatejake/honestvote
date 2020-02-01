@@ -28,6 +28,9 @@ var REGISTRY_IP string
 var REGISTRY_PORT string = "7002"
 var REGISTRY bool = false // is producer registry node or not
 var LOGGING bool = false
+var INSTITUTION_NAME string
+var PUBLIC_KEY string
+var PRIVATE_KEY string
 
 //this file will be responsible for deploying the app
 func main() {
@@ -35,6 +38,8 @@ func main() {
 	if err != nil {
 		fmt.Println("Loading ENV Failed")
 	}
+
+	PRIVATE_KEY, PUBLIC_KEY = crypto.GenerateKeyPair()
 
 	// environmental variables override defaults
 	if os.Getenv("TCP_PORT") != "" {
@@ -62,13 +67,16 @@ func main() {
 		REGISTRY, _ = strconv.ParseBool(os.Getenv("REGISTRY"))
 	}
 	if os.Getenv("PRIVATE_KEY") != "" {
-		p2p.PrivateKey = os.Getenv("PRIVATE_KEY")
+		PRIVATE_KEY = os.Getenv("PRIVATE_KEY")
 	}
 	if os.Getenv("PUBLIC_KEY") != "" {
-		p2p.PublicKey = os.Getenv("PUBLIC_KEY")
+		PUBLIC_KEY = os.Getenv("PUBLIC_KEY")
 	}
 	if os.Getenv("PUBLIC_IP_ADDRESS") != "" {
 		p2p.PublicIP = os.Getenv("PUBLIC_IP_ADDRESS")
+	}
+	if os.Getenv("INSTITUTION_NAME") != "" {
+		INSTITUTION_NAME = os.Getenv("INSTITUTION_NAME")
 	}
 
 	//this domain is the default host to resolve traffic
@@ -101,23 +109,32 @@ func main() {
 		case "--registry":
 			REGISTRY, _ = strconv.ParseBool(os.Args[index+1])
 		case "--private-key": //Sets the private key
-			p2p.PrivateKey = os.Args[index+1]
+			PRIVATE_KEY = os.Args[index+1]
 		case "--public-key": //Sets the public key
-			p2p.PublicKey = os.Args[index+1]
+			PUBLIC_KEY = os.Args[index+1]
 		case "--public-ip": //sets the public ip address
 			p2p.PublicIP = os.Args[index+1]
+		case "--institution-name": //sets the public ip address
+			INSTITUTION_NAME = os.Args[index+1]
 		}
 	}
 
-	p2p.PrivateKey, p2p.PublicKey = crypto.GenerateKeyPair()
 	p2p.SignatureMap = make(map[string]map[string]bool)
 
 	database.CollectionPrefix = COLLECTION_PREFIX
 	database.MongoDB = database.MongoConnect() // Connect to data store
 
 	port, _ := strconv.Atoi(TCP_PORT)
-	public_key := database.PublicKey(p2p.PublicKey)
-	p2p.Self = database.Node{IPAddress: "127.0.0.1", Port: port, Role: ROLE, PublicKey: public_key}
+	p2p.Self = database.Node{
+		IPAddress:   "127.0.0.1",
+		Port:        port,
+		Role:        ROLE,
+		PublicKey:   database.PublicKey(PUBLIC_KEY),
+		Institution: INSTITUTION_NAME,
+	}
+	p2p.PrivateKey = PRIVATE_KEY
+	p2p.PublicKey = PUBLIC_KEY
+
 	if !database.DoesNodeExist(p2p.Self) {
 		database.AddNode(p2p.Self)
 	}
