@@ -40,9 +40,13 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 
 	// //Check to see if election is still ongoing
 	now := time.Now()
-	electionEnd, err := time.Parse(election.End, "Mon, 02 Jan 2006 15:04:05 MST")
+	electionEnd, err := time.Parse("Mon, 02 Jan 2006 15:04:05 MST", election.End)
+	if err != nil {
+		customErr.Message = "Registration transaction contains an invalid date format" + ending
+		return false, customErr
+	}
 	if now.After(electionEnd) {
-		customErr.Message = "Registration transactions must occur for elections that are still ongoing"
+		customErr.Message = "Registration transactions must occur for elections that are still ongoing" + ending
 		return false, customErr
 	}
 
@@ -53,7 +57,7 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 	}
 
 	// //Check to see if registration is for a valid public key
-	if r.Sender != "" {
+	if r.Sender == "" {
 		customErr.Message = "Registration transactions must come from a voter with a valid public key" + ending
 		return false, customErr
 	}

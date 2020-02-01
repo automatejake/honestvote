@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -59,7 +58,6 @@ func IsValidElection(e database.Election) (bool, error) {
 	now := time.Now()
 	electionEnd, er := time.Parse("Mon, 02 Jan 2006 15:04:05 MST", e.End)
 	if er != nil {
-		fmt.Println(er.Error())
 		customErr.Message = "Election transaction contains an invalid date format"
 		return false, customErr
 	}

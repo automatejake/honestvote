@@ -58,10 +58,25 @@ func GetElection(election_signature string) (Election, error) {
 	}
 
 	annoying_mongo_form := block.Transaction.(primitive.D).Map()
-	// fmt.Println(annoying_mongo_form["Positions"])
-	// annoying_mongo_form2 := annoying_mongo_form["positions"]
 
-	// fmt.Println(annoying_mongo_form)
+	// // annoying_mongo_form2 := annoying_mongo_form["positions"].(primitive.A)
+
+	// for _, p := range annoying_mongo_form2 {
+	// 	var position Position
+	// 	annoying_mongo_form3 := p.(primitive.D).Map()
+	// 	mapstructure.Decode(annoying_mongo_form3, &position)
+	// 	for _, c := range annoying_mongo_form3 {
+
+	// 		// var candidate Candidate
+	// 		// annoying_mongo_form4 := c.(primitive.D).Map()
+	// 		// mapstructure.Decode(annoying_mongo_form4, &candidate)
+	// 		fmt.Println(candidate)
+	// 	}
+	// }
+	// // var candidates []Candidate
+
+	// // fmt.Println(annoying_mongo_form2)
+
 	mapstructure.Decode(annoying_mongo_form, &election)
 	// fmt.Println(annoying_mongo_form.Map())
 
