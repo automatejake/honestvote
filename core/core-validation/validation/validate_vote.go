@@ -22,10 +22,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	ending := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	voteHeaders := v.Election
-	for key, value := range v.Receiver {
-		voteHeaders += key + value
-	}
+	voteHeaders := GenerateVoteHeaders(v)
 
 	valid, err := crypto.Verify([]byte(voteHeaders), v.Sender, v.Signature)
 	if err != nil {
@@ -46,7 +43,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 
 	//Check to see if election is an ongoing election
 	now := time.Now()
-	electionEnd, err := time.Parse(election.End, "Mon, 02 Jan 2006 15:04:05 MST")
+	electionEnd, err := time.Parse("Mon, 02 Jan 2006 15:04:05 MST", election.End)
 	if now.After(electionEnd) {
 		customErr.Message = "Vote transactions must occur for elections that are still ongoing" + ending
 		return false, customErr
@@ -54,19 +51,19 @@ func IsValidVote(v database.Vote) (bool, error) {
 
 	//Check to see if voter is registered to vote
 	registration := database.CorrespondingRegistration(v)
-	if registration.Sender != v.Sender {
+	if registration.Receiver != v.Sender {
 		customErr.Message = "Vote transactions must have a corresponding registration transaction" + ending
 		return false, customErr
 	}
 
 	//Check to see if vote went to valid candidates
-	for i, _ := range election.Positions {
-		// if ContainsPositionCandidate(v.Receiver[election.Positions[i].PositionId]) {
-		if !ContainsCandidate(election.Positions[i], v.Receiver[election.Positions[i].PositionId]) {
-			customErr.Message = "Vote transaction must be for a legitimate candidate" + ending
-			return false, customErr
-		}
-	}
+	// for i, _ := range election.Positions {
+	// 	// if ContainsPositionCandidate(v.Receiver[election.Positions[i].PositionId]) {
+	// 	if !ContainsCandidate(election.Positions[i], v.Receiver[election.Positions[i].PositionId]) {
+	// 		customErr.Message = "Vote transaction must be for a legitimate candidate" + ending
+	// 		return false, customErr
+	// 	}
+	// }
 
 	//Check to see if Vote type is correctly stored in transaction
 	if v.Type != "Vote" {
@@ -75,6 +72,10 @@ func IsValidVote(v database.Vote) (bool, error) {
 	}
 
 	//Make sure that vote does not occur twice
+	if database.ContainsVote(v.Sender, v.Election) {
+		customErr.Message = "Vote transaction has already been cast for this voter" + ending
+		return false, customErr
+	}
 
 	return true, nil
 }
