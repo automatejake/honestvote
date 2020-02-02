@@ -78,20 +78,6 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 	}
 }
 
-func FixBSON(block database.Block) {
-	if tran, ok := block.Transaction.(primitive.D); ok {
-		tempMap := tran.Map()
-		if pos, ok := tempMap["positions"].(primitive.A); ok {
-			for _, position := range pos {
-				if info, ok := position.(primitive.D); ok {
-					tempMap["positions"] = info.Map()
-				}
-			}
-		}
-		block.Transaction = tempMap
-	}
-}
-
 //Send the data to the full/peer node
 func MoveDocuments(conn net.Conn, block database.Block) {
 
