@@ -31,7 +31,6 @@ func SendIndex(index int64, conn net.Conn) {
 func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 
 	var block database.Block
-	var elements primitive.A
 
 	collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
 
@@ -54,17 +53,21 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 
 			if tran, ok := block.Transaction.(primitive.D); ok {
 				tempMap := tran.Map()
+
 				if pos, ok := tempMap["positions"].(primitive.A); ok {
+					var elements primitive.A
 					tempMap["positions"] = nil
+
 					for _, position := range pos {
 						if info, ok := position.(primitive.D); ok {
 							tmpMap := info.Map()
 							elements = append(elements, tmpMap)
 						}
 					}
+
 					tempMap["positions"] = elements
-					elements = nil
 				}
+
 				block.Transaction = tempMap
 			}
 
