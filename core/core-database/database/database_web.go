@@ -71,6 +71,7 @@ func GetElection(election_signature string) (Election, error) {
 
 				if posInfo, ok := position.(primitive.D); ok {
 					posMap := posInfo.Map()
+
 					tempPos.Name = posMap["name"].(string)
 					tempPos.PositionId = posMap["positionid"].(string)
 
@@ -80,8 +81,10 @@ func GetElection(election_signature string) (Election, error) {
 
 							if candInfo, ok := candidate.(primitive.D); ok {
 								candMap := candInfo.Map()
+
 								tempCand.Name = candMap["name"].(string)
 								tempCand.Recipient = candMap["recipient"].(string)
+
 								tempPos.Candidates = append(tempPos.Candidates, tempCand)
 							}
 						}

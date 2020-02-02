@@ -52,23 +52,38 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 			err = result.Decode(&block)
 
 			if tran, ok := block.Transaction.(primitive.D); ok {
-				tempMap := tran.Map()
+				tranMap := tran.Map()
 
-				if pos, ok := tempMap["positions"].(primitive.A); ok {
-					var elements primitive.A
-					tempMap["positions"] = nil
+				if pos, ok := tranMap["positions"].(primitive.A); ok {
+					var posElements primitive.A
+					tranMap["positions"] = nil
 
 					for _, position := range pos {
-						if info, ok := position.(primitive.D); ok {
-							tmpMap := info.Map()
-							elements = append(elements, tmpMap)
+						if posInfo, ok := position.(primitive.D); ok {
+							posMap := posInfo.Map()
+
+							if cand, ok := posMap["candidates"].(primitive.A); ok {
+								var candElements primitive.A
+								posMap["candidates"] = nil
+
+								for _, candidate := range cand {
+									if candInfo, ok := candidate.(primitive.D); ok {
+										candMap := candInfo.Map()
+										candElements = append(candElements, candMap)
+									}
+								}
+
+								posMap["candidates"] = candElements
+							}
+
+							posElements = append(posElements, posMap)
 						}
 					}
 
-					tempMap["positions"] = elements
+					tranMap["positions"] = posElements
 				}
 
-				block.Transaction = tempMap
+				block.Transaction = tranMap
 			}
 
 			MoveDocuments(conn, block)
