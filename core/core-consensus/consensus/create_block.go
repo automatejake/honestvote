@@ -33,7 +33,8 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 }
 
 func CalculateMerkleRoot(transaction interface{}) string {
+	// p2p.TransactionType(transaction)
 	// switch t := block.Transaction.(type)
-	// case database.Vote
+
 	return ""
 }

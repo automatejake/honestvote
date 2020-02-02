@@ -50,7 +50,7 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 
 		for result.Next(context.TODO()) {
 			err = result.Decode(&block)
-			if t, ok := block.Transaction.(primitive.D); ok{
+			if t, ok := block.Transaction.(primitive.D); ok {
 				tempMap := t.Map()
 				block.Transaction = tempMap
 			}
@@ -86,7 +86,7 @@ func ProposeBlock(block database.Block) {
 	write := new(Message)
 	write.Message = "verify transaction"
 	write.Data = j
-	write.Type = TransactionType(block.Transaction)
+	write.Type = database.TransactionType(block.Transaction)
 
 	jWrite, err := json.Marshal(write)
 
