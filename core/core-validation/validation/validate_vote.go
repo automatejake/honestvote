@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -35,6 +36,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 
 	//Check to see if election is a valid election
 	election, err := database.GetElection(v.Election)
+	fmt.Println(election, "\n", v.Election)
 	if err != nil {
 		customErr.Message = "Vote transactions must specify a valid election" + ending +
 			err.Error()
