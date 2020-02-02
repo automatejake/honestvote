@@ -50,6 +50,7 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 
 		for result.Next(context.TODO()) {
 			err = result.Decode(&block)
+<<<<<<< HEAD
 			if tran, ok := block.Transaction.(primitive.D); ok {
 				tempMap := tran.Map()
 				if pos, ok := tempMap["positions"].(primitive.A); ok {
@@ -68,6 +69,10 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 						}
 					}
 				}
+=======
+			if t, ok := block.Transaction.(primitive.D); ok {
+				tempMap := t.Map()
+>>>>>>> 4038928d19af35107bacd1023ed6e5a2b639cdbf
 				block.Transaction = tempMap
 			}
 			MoveDocuments(conn, block)
@@ -116,7 +121,7 @@ func ProposeBlock(block database.Block) {
 	write := new(Message)
 	write.Message = "verify transaction"
 	write.Data = j
-	write.Type = TransactionType(block.Transaction)
+	write.Type = database.TransactionType(block.Transaction)
 
 	jWrite, err := json.Marshal(write)
 

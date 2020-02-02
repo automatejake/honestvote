@@ -7,10 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/jneubaum/honestvote/core/core-validation/validation"
-
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-validation/validation"
 )
 
 func main() {
@@ -73,17 +72,6 @@ func main() {
 		Timestamp:     "",
 	}
 
-	// Email         string    `json:"emailAddress"`
-	// FirstName     string    `json:"firstName"`
-	// LastName      string    `json:"lastName"`
-	// DateOfBirth   string    `json:"dateOfBirth"`
-	// ElectionName  string    `json:"electionName"`
-	// ElectionAdmin string    `json:"electionAdmin"`
-	// Sender        PublicKey `json:"publicKey"`
-	// SenderSig     string    `json:"senderSig"`
-	// Code          string    `json:"code"`
-	// Timestamp     string    `json:"timestamp"`
-
 	jsonRegistration, _ := json.Marshal(registration)
 
 	var vote database.Vote = database.Vote{
@@ -106,7 +94,7 @@ func main() {
 
 	// jsonData, _ := json.Marshal(jsonArray)
 
-	filename := "mock_data.json"
+	filename := "mock_data.sh"
 	scriptname := "../../scripts/deploy-local-chain.sh"
 	// _ = ioutil.WriteFile(filename, jsonElection, 0644)
 	// _ = ioutil.WriteFile(filename, jsonRegistration, 0644)
@@ -116,11 +104,11 @@ func main() {
 	script, _ := os.Create(scriptname)
 	defer file.Close()
 
-	_, _ = io.WriteString(file, "Election Transaction:\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
+	_, _ = io.WriteString(file, "echo \"Election Transaction:\"\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
 		string(jsonElection)+"' http://localhost:7003/election\n\n\n\n")
-	_, _ = io.WriteString(file, "Registration Transaction:\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
+	_, _ = io.WriteString(file, "echo \"Registration Transaction:\"\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
 		string(jsonRegistration)+"' http://localhost:7003/election/test/register\n\n\n\n")
-	_, _ = io.WriteString(file, "Vote Transaction:\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
+	_, _ = io.WriteString(file, "echo \"Vote Transaction:\"\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
 		string(jsonVote)+"' http://localhost:7003/election/test/vote\n\n\n\n")
 
 	_, _ = io.WriteString(script, "go run main.go --tcp 7002 --http 7003 --role producer --collection-prefix a_ --registry true --institution-name \""+election.Institution+

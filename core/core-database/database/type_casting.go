@@ -1,19 +1,15 @@
-package p2p
+package database
 
-import (
-	"fmt"
-
-	"github.com/jneubaum/honestvote/core/core-database/database"
-)
+import "fmt"
 
 func TransactionType(transaction interface{}) string {
 
 	switch t := transaction.(type) {
-	case database.Vote:
+	case Vote:
 		return "Vote"
-	case database.Registration:
+	case Registration:
 		return "Registration"
-	case database.Election:
+	case Election:
 		return "Election"
 	default:
 		fmt.Println(t)
