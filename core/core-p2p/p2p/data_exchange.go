@@ -50,14 +50,22 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 
 		for result.Next(context.TODO()) {
 			err = result.Decode(&block)
-			if t, ok := block.Transaction.(primitive.D); ok {
-				tempMap := t.Map()
-				if f, ok := tempMap["positions"].(primitive.A); ok {
-					tempFace := f[0]
-					if y, ok := tempFace.(primitive.D); ok {
-						yMap := y.Map()
-						tempFace = yMap
-						tempMap["positions"] = tempFace
+			if tran, ok := block.Transaction.(primitive.D); ok {
+				tempMap := tran.Map()
+				if pos, ok := tempMap["positions"].(primitive.A); ok {
+					for _, position := range pos {
+						if info, ok := position.(primitive.D); ok {
+							tMap := info.Map()
+							// if cand, ok := tMap["candidates"].(primitive.A); ok {
+							// 	for _, candidate := range cand {
+							// 		if candInfo, ok := candidate.(primitive.D); ok {
+							// 			aMap := candInfo.Map()
+							// 			tMap["candidates"] = aMap
+							// 		}
+							// 	}
+							// }
+							tempMap["positions"] = tMap
+						}
 					}
 				}
 				block.Transaction = tempMap
@@ -66,6 +74,20 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 		}
 	} else {
 		fmt.Println("Indexes are equal!")
+	}
+}
+
+func FixBSON(block database.Block) {
+	if tran, ok := block.Transaction.(primitive.D); ok {
+		tempMap := tran.Map()
+		if pos, ok := tempMap["positions"].(primitive.A); ok {
+			for _, position := range pos {
+				if info, ok := position.(primitive.D); ok {
+					tempMap["positions"] = info.Map()
+				}
+			}
+		}
+		block.Transaction = tempMap
 	}
 }
 
