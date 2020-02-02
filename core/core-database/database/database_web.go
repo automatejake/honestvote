@@ -55,6 +55,7 @@ func GetElection(election_signature string) (Election, error) {
 	err := result.Decode(&block)
 	if err != nil {
 		logger.Println("database_web", "GetElection", err.Error())
+		return election, err
 	}
 
 	annoying_mongo_form := block.Transaction.(primitive.D).Map()

@@ -6,8 +6,8 @@ import (
 	"net"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
-	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
+	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-validation/validation"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
@@ -48,9 +48,11 @@ func ReceiveTransaction(mType string, data []byte) error {
 		}
 
 		valid, err = validation.IsValidVote(*vote)
+
 		if valid {
 			AddToBlock(vote, crypto.CalculateHash(vote.Signature))
 		} else {
+			fmt.Println(err)
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 
@@ -78,6 +80,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		}
 
 		valid, err = validation.IsValidRegistration(*registration)
+
 		if valid {
 			AddToBlock(registration, crypto.CalculateHash(registration.Signature))
 		} else {

@@ -69,7 +69,7 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 	}
 
 	//Check to see if same person has already registered to vote
-	alreadyVoted, err := database.DoesRegistrationExist(r.Sender, r.Election)
+	alreadyVoted := database.ContainsRegistration(r.Sender, r.Election)
 	if alreadyVoted {
 		customErr.Message = "Registration transaction already exists for this voter" + ending
 		return false, customErr
