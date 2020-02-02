@@ -65,3 +65,14 @@ curl --header "Content-Type: application/json" --request POST --data '{
 
 
 
+// curl --header "Content-Type: application/json" --request POST --data '{
+// 	"type": "Vote",
+// 	"electionName":"election1",
+// 	"receivers":{
+// 		"position3":"candidate6",
+// 		"position2":"candidate3",
+// 		"position1":"candidate1"
+// 	},
+// 	"sender":"0437931ff7885e8ba8465ab5a725b31624f208aab3143c8734f8ac38f5f1f0642a922cfac4ecceda4458efd2d634fb2359f687b19ca587196ce3b92edce7b04124",
+// 	"signature":"3046022100ae2b6ad933d0b5fcd3cab1d2442bd88042fcd395f19da4a6a9ec3338fc65e418022100ec6239cb34d3780fb902c4d67144ec16a9a2e4a561865ebf445bcf6f4282f69e"
+// }' http://localhost:7003/election/test/vote

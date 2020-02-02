@@ -62,13 +62,13 @@ func Verify(hash []byte, public_key_hex database.PublicKey, signature_hex string
 	// decode public key from hex
 	public_key_bytes, err := hex.DecodeString(string(public_key_hex))
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 
 	// x509 parse public key
 	public_key, err := x509.ParsePKIXPublicKey(public_key_bytes)
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 
 	// check that parse key is ecdsa.PublicKey
@@ -77,14 +77,14 @@ func Verify(hash []byte, public_key_hex database.PublicKey, signature_hex string
 		// decode signature json from hex
 		signature_json, err := hex.DecodeString(signature_hex)
 		if err != nil {
-			return false, nil
+			return false, err
 		}
 
 		// unmarhsal signature structure to extract signature from
 		signature := new(signature)
 		err = json.Unmarshal(signature_json, signature)
 		if err != nil {
-			return false, nil
+			return false, err
 		}
 
 		// verify signature
