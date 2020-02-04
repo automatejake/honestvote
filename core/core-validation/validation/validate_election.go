@@ -36,7 +36,10 @@ func IsValidElection(e database.Election) (bool, error) {
 	}
 
 	//Check to see if sender matches the public key of a legitimate administrator node
-	node := database.FindNode(string(e.Sender))
+	node, err := database.FindNode(string(e.Sender))
+	if err != nil {
+
+	}
 	if node.Role != "producer" {
 		customErr.Message = "Election transaction is not permitted by node without administrator capabilities" + end
 		return false, customErr

@@ -18,8 +18,7 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 	newBlock.Validator = pubKey
 	newBlock.PrevHash = prevBlock.Hash
 
-	index := strconv.Itoa(newBlock.Index)
-	header := index + newBlock.Timestamp + newBlock.MerkleRoot + newBlock.Validator + newBlock.PrevHash
+	header := GenerateBlockHeader(newBlock)
 	newBlock.Hash = crypto.CalculateHash(header)
 
 	sig, err := crypto.SignBlock(header, privKey)
@@ -31,6 +30,20 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 
 	return newBlock
 }
+
+func GenerateBlockHeader(block database.Block) string {
+	index := strconv.Itoa(block.Index)
+	return (index + block.Timestamp + block.MerkleRoot + block.Validator + block.PrevHash)
+}
+
+// Index       int         `json:"index"`
+// Timestamp   string      `json:"timestamp"`
+// Transaction interface{} `json:"transaction"` // not  included in the hash
+// MerkleRoot  string      `json:"merkleRoot"`
+// Validator   string      `json:"validator"`
+// Signature   string      `json:"signature"`
+// PrevHash    string      `json:"prevhash"`
+// Hash        string      `json:"hash"`
 
 func CalculateMerkleRoot(transaction interface{}) string {
 	switch database.TransactionType(transaction) {

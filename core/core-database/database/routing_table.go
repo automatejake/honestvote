@@ -89,16 +89,19 @@ func FindNodes() []Node {
 	return peers
 }
 
-func FindNode(public_key string) Node {
+func FindNode(public_key string) (Node, error) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
 	var node Node
 
 	query := bson.M{"publickey": public_key}
 	result := collection.FindOne(context.TODO(), query)
-	result.Decode(&node)
+	err := result.Decode(&node)
+	if err != nil {
+		return Node{}, err
+	}
 
-	return node
+	return node, nil
 }
 
 func DeleteNode(node Node) {
