@@ -46,14 +46,16 @@ func GenerateBlockHeader(block database.Block) string {
 // Hash        string      `json:"hash"`
 
 func CalculateMerkleRoot(transaction interface{}) string {
+	var hash string
 	switch database.TransactionType(transaction) {
 	case "Registration":
-		// var registration database.Registration
+		hash = transaction.(database.Registration).Signature
 	case "Vote":
-
+		hash = transaction.(database.Vote).Signature
 	case "Election":
-
+		hash = transaction.(database.Election).Signature
 	}
 
-	return ""
+	merkleroot := crypto.CalculateHash(hash)
+	return merkleroot
 }
