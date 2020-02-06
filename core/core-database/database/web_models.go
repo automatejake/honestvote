@@ -40,17 +40,17 @@ func (e Election) ConvertInfo() ElectionInfo {
 }
 
 type VoteInfo struct {
-	Sender    PublicKey         `json:"voterId"`
-	Election  string            `json:"electionId"`
-	Candidate map[string]string `json:"candidateId"`
-	Signature string            `json:"signature"`
+	Sender   PublicKey `json:"voterId"`
+	Election string    `json:"electionId"`
+	// Candidate map[string]string `json:"candidateId"`
+	Signature string `json:"signature"`
 }
 
 func (v Vote) ConvertInfo() VoteInfo {
 	return VoteInfo{
-		Sender:    v.Sender,
-		Election:  v.Election,
-		Candidate: v.Receiver,
+		Sender:   v.Sender,
+		Election: v.Election,
+		// Candidate: v.Receiver,
 		Signature: v.Signature,
 	}
 }

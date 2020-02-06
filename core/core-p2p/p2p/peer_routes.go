@@ -69,9 +69,11 @@ func HandleConn(conn net.Conn) {
 			err := json.Unmarshal(message.Data, &block)
 			if err != nil {
 			}
-			if consensus.IsBlockValid(PreviousBlock, block) {
+			verified, err := consensus.IsBlockValid(PreviousBlock, block)
+			if verified {
 				err = database.AddBlock(block)
 				if err != nil {
+
 				}
 				PreviousBlock = block
 			}

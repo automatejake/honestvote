@@ -160,7 +160,7 @@ func VerifyBlock(block database.Block, conn net.Conn) {
 func LatestHashAndIndex(client *mongo.Client) {
 	var block database.Block
 
-	collection := client.Database("honestvote").Collection("b_blockchain")
+	collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
 	//collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
 
 	ctx := context.Background()

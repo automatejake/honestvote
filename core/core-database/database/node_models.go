@@ -52,11 +52,16 @@ type AwaitingRegistration struct {
 
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
-	Type      string            `json:"type"`
-	Election  string            `json:"electionName"` //Data Start
-	Receiver  map[string]string `json:"receivers"`    //Data End
-	Sender    PublicKey         `json:"sender"`
-	Signature string            `json:"signature"`
+	Type      string              `json:"type"`
+	Election  string              `json:"electionName"` //Data Start
+	Receiver  []SelectedCandidate `json:"receivers"`    //Data End
+	Sender    PublicKey           `json:"sender"`
+	Signature string              `json:"signature"`
+}
+
+type SelectedCandidate struct {
+	PositionId string `json:"id"`
+	Recipient  string `json:"key"`
 }
 
 type Election struct {

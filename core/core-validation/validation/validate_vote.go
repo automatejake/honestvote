@@ -10,9 +10,9 @@ import (
 
 func GenerateVoteHeaders(v database.Vote) string {
 	headers := v.Election
-	for key, value := range v.Receiver {
-		headers += key + value
-	}
+	// for key, value := range v.Receiver {
+	// 	headers += key + value
+	// }
 	return headers
 }
 
@@ -59,13 +59,13 @@ func IsValidVote(v database.Vote) (bool, error) {
 	}
 
 	//Check to see if vote went to valid candidates
-	for i, _ := range election.Positions {
-		// if ContainsPositionCandidate(v.Receiver[election.Positions[i].PositionId]) {
-		if !ContainsCandidate(election.Positions[i], v.Receiver[election.Positions[i].PositionId]) {
-			customErr.Message = "Vote transaction must be for a legitimate candidate" + ending
-			return false, customErr
-		}
-	}
+	// for i, _ := range election.Positions {
+	// 	// if ContainsPositionCandidate(v.Receiver[election.Positions[i].PositionId]) {
+	// 	if !ContainsCandidate(election.Positions[i], v.Receiver[election.Positions[i].PositionId]) {
+	// 		customErr.Message = "Vote transaction must be for a legitimate candidate" + ending
+	// 		return false, customErr
+	// 	}
+	// }
 
 	//Check to see if Vote type is correctly stored in transaction
 	if v.Type != "Vote" {
