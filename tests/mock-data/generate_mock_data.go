@@ -83,8 +83,8 @@ func main() {
 		Election: election.Signature,
 		Receiver: []database.SelectedCandidate{
 			database.SelectedCandidate{
-				PositionId: "test",
-				Recipient:  "test",
+				PositionId: "demfrmeororev",
+				Recipient:  "test1",
 			},
 		},
 		Sender: database.PublicKey(public_key),
@@ -96,7 +96,7 @@ func main() {
 		return
 	}
 	hash = crypto.CalculateHash(encoded)
-	vote.Signature, _ = crypto.Sign([]byte(hash), admin_private_key)
+	vote.Signature, _ = crypto.Sign([]byte(hash), private_key)
 
 	fmt.Println("Voter Private Key:\n" + private_key + "\n")
 	fmt.Println("Voter Public Key\n" + public_key + "\n")
