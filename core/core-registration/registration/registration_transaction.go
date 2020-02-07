@@ -6,7 +6,6 @@ import (
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
-	"github.com/jneubaum/honestvote/core/core-validation/validation"
 )
 
 func SendRegistrationTransaction(registrant database.AwaitingRegistration) error {
@@ -17,13 +16,23 @@ func SendRegistrationTransaction(registrant database.AwaitingRegistration) error
 		RecieverSig: registrant.SenderSig,
 		Sender:      p2p.Self.PublicKey,
 	}
+	encoded, err := registration.Encode()
+	if err != nil {
+		return err
+	}
 
-	headers := validation.GenerateRegistrationHeaders(registration)
-	registration.Signature, _ = crypto.Sign([]byte(headers), p2p.PrivateKey)
+	hash := crypto.CalculateHash(encoded)
+
+	signature, err := crypto.Sign([]byte(hash), p2p.PrivateKey)
+	if err != nil {
+		return err
+	}
+
+	registration.Signature = signature
 
 	data, err := json.Marshal(registration)
 	if err != nil {
-
+		return err
 	}
 
 	p2p.ReceiveTransaction("Registration", data)

@@ -50,7 +50,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		valid, err = validation.IsValidVote(*vote)
 
 		if valid {
-			AddToBlock(vote, crypto.CalculateHash(vote.Signature))
+			AddToBlock(vote, crypto.CalculateHash([]byte(vote.Signature)))
 		} else {
 			fmt.Println(err)
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
@@ -65,7 +65,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 
 		valid, err = validation.IsValidElection(*election)
 		if valid {
-			AddToBlock(election, crypto.CalculateHash(election.Signature))
+			AddToBlock(election, crypto.CalculateHash([]byte(election.Signature)))
 		} else {
 			fmt.Println(err.Error())
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
@@ -82,7 +82,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		valid, err = validation.IsValidRegistration(*registration)
 
 		if valid {
-			AddToBlock(registration, crypto.CalculateHash(registration.Signature))
+			AddToBlock(registration, crypto.CalculateHash([]byte(registration.Signature)))
 		} else {
 			fmt.Println(err)
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())

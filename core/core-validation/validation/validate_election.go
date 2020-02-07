@@ -7,15 +7,16 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func GenerateElectionHeaders(e database.Election) string {
-	headers := e.ElectionName + e.Institution + e.Description + e.Start + e.End + e.EmailDomain
-	for _, position := range e.Positions {
-		headers += position.PositionId + position.Name
-		for _, candidate := range position.Candidates {
-			headers += candidate.Name + candidate.Recipient
-		}
+func GenerateElectionHeader(e database.Election) (string, error) {
+
+	encoded, err := e.Encode()
+	if err != nil {
+		return "", err
 	}
-	return headers
+
+	hash := crypto.CalculateHash(encoded)
+
+	return hash, nil
 }
 
 func IsValidElection(e database.Election) (bool, error) {
@@ -25,7 +26,11 @@ func IsValidElection(e database.Election) (bool, error) {
 	end := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	electionHeaders := GenerateElectionHeaders(e)
+	electionHeaders, err := GenerateElectionHeader(e)
+	if err != nil {
+		return false, err
+	}
+
 	valid, err := crypto.Verify([]byte(electionHeaders), e.Sender, e.Signature)
 	if err != nil {
 		return false, customErr

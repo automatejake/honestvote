@@ -1,24 +1,43 @@
 package main
 
 import (
-	"encoding/asn1"
 	"fmt"
 
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
 type Test struct {
+	Test  string
+	Test2 string
 }
 
 func main() {
-	test := Test{}
-	derEncoded, err := asn1.Marshal(test)
+	priv, pub := crypto.GenerateKeyPair()
+	v := database.Vote{
+		Type:     "Vote",
+		Election: "BestElection",
+	}
+	encodedV, err := v.Encode()
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
-	var test2 database.Vote
-	asn1.Unmarshal(derEncoded, &test2)
-	fmt.Println(test2)
+	hash := crypto.CalculateHash(encodedV)
+
+	signature, err := crypto.SignTransaction(hash, priv)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	valid, err := crypto.Verify([]byte(hash), database.PublicKey(pub), signature)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	v.Signature = signature
+	fmt.Println(valid)
+	fmt.Println(v)
 
 }

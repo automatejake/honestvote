@@ -8,12 +8,15 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func GenerateVoteHeaders(v database.Vote) string {
-	headers := v.Election
-	// for key, value := range v.Receiver {
-	// 	headers += key + value
-	// }
-	return headers
+func GenerateVoteHeaders(v database.Vote) (string, error) {
+	encoded, err := v.Encode()
+	if err != nil {
+		return "", err
+	}
+
+	hash := crypto.CalculateHash(encoded)
+	return hash, nil
+
 }
 
 func IsValidVote(v database.Vote) (bool, error) {
@@ -23,7 +26,10 @@ func IsValidVote(v database.Vote) (bool, error) {
 	ending := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	voteHeaders := GenerateVoteHeaders(v)
+	voteHeaders, err := GenerateVoteHeaders(v)
+	if err != nil {
+		return false, err
+	}
 
 	valid, err := crypto.Verify([]byte(voteHeaders), v.Sender, v.Signature)
 	if err != nil {

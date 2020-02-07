@@ -8,8 +8,14 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func GenerateRegistrationHeaders(r database.Registration) string {
-	return r.Election + string(r.Receiver) + string(r.RecieverSig)
+func GenerateRegistrationHeaders(r database.Registration) (string, error) {
+	encoded, err := r.Encode()
+	if err != nil {
+		return "", err
+	}
+
+	hash := crypto.CalculateHash(encoded)
+	return hash, nil
 }
 
 func IsValidRegistration(r database.Registration) (bool, error) {
@@ -19,7 +25,10 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 	ending := ", invalid tranaction fails"
 
 	//Check to see if signature is valid
-	registrationHeaders := GenerateRegistrationHeaders(r)
+	registrationHeaders, err := GenerateRegistrationHeaders(r)
+	if err != nil {
+		return false, err
+	}
 
 	valid, err := crypto.Verify([]byte(registrationHeaders), r.Sender, r.Signature)
 	if !valid {

@@ -9,7 +9,6 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
-	"github.com/jneubaum/honestvote/core/core-validation/validation"
 )
 
 func main() {
@@ -55,8 +54,13 @@ func main() {
 
 	jsonElection, _ := json.Marshal(election)
 
-	headers := validation.GenerateElectionHeaders(election)
-	election.Signature, _ = crypto.Sign([]byte(headers), admin_private_key)
+	encoded, err := election.Encode()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	hash := crypto.CalculateHash(encoded)
+	election.Signature, _ = crypto.Sign([]byte(hash), admin_private_key)
 
 	private_key, public_key := crypto.GenerateKeyPair()
 	var registration database.AwaitingRegistration = database.AwaitingRegistration{
@@ -77,11 +81,22 @@ func main() {
 	var vote database.Vote = database.Vote{
 		Type:     "Vote",
 		Election: election.Signature,
-		Receiver: map[string]string{"demfrmeororev": "test1"},
-		Sender:   database.PublicKey(public_key),
+		Receiver: []database.SelectedCandidate{
+			database.SelectedCandidate{
+				PositionId: "test",
+				Recipient:  "test",
+			},
+		},
+		Sender: database.PublicKey(public_key),
 	}
-	headers = validation.GenerateVoteHeaders(vote)
-	vote.Signature, _ = crypto.Sign([]byte(headers), private_key)
+
+	encoded, err = vote.Encode()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	hash = crypto.CalculateHash(encoded)
+	vote.Signature, _ = crypto.Sign([]byte(hash), admin_private_key)
 
 	fmt.Println("Voter Private Key:\n" + private_key + "\n")
 	fmt.Println("Voter Public Key\n" + public_key + "\n")

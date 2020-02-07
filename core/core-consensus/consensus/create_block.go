@@ -1,7 +1,7 @@
 package consensus
 
 import (
-	"strconv"
+	"encoding/asn1"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -31,9 +31,12 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 	return newBlock
 }
 
-func GenerateBlockHeader(block database.Block) string {
-	index := strconv.Itoa(block.Index)
-	return (index + block.Timestamp + block.MerkleRoot + block.Validator + block.PrevHash)
+func GenerateBlockHeader(block database.Block) []byte {
+	header, err := asn1.Marshal(block)
+	if err != nil {
+
+	}
+	return header
 }
 
 // Index       int         `json:"index"`
@@ -56,6 +59,6 @@ func CalculateMerkleRoot(transaction interface{}) string {
 		hash = transaction.(database.Election).Signature
 	}
 
-	merkleroot := crypto.CalculateHash(hash)
+	merkleroot := crypto.CalculateHash([]byte(hash))
 	return merkleroot
 }
