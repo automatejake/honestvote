@@ -10,7 +10,7 @@ import (
 )
 
 func ListenConn(port string, role string) {
-	LatestHashAndIndex(database.MongoDB)
+	PreviousBlock = LatestHashAndIndex(database.MongoDB)
 
 	listen, err := net.Listen("tcp", ":"+port)
 	if err != nil {

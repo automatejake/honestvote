@@ -1,9 +1,8 @@
 package consensus
 
 import (
+	"fmt"
 	"time"
-
-	"github.com/jneubaum/honestvote/core/core-validation/validation"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -16,7 +15,7 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	ending := ", invalid block rejected."
 
 	// Make sure that block's index is correct
-	if prevBlock.Index != block.Index {
+	if prevBlock.Index+1 != block.Index {
 		customErr.Message = "Block index is incorrect" + ending
 		return false, customErr
 	}
@@ -36,28 +35,31 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 		return false, customErr
 	}
 
-	// Iterate through transactions contained in block and make sure that they are valid
-	var honestTransaction bool
-	switch database.TransactionType(block.Transaction) {
-	case "Election":
-		honestTransaction, err = validation.IsValidElection(block.Transaction.(database.Election))
-	case "Registration":
-		honestTransaction, err = validation.IsValidRegistration(block.Transaction.(database.Registration))
-	case "Vote":
-		honestTransaction, err = validation.IsValidVote(block.Transaction.(database.Vote))
-	}
-	if !honestTransaction {
-		customErr.Message = "Block contains an invalid transaction:\n |" + err.Error() + "\nInvalid block is rejected."
-		return false, customErr
-	}
+	// fmt.Println(database.TransactionType(block.Transaction))
+	fmt.Println("\n\n\n\n\n\nTransactionType:\n\n", block.Transaction, "\n\n---------------")
 
-	// Make sure that the merkle root is correct
+	// Iterate through transactions contained in block and make sure that they are valid
+	// var honestTransaction bool
+	// switch database.TransactionType(block.Transaction) {
+	// case "Election":
+	// 	honestTransaction, err = validation.IsValidElection(block.Transaction.(database.Election))
+	// case "Registration":
+	// 	honestTransaction, err = validation.IsValidRegistration(block.Transaction.(database.Registration))
+	// case "Vote":
+	// 	honestTransaction, err = validation.IsValidVote(block.Transaction.(database.Vote))
+	// }
+	// if !honestTransaction {
+	// 	customErr.Message = "Block contains an invalid transaction:\n |" + err.Error() + "\nInvalid block is rejected."
+	// 	return false, customErr
+	// }
+
+	// // Make sure that the merkle root is correct
 	if CalculateMerkleRoot(block) != block.MerkleRoot {
 		customErr.Message = "Block's merkle root is incorrect" + ending
 		return false, customErr
 	}
 
-	// Make sure that the block hash is correct
+	// // Make sure that the block hash is correct
 	header, err := block.Encode()
 	if err != nil {
 		return false, err
@@ -68,7 +70,7 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 		return false, customErr
 	}
 
-	// Make sure that the block signature is correct
+	// // Make sure that the block signature is correct
 	valid, err := crypto.Verify([]byte(hash), database.PublicKey(block.Validator), block.Signature)
 	if err != nil {
 		customErr.Message = "Block's signature is invalid\n |" + err.Error() + "\n" + ending

@@ -79,6 +79,7 @@ func ConnectMessage(peer database.Node) { //is run
 
 		//when you have new cons you have multithreading
 		//TODO see if you can use doOnce a second time
+		// doAnother.Do(func() { p2p.LatestHashAndIndex(database.MongoDB) })
 
 		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 

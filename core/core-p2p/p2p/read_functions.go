@@ -30,9 +30,14 @@ func DecodeData(data []byte) {
 	var block database.Block
 
 	err := json.Unmarshal(data, &block)
-	if err == nil {
-		database.UpdateMongo(database.MongoDB, block)
+	if err != nil {
+		fmt.Println("ERRORERRORERRORERRORERROR\nERRORERRORERRORERRORERROR")
+		return
 	}
+	fmt.Println(block)
+	PreviousBlock = block
+	database.UpdateMongo(database.MongoDB, block)
+
 }
 
 //Get vote from full node and turn it into a block and propose

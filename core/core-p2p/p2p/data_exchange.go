@@ -117,7 +117,7 @@ func ProposeBlock(block database.Block) {
 
 	fmt.Println("proposed block")
 	write := new(Message)
-	write.Message = "verify transaction"
+	write.Message = "verify block"
 	write.Data = j
 	write.Type = database.TransactionType(block.Transaction)
 
@@ -158,7 +158,7 @@ func VerifyBlock(block database.Block, conn net.Conn) {
 }
 
 //gets latest block, sends it to GrabDocuments which
-func LatestHashAndIndex(client *mongo.Client) {
+func LatestHashAndIndex(client *mongo.Client) database.Block {
 	var block database.Block
 	//collection := client.Database("honestvote").Collection("a_blockchain")
 	collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
@@ -169,8 +169,8 @@ func LatestHashAndIndex(client *mongo.Client) {
 
 	documentReturned.Decode(&block)
 
-	//fmt.Println(block)
+	fmt.Println(block)
 
-	PreviousBlock = block
+	return block
 
 }
