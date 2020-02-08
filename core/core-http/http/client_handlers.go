@@ -105,6 +105,7 @@ func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
 	votes, err := database.GetVotes(params["electionid"])
+	fmt.Println(votes)
 	// var voteInfos []database.VoteInfo
 	// for _, vote := range votes {
 	// 	voteInfos = append(voteInfos, vote.ConvertInfo())

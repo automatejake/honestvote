@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"strconv"
 
@@ -118,8 +119,31 @@ func GetVotes(election_signature string) ([]Vote, error) {
 		if err != nil {
 			logger.Println("database_web", "GetElection", err.Error())
 		}
+
+		fmt.Println("Going through results!")
+
 		annoying_mongo_form := block.Transaction.(primitive.D)
 		mapstructure.Decode(annoying_mongo_form.Map(), &vote)
+
+		vote.Receiver = nil
+
+		if tran, ok := block.Transaction.(primitive.D); ok {
+			tranMap := tran.Map()
+			fmt.Println("Transaction step")
+			if votes, ok := tranMap["receiver"].(primitive.A); ok {
+				for _, v := range votes {
+					fmt.Println("Votes step")
+					var candidate SelectedCandidate
+					if obj, ok := v.(primitive.D); ok {
+						fmt.Println("Position step")
+						voteInfo := obj.Map()
+						candidate.PositionId = voteInfo["positionid"].(string)
+						candidate.Recipient = voteInfo["recipient"].(string)
+					}
+					vote.Receiver = append(vote.Receiver, candidate)
+				}
+			}
+		}
 
 		votes = append(votes, vote)
 
