@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net"
 	"strconv"
 
@@ -157,31 +156,25 @@ func DecideType(data []byte, mType string, conn net.Conn) {
 func VerifyBlock(block database.Block, conn net.Conn) {
 
 }
-func LatestHashAndIndex(client *mongo.Client) {
+
+//gets latest block, sends it to GrabDocuments which
+func LatestHashAndIndex(client *mongo.Client, conn net.Conn) {
 	var block database.Block
-
+	//collection := client.Database("honestvote").Collection("a_blockchain")
 	collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
-	//collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
 
-	ctx := context.Background()
+	cur, _ := collection.CountDocuments(context.TODO(), bson.M{})
+	filter := bson.M{"index": cur}
+	documentReturned := collection.FindOne(context.TODO(), filter)
 
-	// filter := bson.M{"xx": bsonMap}
-	filter := bson.M{}
+	documentReturned.Decode(&block)
 
-	// Pass the filter to Find() to return a MongoDB cursor
-	cursor, err := collection.Find(ctx, filter)
-	if err != nil {
-		log.Fatal("collection. Find ERROR:", err)
-	}
-	// iterate through all documents
-	for cursor.Next(ctx) {
-		// Decode the document
-		if err := cursor.Decode(&block); err != nil {
-			log.Fatal("cursor. Decode ERROR:", err)
-			return
-		}
-	}
+	//fmt.Println(block)
+
+	s := strconv.Itoa(block.Index)
+
 	PreviousBlock = block
-	fmt.Println(PreviousBlock)
+
+	GrabDocuments(database.MongoDB, conn, s)
 
 }
