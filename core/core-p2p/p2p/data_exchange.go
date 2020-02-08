@@ -158,7 +158,7 @@ func VerifyBlock(block database.Block, conn net.Conn) {
 }
 
 //gets latest block, sends it to GrabDocuments which
-func LatestHashAndIndex(client *mongo.Client, conn net.Conn) {
+func LatestHashAndIndex(client *mongo.Client) {
 	var block database.Block
 	//collection := client.Database("honestvote").Collection("a_blockchain")
 	collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
@@ -171,10 +171,6 @@ func LatestHashAndIndex(client *mongo.Client, conn net.Conn) {
 
 	//fmt.Println(block)
 
-	s := strconv.Itoa(block.Index)
-
 	PreviousBlock = block
-
-	GrabDocuments(database.MongoDB, conn, s)
 
 }
