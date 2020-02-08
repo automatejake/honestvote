@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"reflect"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -22,7 +23,7 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 
 	Nodes = append(Nodes, conn)
 
-	fmt.Println(Nodes)
+	// fmt.Println(Nodes)
 }
 
 //Decoding the data sent from another peer, this data is from a database
@@ -31,10 +32,10 @@ func DecodeData(data []byte) {
 
 	err := json.Unmarshal(data, &block)
 	if err != nil {
-		fmt.Println("ERRORERRORERRORERRORERROR\nERRORERRORERRORERRORERROR")
+		// fmt.Println("ERRORERRORERRORERRORERROR\nERRORERRORERRORERRORERROR")
 		return
 	}
-	fmt.Println(block)
+	// fmt.Println(block)
 	PreviousBlock = block
 	database.UpdateMongo(database.MongoDB, block)
 
@@ -109,6 +110,8 @@ func AddToBlock(transaction interface{}, hash string) {
 	//Check if there is a proposed block currently, if so, add to the queue
 
 	logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
+
+	fmt.Println("Transaction Type:\n", reflect.TypeOf(block.Transaction))
 
 	err = database.AddBlock(block)
 	if err != nil {

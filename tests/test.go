@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 type Test struct {
 	Test  string
@@ -8,10 +11,8 @@ type Test struct {
 }
 
 func main() {
-	a := map[string]bool{}
-	a["test"] = true
-
-	fmt.Println(a["test"])
+	var a map[string]interface{}
+	fmt.Println(reflect.TypeOf(a).String())
 	// priv, pub := crypto.GenerateKeyPair()
 	// v := database.Vote{
 	// 	Type:     "Vote",

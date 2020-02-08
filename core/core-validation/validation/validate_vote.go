@@ -37,7 +37,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	}
 	if !valid {
 		customErr.Message = "Vote transaction contains invalid signature" + ending
-		// return false, customErr
+		return false, customErr
 	}
 
 	//Check to see if election is a valid election
@@ -92,7 +92,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	//Make sure that vote does not occur twice
 	if database.ContainsVote(v.Sender, v.Election) {
 		customErr.Message = "Vote transaction has already been cast for this voter" + ending
-		// return false, customErr
+		return false, customErr
 	}
 
 	return true, nil

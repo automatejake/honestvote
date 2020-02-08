@@ -1,11 +1,12 @@
 package consensus
 
 import (
-	"fmt"
+	"encoding/json"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-validation/validation"
 )
 
 func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) {
@@ -36,22 +37,42 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	}
 
 	// fmt.Println(database.TransactionType(block.Transaction))
-	fmt.Println("\n\n\n\n\n\nTransactionType:\n\n", block.Transaction, "\n\n---------------")
+	// fmt.Println("\n\n\n\n\n\nTransactionType:\n\n", block.Transaction, "\n\n---------------")
 
 	// Iterate through transactions contained in block and make sure that they are valid
-	// var honestTransaction bool
-	// switch database.TransactionType(block.Transaction) {
-	// case "Election":
-	// 	honestTransaction, err = validation.IsValidElection(block.Transaction.(database.Election))
-	// case "Registration":
-	// 	honestTransaction, err = validation.IsValidRegistration(block.Transaction.(database.Registration))
-	// case "Vote":
-	// 	honestTransaction, err = validation.IsValidVote(block.Transaction.(database.Vote))
-	// }
-	// if !honestTransaction {
-	// 	customErr.Message = "Block contains an invalid transaction:\n |" + err.Error() + "\nInvalid block is rejected."
-	// 	return false, customErr
-	// }
+	var honestTransaction bool
+
+	transaction := block.Transaction.(map[string]interface{})
+	switch transaction["type"] {
+	case "Election":
+		data, err := json.Marshal(transaction)
+		if err != nil {
+
+		}
+		var election database.Election
+		err = json.Unmarshal(data, &election)
+		honestTransaction, err = validation.IsValidElection(election)
+	case "Registration":
+		data, err := json.Marshal(transaction)
+		if err != nil {
+
+		}
+		var registration database.Registration
+		err = json.Unmarshal(data, &registration)
+		honestTransaction, err = validation.IsValidRegistration(registration)
+	case "Vote":
+		data, err := json.Marshal(transaction)
+		if err != nil {
+
+		}
+		var vote database.Vote
+		err = json.Unmarshal(data, &vote)
+		honestTransaction, err = validation.IsValidVote(vote)
+	}
+	if !honestTransaction {
+		customErr.Message = "Block contains an invalid transaction:\n |" + err.Error() + "\nInvalid block is rejected."
+		return false, customErr
+	}
 
 	// // Make sure that the merkle root is correct
 	if CalculateMerkleRoot(block) != block.MerkleRoot {

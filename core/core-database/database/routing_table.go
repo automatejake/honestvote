@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -44,11 +43,11 @@ func DoesNodeExist(node Node) bool {
 func AddNode(newNode Node) {
 
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
-	result, err := collection.InsertOne(context.TODO(), newNode)
+	_, err := collection.InsertOne(context.TODO(), newNode)
 	if err != nil {
-		log.Fatal(err)
+		logger.Println("routing_table.go", "AddNode", err.Error())
 	}
-	fmt.Println(result)
+	// fmt.Println(result)
 
 }
 

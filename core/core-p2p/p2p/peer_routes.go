@@ -39,6 +39,7 @@ func HandleConn(conn net.Conn) {
 			var node database.Node
 			json.Unmarshal(message.Data, &node)
 			tmp_peers := database.FindNodes()
+			// fmt.Println(tmp_peers)
 			if tmp_peers != nil {
 				peers_json, err := json.Marshal(tmp_peers)
 				if err != nil {

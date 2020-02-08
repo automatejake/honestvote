@@ -133,30 +133,6 @@ func ProposeBlock(block database.Block) {
 
 }
 
-func DecideType(data []byte, mType string, conn net.Conn) {
-	var block database.Block
-
-	if mType == "Vote" {
-		vote := &database.Vote{}
-		block = database.Block{Transaction: vote}
-	} else if mType == "Election" {
-		election := &database.Election{}
-		block = database.Block{Transaction: election}
-	} else if mType == "Registration" {
-		registration := &database.Registration{}
-		block = database.Block{Transaction: registration}
-	}
-
-	json.Unmarshal(data, &block)
-	logger.Println("peer_routes.go", "HandleConn()", "Verifying")
-	VerifyBlock(block, conn)
-}
-
-//Decide if the block sent is valid
-func VerifyBlock(block database.Block, conn net.Conn) {
-
-}
-
 //gets latest block, sends it to GrabDocuments which
 func LatestHashAndIndex(client *mongo.Client) database.Block {
 	var block database.Block
@@ -169,7 +145,7 @@ func LatestHashAndIndex(client *mongo.Client) database.Block {
 
 	documentReturned.Decode(&block)
 
-	fmt.Println(block)
+	// fmt.Println(block)
 
 	return block
 
