@@ -12,13 +12,13 @@ import (
 )
 
 func main() {
-	// timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	// timestamp := time.Now().Format(time.RFC1123)
 	admin_private_key, admin_public_key := crypto.GenerateKeyPair()
 	fmt.Println("Admin Private Key:\n" + admin_private_key + "\n")
 	fmt.Println("Admin Public Key\n" + admin_public_key + "\n")
 
-	start := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
-	end := time.Now().AddDate(0, 0, 200).Format("Mon, 02 Jan 2006 15:04:05 MST") //200 days in  the future
+	start := time.Now().Format(time.RFC1123)
+	end := time.Now().AddDate(0, 0, 200).Format(time.RFC1123) //200 days in  the future
 
 	var election database.Election = database.Election{
 		Type:         "Election",

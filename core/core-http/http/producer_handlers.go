@@ -36,7 +36,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 func GetEndpoint(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	endpoint, err := database.GetEndpoint()
-	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{
 		Timestamp: timestamp,
 	}

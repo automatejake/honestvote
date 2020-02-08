@@ -11,7 +11,7 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 	var newBlock database.Block
 
 	newBlock.Index = prevBlock.Index + 1
-	newBlock.Timestamp = time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	newBlock.Timestamp = time.Now().Format(time.RFC1123)
 	newBlock.Transaction = transaction
 	newBlock.MerkleRoot = CalculateMerkleRoot(transaction)
 	newBlock.Validator = pubKey

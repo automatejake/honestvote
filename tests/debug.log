@@ -1,1 +1,12 @@
-ltest
+ltestTimestamp: 2020/02/08 17:34:42 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/02/08 17:35:02 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/02/08 17:46:02 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/02/08 17:46:09 
+Function name:GetElection
+mongo: no documents in result
