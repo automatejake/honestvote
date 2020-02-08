@@ -93,7 +93,11 @@ func ReceiveTransaction(mType string, data []byte) error {
 }
 
 func AddToBlock(transaction interface{}, hash string) {
-	block := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey, PrivateKey)
+	block, err := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey, PrivateKey)
+	if err != nil {
+		logger.Println("read_function.go", "AddToBlock()", err.Error())
+	}
+
 	block.MerkleRoot = hash
 
 	fmt.Println("created block")
@@ -101,7 +105,7 @@ func AddToBlock(transaction interface{}, hash string) {
 
 	logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
 
-	err := database.AddBlock(block)
+	err = database.AddBlock(block)
 	if err != nil {
 	} else {
 		PreviousBlock = block

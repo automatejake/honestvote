@@ -13,16 +13,17 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	customErr := &ConsensusError{
 		Time: time.Now(),
 	}
-	ending := "  Block is invalid."
+	ending := ", invalid block rejected."
 
 	// Make sure that block's index is correct
 	if prevBlock.Index != block.Index {
-
+		customErr.Message = "Block index is incorrect" + ending
+		return false, customErr
 	}
 
 	// Make sure that block's previous hash is the last block
 	if prevBlock.Hash != block.PrevHash {
-		customErr.Message = "Previous hash is wrong!" + ending
+		customErr.Message = "Block's previous hash is incorrect" + ending
 		return false, customErr
 	}
 
@@ -31,7 +32,7 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	if err != nil {
 		return false, err
 	} else if validator.Role != "producer" {
-		customErr.Message = "Actor proposing this block is not a valid producer."
+		customErr.Message = "Actor proposing this block is not a valid producer." + ending
 		return false, customErr
 	}
 
@@ -41,34 +42,41 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	case "Election":
 		honestTransaction, err = validation.IsValidElection(block.Transaction.(database.Election))
 	case "Registration":
-		honestTransaction, err = validation.IsValidElection(block.Transaction.(database.Election))
+		honestTransaction, err = validation.IsValidRegistration(block.Transaction.(database.Registration))
 	case "Vote":
-		honestTransaction, err = validation.IsValidElection(block.Transaction.(database.Election))
+		honestTransaction, err = validation.IsValidVote(block.Transaction.(database.Vote))
 	}
 	if !honestTransaction {
-		return false, err
+		customErr.Message = "Block contains an invalid transaction:\n |" + err.Error() + "\nInvalid block is rejected."
+		return false, customErr
 	}
 
 	// Make sure that the merkle root is correct
 	if CalculateMerkleRoot(block) != block.MerkleRoot {
-		customErr.Message = "Merkle root is incorrect."
+		customErr.Message = "Block's merkle root is incorrect" + ending
+		return false, customErr
+	}
+
+	// Make sure that the block hash is correct
+	header, err := block.Encode()
+	if err != nil {
+		return false, err
+	}
+	hash := crypto.CalculateHash(header)
+	if hash != block.Hash {
+		customErr.Message = "Block's hash is incorrect" + ending
 		return false, customErr
 	}
 
 	// Make sure that the block signature is correct
-	header := GenerateBlockHeader(block)
-	valid, err := crypto.Verify([]byte(header), database.PublicKey(block.Validator), block.Signature)
+	valid, err := crypto.Verify([]byte(hash), database.PublicKey(block.Validator), block.Signature)
 	if err != nil {
-		return false, err
+		customErr.Message = "Block's signature is invalid\n |" + err.Error() + "\n" + ending
+		return false, customErr
 	} else if !valid {
-		return false, err
+		customErr.Message = "Block's signature is invalid" + ending
+		return false, customErr
 	}
 
 	return true, nil
-}
-
-func VerifySignature(block database.Block) bool {
-	//VerifySignature for making sure the sender is who they say they are
-
-	return false
 }

@@ -4,10 +4,13 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/jneubaum/honestvote/core/core-database/database"
+
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func ListenConn(port string, role string) {
+	LatestHashAndIndex(database.MongoDB)
 
 	listen, err := net.Listen("tcp", ":"+port)
 	if err != nil {

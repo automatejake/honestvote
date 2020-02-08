@@ -57,6 +57,16 @@ func Sign(hash []byte, private_key_hex string) (signature_hex string, err error)
 	return signature_hex, nil
 }
 
+func GenerateSignature(e database.EncodedTransaction, private_key string) (string, error) {
+	encoded_data, err := e.Encode()
+	if err != nil {
+		return "", err
+	}
+	hashed_data := []byte(CalculateHash(encoded_data))
+
+	return Sign(hashed_data, private_key)
+}
+
 // Verify verifies a previously generated signature for byte array hash using hex-encoded public key
 func Verify(hash []byte, public_key_hex database.PublicKey, signature_hex string) (result bool, err error) {
 	// decode public key from hex
