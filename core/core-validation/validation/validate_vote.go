@@ -37,7 +37,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	}
 	if !valid {
 		customErr.Message = "Vote transaction contains invalid signature" + ending
-		return false, customErr
+		// return false, customErr
 	}
 
 	//Check to see if election is a valid election
@@ -64,13 +64,24 @@ func IsValidVote(v database.Vote) (bool, error) {
 		return false, customErr
 	}
 
-	//Check to see if vote went to valid candidates
-	// for i, position := range election.Positions {
-	// 	if !ContainsCandidate(position, ) {
-	// 		customErr.Message = "Vote transaction must be for a legitimate candidate" + ending
-	// 		return false, customErr
-	// 	}
-	// }
+	//Check to see if vote choice is valid (this check is not 100% perfect with a map, but does not poise harm)
+	eligibleCandidates := map[string]int{}
+	for _, position := range election.Positions {
+		for _, candidate := range position.Candidates {
+			eligibleCandidates[position.PositionId+candidate.Recipient] = 1
+		}
+	}
+	for _, recipient := range v.Receiver {
+		if eligibleCandidates[recipient.PositionId+recipient.Recipient] == 0 {
+			customErr.Message = "Vote transactions must be for valid candidates" + ending
+			return false, customErr
+		}
+		if eligibleCandidates[recipient.PositionId+recipient.Recipient] > 1 {
+			customErr.Message = "Vote transactions cannot contain multiple selections for a single candidate" + ending
+			return false, customErr
+		}
+		eligibleCandidates[recipient.PositionId+recipient.Recipient]++
+	}
 
 	//Check to see if Vote type is correctly stored in transaction
 	if v.Type != "Vote" {
@@ -81,17 +92,17 @@ func IsValidVote(v database.Vote) (bool, error) {
 	//Make sure that vote does not occur twice
 	if database.ContainsVote(v.Sender, v.Election) {
 		customErr.Message = "Vote transaction has already been cast for this voter" + ending
-		return false, customErr
+		// return false, customErr
 	}
 
 	return true, nil
 }
 
-func ContainsCandidate(p database.Position, c string) bool {
-	for _, candidate := range p.Candidates {
-		if c == candidate.Recipient {
-			return true
-		}
-	}
-	return false
-}
+// func ContainsCandidate(p database.Position, c string) bool {
+// 	for _, candidate := range p.Candidates {
+// 		if c == candidate.Recipient {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }

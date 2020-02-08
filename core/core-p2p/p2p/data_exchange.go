@@ -164,9 +164,9 @@ func LatestHashAndIndex(client *mongo.Client) {
 	//collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
 
 	ctx := context.Background()
-	var bsonMap bson.M
 
-	filter := bson.M{"xx": bsonMap}
+	// filter := bson.M{"xx": bsonMap}
+	filter := bson.M{}
 
 	// Pass the filter to Find() to return a MongoDB cursor
 	cursor, err := collection.Find(ctx, filter)
