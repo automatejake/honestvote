@@ -15,10 +15,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func SendIndex(index int64, conn net.Conn) {
+func SendIndex(index int, conn net.Conn) {
 	write := new(Message)
 	write.Message = "grab data"
-	write.Data = []byte(string(index))
+	write.Data = []byte(strconv.Itoa(index))
 
 	jWrite, err := json.Marshal(write)
 
@@ -35,6 +35,9 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 	collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
 
 	index, _ := strconv.Atoi(old_index)
+
+	fmt.Println("Old index is ", old_index, index)
+
 	current, err := collection.CountDocuments(context.TODO(), bson.M{})
 
 	difference := current - int64(index)

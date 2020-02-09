@@ -75,7 +75,7 @@ func ConnectMessage(peer database.Node) { //is run
 	}
 	if conn != nil {
 
-		doOnce.Do(func() { p2p.SendIndex(database.LastIndex(database.MongoDB), conn) })
+		doOnce.Do(func() { p2p.SendIndex(int(database.LastIndex(database.MongoDB)), conn) })
 
 		//when you have new cons you have multithreading
 		//TODO see if you can use doOnce a second time
