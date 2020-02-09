@@ -1,6 +1,32 @@
 package database
 
-import "encoding/asn1"
+import (
+	"encoding/asn1"
+)
+
+type EncodedBlock struct {
+	Index      int    `json:"index"`
+	Timestamp  string `json:"timestamp"`
+	MerkleRoot string `json:"merkleRoot"`
+	PrevHash   string `json:"prevhash"`
+	Hash       string `json:"hash"`
+}
+
+func (b Block) Encode() ([]byte, error) {
+	object := EncodedBlock{
+		Index:      b.Index,
+		Timestamp:  b.Timestamp,
+		MerkleRoot: b.MerkleRoot,
+		PrevHash:   b.PrevHash,
+		Hash:       b.Hash,
+	}
+	encoded, err := asn1.Marshal(object)
+	if err != nil {
+		return encoded, nil
+	}
+
+	return nil, nil
+}
 
 type EncodedElection struct {
 	ElectionName string     `json:"electionName"` //Data Start

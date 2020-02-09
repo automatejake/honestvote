@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"reflect"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -22,7 +23,7 @@ func AcceptConnectMessage(node database.Node, conn net.Conn) {
 
 	Nodes = append(Nodes, conn)
 
-	fmt.Println(Nodes)
+	// fmt.Println(Nodes)
 }
 
 //Decoding the data sent from another peer, this data is from a database
@@ -30,9 +31,14 @@ func DecodeData(data []byte) {
 	var block database.Block
 
 	err := json.Unmarshal(data, &block)
-	if err == nil {
-		database.UpdateMongo(database.MongoDB, block)
+	if err != nil {
+		// fmt.Println("ERRORERRORERRORERRORERROR\nERRORERRORERRORERRORERROR")
+		return
 	}
+	// fmt.Println(block)
+	PreviousBlock = block
+	database.UpdateMongo(database.MongoDB, block)
+
 }
 
 //Get vote from full node and turn it into a block and propose
@@ -93,7 +99,11 @@ func ReceiveTransaction(mType string, data []byte) error {
 }
 
 func AddToBlock(transaction interface{}, hash string) {
-	block := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey, PrivateKey)
+	block, err := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey, PrivateKey)
+	if err != nil {
+		logger.Println("read_function.go", "AddToBlock()", err.Error())
+	}
+
 	block.MerkleRoot = hash
 
 	fmt.Println("created block")
@@ -101,7 +111,9 @@ func AddToBlock(transaction interface{}, hash string) {
 
 	logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
 
-	err := database.AddBlock(block)
+	fmt.Println("Transaction Type:\n", reflect.TypeOf(block.Transaction))
+
+	err = database.AddBlock(block)
 	if err != nil {
 	} else {
 		PreviousBlock = block

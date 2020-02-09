@@ -61,6 +61,10 @@ func GetElection(election_signature string) (Election, error) {
 	annoying_mongo_form := block.Transaction.(primitive.D).Map()
 	mapstructure.Decode(annoying_mongo_form, &election)
 
+	election.Start = annoying_mongo_form["startDate"].(string)
+	election.End = annoying_mongo_form["endDate"].(string)
+	election.Institution = annoying_mongo_form["institutionName"].(string)
+
 	election.Positions = nil
 
 	if tran, ok := block.Transaction.(primitive.D); ok {
@@ -73,8 +77,8 @@ func GetElection(election_signature string) (Election, error) {
 				if posInfo, ok := position.(primitive.D); ok {
 					posMap := posInfo.Map()
 
-					tempPos.Name = posMap["name"].(string)
-					tempPos.PositionId = posMap["positionid"].(string)
+					tempPos.Name = posMap["displayName"].(string)
+					tempPos.PositionId = posMap["id"].(string)
 
 					if cand, ok := posMap["candidates"].(primitive.A); ok {
 						for _, candidate := range cand {
@@ -84,7 +88,7 @@ func GetElection(election_signature string) (Election, error) {
 								candMap := candInfo.Map()
 
 								tempCand.Name = candMap["name"].(string)
-								tempCand.Recipient = candMap["recipient"].(string)
+								tempCand.Recipient = candMap["key"].(string)
 
 								tempPos.Candidates = append(tempPos.Candidates, tempCand)
 							}

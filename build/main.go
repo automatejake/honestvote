@@ -27,10 +27,10 @@ var COLLECTION_PREFIX string = ""
 var REGISTRY_IP string
 var REGISTRY_PORT string = "7002"
 var REGISTRY bool = false // is producer registry node or not
-var LOGGING bool = false
 var INSTITUTION_NAME string
 var PUBLIC_KEY string
 var PRIVATE_KEY string
+var LOGGING_MODE string = "Info" // Levels of Debugging All | Debug | Info
 
 //this file will be responsible for deploying the app
 func main() {
@@ -39,6 +39,7 @@ func main() {
 		fmt.Println("Loading ENV Failed")
 	}
 
+	logger.Mode = LOGGING_MODE
 	PRIVATE_KEY, PUBLIC_KEY = crypto.GenerateKeyPair()
 
 	// environmental variables override defaults
@@ -137,11 +138,6 @@ func main() {
 
 	if !database.DoesNodeExist(p2p.Self) {
 		database.AddNode(p2p.Self)
-	}
-
-	// if logging is turned on
-	if LOGGING {
-		logger.Logs = true
 	}
 
 	// udp PORT that sends connected producer to incoming nodes

@@ -38,18 +38,17 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 
 	}
 
-	// //Check to see if election exists
+	//Check to see if election exists
 	election, err := database.GetElection(r.Election)
 	if err != nil {
-		fmt.Println(election)
 		customErr.Message = "Registration transactions must specify a valid election" + ending +
 			err.Error()
 		return false, customErr
 	}
 
-	// //Check to see if election is still ongoing
+	//Check to see if election is still ongoing
 	now := time.Now()
-	electionEnd, err := time.Parse("Mon, 02 Jan 2006 15:04:05 MST", election.End)
+	electionEnd, err := time.Parse(time.RFC1123, election.End)
 	if err != nil {
 		customErr.Message = "Registration transaction contains an invalid date format" + ending
 		return false, customErr

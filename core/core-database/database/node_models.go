@@ -11,14 +11,14 @@ type PublicKey string
 var EmailRegistrants string = "email_registrants"
 
 type Block struct {
-	Index       int         `json:"index"`
-	Timestamp   string      `json:"timestamp"`
-	Transaction interface{} `json:"transaction"` // not  included in the hash
-	MerkleRoot  string      `json:"merkleRoot"`
-	Validator   string      `json:"validator"`
-	Signature   string      `json:"signature"`
-	PrevHash    string      `json:"prevhash"`
-	Hash        string      `json:"hash"`
+	Index       int         `json:"index" bson:"index"`
+	Timestamp   string      `json:"timestamp" bson:"timestamp"`
+	Transaction interface{} `json:"transaction" bson:"transaction"` // not  included in the hash
+	MerkleRoot  string      `json:"merkleRoot" bson:"merkleRoot"`
+	Validator   string      `json:"validator" bson:"validator"`
+	Signature   string      `json:"signature" bson:"signature"`
+	PrevHash    string      `json:"prevhash" bson:"prevhash"`
+	Hash        string      `json:"hash" bson:"hash"`
 }
 
 /*
@@ -29,12 +29,12 @@ type Block struct {
  */
 
 type Registration struct {
-	Type        string    `json:"type"`
-	Election    string    `json:"election"` //Data Start
-	Receiver    PublicKey `json:"receiver"` //Data End
-	RecieverSig string    `json:"recieverSig"`
-	Sender      PublicKey `json:"sender"`
-	Signature   string    `json:"signature"`
+	Type        string    `json:"type" bson:"type"`
+	Election    string    `json:"election" bson:"election"` //Data Start
+	Receiver    PublicKey `json:"receiver" bson:"receiver"` //Data End
+	RecieverSig string    `json:"recieverSig" bson:"senderSig"`
+	Sender      PublicKey `json:"sender" bson:"sender"`
+	Signature   string    `json:"signature" bson:"signature"`
 }
 
 type AwaitingRegistration struct {
@@ -52,40 +52,40 @@ type AwaitingRegistration struct {
 
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
-	Type      string              `json:"type"`
-	Election  string              `json:"electionName"` //Data Start
-	Receiver  []SelectedCandidate `json:"receivers"`    //Data End
-	Sender    PublicKey           `json:"sender"`
-	Signature string              `json:"signature"`
+	Type      string              `json:"type" bson:"type"`
+	Election  string              `json:"electionName" bson:"electionName"` //Data Start
+	Receiver  []SelectedCandidate `json:"receivers" bson:"receivers"`       //Data End
+	Sender    PublicKey           `json:"sender" bson:"sender"`
+	Signature string              `json:"signature" bson:"signature"`
 }
 
 type SelectedCandidate struct {
-	PositionId string `json:"id"`
-	Recipient  string `json:"key"`
+	PositionId string `json:"id" bson:"id"`
+	Recipient  string `json:"key" bson:"key"`
 }
 
 type Election struct {
-	Type         string     `json:"type"`
-	ElectionName string     `json:"electionName"` //Data Start
-	Institution  string     `json:"institutionName"`
-	Description  string     `json:"description"`
-	Start        string     `json:"startDate"`
-	End          string     `json:"endDate"`
-	EmailDomain  string     `json:"emailDomain"`
-	Positions    []Position `json:"positions"` //Data End
-	Sender       PublicKey  `json:"sender"`
-	Signature    string     `json:"signature"`
+	Type         string     `json:"type" bson:"type"`
+	ElectionName string     `json:"electionName" bson:"electionName"` //Data Start
+	Institution  string     `json:"institutionName" bson:"institutionName"`
+	Description  string     `json:"description" bson:"description"`
+	Start        string     `json:"startDate" bson:"startDate"`
+	End          string     `json:"endDate" bson:"endDate"`
+	EmailDomain  string     `json:"emailDomain" bson:"emailDomain"`
+	Positions    []Position `json:"positions" bson:"positions"` //Data End
+	Sender       PublicKey  `json:"sender" bson:"sender"`
+	Signature    string     `json:"signature" bson:"signature"`
 }
 
 type Position struct {
-	PositionId string      `json:"id"`
-	Name       string      `json:"displayName"`
-	Candidates []Candidate `json:"candidates"`
+	PositionId string      `json:"id" bson:"id"`
+	Name       string      `json:"displayName" bson:"displayName"`
+	Candidates []Candidate `json:"candidates" bson:"candidates"`
 }
 
 type Candidate struct {
-	Name      string `json:"name"`
-	Recipient string `json:"key"`
+	Name      string `json:"name" bson:"name"`
+	Recipient string `json:"key" bson:"key"`
 }
 
 type Node struct {

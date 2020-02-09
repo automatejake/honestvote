@@ -71,7 +71,7 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 		electionInfos = append(electionInfos, election.ConvertInfo())
 		fmt.Println(election.ConvertInfo())
 	}
-	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{
 		Timestamp: timestamp,
 	}
@@ -88,7 +88,7 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
 	election, err := database.GetElection(params["electionid"])
-	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{
 		Timestamp: timestamp,
 	}
@@ -111,7 +111,7 @@ func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 	// 	voteInfos = append(voteInfos, vote.ConvertInfo())
 	// }
 
-	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{
 		Timestamp: timestamp,
 	}
@@ -133,7 +133,7 @@ func GetPermissionsHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
 	params := mux.Vars(r)
 	permissions, err := database.GetPermissions(params["publickey"])
-	timestamp := time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST")
+	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{
 		Timestamp: timestamp,
 	}

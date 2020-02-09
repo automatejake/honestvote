@@ -64,7 +64,7 @@ func IsValidElection(e database.Election) (bool, error) {
 
 	//Check to see if election end is valid
 	now := time.Now()
-	electionEnd, er := time.Parse("Mon, 02 Jan 2006 15:04:05 MST", e.End)
+	electionEnd, er := time.Parse(time.RFC1123, e.End)
 	if er != nil {
 		customErr.Message = "Election transaction contains an invalid date format"
 		return false, customErr

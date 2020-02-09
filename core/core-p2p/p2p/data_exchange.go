@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net"
 	"strconv"
 
@@ -121,7 +120,7 @@ func ProposeBlock(block database.Block) {
 
 	fmt.Println("proposed block")
 	write := new(Message)
-	write.Message = "verify transaction"
+	write.Message = "verify block"
 	write.Data = j
 	write.Type = database.TransactionType(block.Transaction)
 
@@ -137,54 +136,20 @@ func ProposeBlock(block database.Block) {
 
 }
 
-func DecideType(data []byte, mType string, conn net.Conn) {
+//gets latest block, sends it to GrabDocuments which
+func LatestHashAndIndex(client *mongo.Client) database.Block {
 	var block database.Block
-
-	if mType == "Vote" {
-		vote := &database.Vote{}
-		block = database.Block{Transaction: vote}
-	} else if mType == "Election" {
-		election := &database.Election{}
-		block = database.Block{Transaction: election}
-	} else if mType == "Registration" {
-		registration := &database.Registration{}
-		block = database.Block{Transaction: registration}
-	}
-
-	json.Unmarshal(data, &block)
-	logger.Println("peer_routes.go", "HandleConn()", "Verifying")
-	VerifyBlock(block, conn)
-}
-
-//Decide if the block sent is valid
-func VerifyBlock(block database.Block, conn net.Conn) {
-
-}
-func LatestHashAndIndex(client *mongo.Client) {
-	var block database.Block
-
+	//collection := client.Database("honestvote").Collection("a_blockchain")
 	collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
-	//collection := client.Database("honestvote").Collection(database.CollectionPrefix + "blockchain")
 
-	ctx := context.Background()
+	cur, _ := collection.CountDocuments(context.TODO(), bson.M{})
+	filter := bson.M{"index": cur}
+	documentReturned := collection.FindOne(context.TODO(), filter)
 
-	// filter := bson.M{"xx": bsonMap}
-	filter := bson.M{}
+	documentReturned.Decode(&block)
 
-	// Pass the filter to Find() to return a MongoDB cursor
-	cursor, err := collection.Find(ctx, filter)
-	if err != nil {
-		log.Fatal("collection. Find ERROR:", err)
-	}
-	// iterate through all documents
-	for cursor.Next(ctx) {
-		// Decode the document
-		if err := cursor.Decode(&block); err != nil {
-			log.Fatal("cursor. Decode ERROR:", err)
-			return
-		}
-	}
-	PreviousBlock = block
-	fmt.Println(PreviousBlock)
+	// fmt.Println(block)
+
+	return block
 
 }

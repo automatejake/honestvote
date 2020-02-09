@@ -39,7 +39,7 @@ func HandleConn(conn net.Conn) {
 			var node database.Node
 			json.Unmarshal(message.Data, &node)
 			tmp_peers := database.FindNodes()
-			fmt.Println(tmp_peers)
+			// fmt.Println(tmp_peers)
 			if tmp_peers != nil {
 				peers_json, err := json.Marshal(tmp_peers)
 				if err != nil {
@@ -64,7 +64,7 @@ func HandleConn(conn net.Conn) {
 			var node database.Node
 			json.Unmarshal(message.Data, &node)
 			// administrator.ProposePeer(node)
-		case "verify transaction":
+		case "verify block":
 			var block database.Block
 			err := json.Unmarshal(message.Data, &block)
 			if err != nil {
@@ -76,6 +76,8 @@ func HandleConn(conn net.Conn) {
 
 				}
 				PreviousBlock = block
+			} else {
+				logger.Println("peer_routes.go", "HandleConn", err.Error())
 			}
 		default:
 			logger.Println("peer_routes.go", "HandleConn", "Recieved Bad Message")
