@@ -64,7 +64,7 @@ func SendRegistrationCode(registrant database.AwaitingRegistration, public_ip st
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
 		"Subject:  " + "HonestVote Registration Code" + "\n\n" +
-		"Click this link if you requested to register for the upcoming" + registrant.ElectionName + "election: \n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + registrant.Code + "&verified=true\n" +
+		"Click this link if you requested to register for the upcoming student election: \n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + registrant.Code + "&verified=true\n" +
 		"If this is incorrect, please click here:\n" + public_ip + ":" + tcp_port + "/verifyCode/code=" + registrant.Code + "&verified=false"
 
 	fmt.Println("\n\n" + msg + "\n\n")

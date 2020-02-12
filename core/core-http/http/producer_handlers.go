@@ -24,7 +24,12 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	if params["verified"] == "true" {
 		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is registered to vote for "+registrant.ElectionName)
 		if registration.VerifyStudent(registrant) {
-			registration.SendRegistrationTransaction(registrant)
+			err := registration.SendRegistrationTransaction(registrant)
+			if err != nil {
+
+			} else {
+				w.Write([]byte("You have registered successfully!  Go back to the app to vote."))
+			}
 		}
 	} else if params["verified"] == "false" {
 		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is not supposed to be registered to vote for "+registrant.ElectionName)

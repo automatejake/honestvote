@@ -4,8 +4,8 @@ import (
 	"crypto/ecdsa"
 	"crypto/rand"
 	"crypto/x509"
+	"encoding/asn1"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"math/big"
 
@@ -47,25 +47,25 @@ func Sign(hash []byte, private_key_hex string) (signature_hex string, err error)
 	}
 
 	// marshal to json
-	signature_json, err := json.Marshal(signature)
+	signature_asn1, err := asn1.Marshal(*signature)
 	if err != nil {
 		return "", err
 	}
 
 	// encode to hex
-	signature_hex = hex.EncodeToString(signature_json)
+	signature_hex = hex.EncodeToString(signature_asn1)
 	return signature_hex, nil
 }
 
-func GenerateSignature(e database.EncodedTransaction, private_key string) (string, error) {
-	encoded_data, err := e.Encode()
-	if err != nil {
-		return "", err
-	}
-	hashed_data := []byte(CalculateHash(encoded_data))
+// func GenerateSignature(e database.EncodedTransaction, private_key string) (string, error) {
+// 	encoded_data, err := e.Encode()
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	hashed_data := []byte(CalculateHash(encoded_data))
 
-	return Sign(hashed_data, private_key)
-}
+// 	return Sign(hashed_data, private_key)
+// }
 
 // Verify verifies a previously generated signature for byte array hash using hex-encoded public key
 func Verify(hash []byte, public_key_hex database.PublicKey, signature_hex string) (result bool, err error) {
@@ -84,15 +84,13 @@ func Verify(hash []byte, public_key_hex database.PublicKey, signature_hex string
 	// check that parse key is ecdsa.PublicKey
 	switch public_key := public_key.(type) {
 	case *ecdsa.PublicKey:
-		// decode signature json from hex
-		signature_json, err := hex.DecodeString(signature_hex)
+		signature_bytes, err := hex.DecodeString(string(signature_hex))
 		if err != nil {
 			return false, err
 		}
-
 		// unmarhsal signature structure to extract signature from
 		signature := new(signature)
-		err = json.Unmarshal(signature_json, signature)
+		_, err = asn1.Unmarshal(signature_bytes, signature)
 		if err != nil {
 			return false, err
 		}

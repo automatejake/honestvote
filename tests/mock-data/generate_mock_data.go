@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"time"
 
@@ -60,7 +61,11 @@ func main() {
 		return
 	}
 	hash := crypto.CalculateHash(encoded)
-	election.Signature, _ = crypto.Sign([]byte(hash), admin_private_key)
+	election.Signature, err = crypto.Sign([]byte(hash), admin_private_key)
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
 
 	private_key, public_key := crypto.GenerateKeyPair()
 	var registration database.AwaitingRegistration = database.AwaitingRegistration{
