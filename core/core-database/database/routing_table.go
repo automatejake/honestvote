@@ -18,7 +18,7 @@ func DoesNodeExist(node Node) bool {
 
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
-	query := bson.M{"ipaddress": node.IPAddress, "port": node.Port}
+	query := bson.M{"publickey": node.PublicKey}
 	// query := bson.M{"publickey": node.PublicKey}
 
 	var result Node

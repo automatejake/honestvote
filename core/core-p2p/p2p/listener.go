@@ -2,7 +2,6 @@ package p2p
 
 import (
 	"net"
-	"strconv"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 
@@ -18,8 +17,6 @@ func ListenConn(port string, role string) {
 	}
 
 	logger.Println("listener.go", "ListenConn()", "p2p service running on port: "+port)
-
-	TCP_PORT, err = strconv.Atoi(port)
 
 	defer listen.Close()
 

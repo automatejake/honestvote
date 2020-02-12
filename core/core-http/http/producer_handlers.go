@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 	"github.com/jneubaum/honestvote/core/core-registration/registration"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
@@ -24,7 +25,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	if params["verified"] == "true" {
 		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is registered to vote for "+registrant.ElectionName)
 		if registration.VerifyStudent(registrant) {
-			err := registration.SendRegistrationTransaction(registrant)
+			err := p2p.SendRegistrationTransaction(registrant)
 			if err != nil {
 
 			} else {

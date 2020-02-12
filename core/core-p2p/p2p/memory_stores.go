@@ -9,10 +9,11 @@ import (
 // var Nodes = make(map[int]bool)
 
 //Port is used for sending blocks so the Peers verifying know who do send it back to
-var TCP_PORT int
+// var TCP_PORT int
 
 var PublicKey string
 var PrivateKey string
+var HTTP_Port string
 
 var Nodes []net.Conn
 var PreviousBlock database.Block

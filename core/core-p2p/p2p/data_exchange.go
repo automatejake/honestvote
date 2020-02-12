@@ -7,6 +7,7 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/bson"
@@ -152,4 +153,35 @@ func LatestHashAndIndex(client *mongo.Client) database.Block {
 
 	return block
 
+}
+
+func SendRegistrationTransaction(registrant database.AwaitingRegistration) error {
+	registration := database.Registration{
+		Type:        "Registration",
+		Election:    registrant.ElectionName,
+		Receiver:    registrant.Sender,
+		RecieverSig: registrant.SenderSig,
+		Sender:      Self.PublicKey,
+	}
+	encoded, err := registration.Encode()
+	if err != nil {
+		return err
+	}
+
+	hash := crypto.CalculateHash(encoded)
+
+	signature, err := crypto.Sign([]byte(hash), PrivateKey)
+	if err != nil {
+		return err
+	}
+
+	registration.Signature = signature
+
+	data, err := json.Marshal(registration)
+	if err != nil {
+		return err
+	}
+
+	ReceiveTransaction("Registration", data)
+	return nil
 }

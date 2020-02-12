@@ -155,6 +155,7 @@ func main() {
 	}
 
 	// accept incoming connections and handle p2p
+	p2p.HTTP_Port = HTTP_PORT
 	p2p.ListenConn(TCP_PORT, ROLE)
 
 }

@@ -3,13 +3,15 @@ package http
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
-	"github.com/jneubaum/honestvote/core/core-registration/registration"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -21,9 +23,33 @@ func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	if registration.IsValidRegistrant(&registrant) {
-		registration.SendRegistrationCode(registrant, p2p.Self.IPAddress, HTTP_Port)
+	registrant_json, err := json.Marshal(registrant)
+	if err != nil {
+
 	}
+	var message p2p.Message = p2p.Message{
+		Message: "register",
+		Data:    registrant_json,
+		// Type:    "",
+	}
+
+	byte_message, err := json.Marshal(message)
+	if err != nil {
+
+	}
+
+	admin, err := database.FindNode(registrant.ElectionAdmin)
+	if err != nil {
+
+	}
+
+	port := strconv.Itoa(admin.Port)
+	conn, err := net.Dial("tcp", admin.IPAddress+":"+port)
+	if err != nil {
+		logger.Println("find_peers.go", "FetchLatestPeers", err.Error())
+	}
+
+	conn.Write(byte_message)
 
 }
 

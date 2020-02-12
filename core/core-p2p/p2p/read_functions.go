@@ -32,7 +32,6 @@ func DecodeData(data []byte) {
 
 	err := json.Unmarshal(data, &block)
 	if err != nil {
-		// fmt.Println("ERRORERRORERRORERRORERROR\nERRORERRORERRORERRORERROR")
 		return
 	}
 	// fmt.Println(block)
