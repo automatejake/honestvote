@@ -33,6 +33,7 @@ var PRIVATE_KEY string
 var LOGGING_MODE string = "Info" // Levels of Debugging All | Debug | Info
 
 //this file will be responsible for deploying the app
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {

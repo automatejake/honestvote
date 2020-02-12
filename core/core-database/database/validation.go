@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mitchellh/mapstructure"
 	"go.mongodb.org/mongo-driver/bson"
@@ -62,4 +63,9 @@ func ContainsVote(sender PublicKey, election string) bool {
 
 	}
 	return true
+}
+func MarkDishonestNode(n Node) {
+	n.Role = "bad actor"
+	fmt.Println(n)
+
 }
