@@ -73,7 +73,6 @@ func HandleConn(conn net.Conn) {
 		case "become peer":
 			var node database.Node
 			json.Unmarshal(message.Data, &node)
-			// administrator.ProposePeer(node)
 		case "verify block":
 			var block database.Block
 			err := json.Unmarshal(message.Data, &block)
