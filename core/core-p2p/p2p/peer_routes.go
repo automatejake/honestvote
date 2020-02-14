@@ -39,6 +39,10 @@ func HandleConn(conn net.Conn) {
 		case "send connected nodes":
 			var node database.Node
 			json.Unmarshal(message.Data, &node)
+			if !database.DoesNodeExist(node) {
+				node.Role = "full node"
+				database.AddNode(node)
+			}
 			tmp_peers := database.FindNodes()
 			// fmt.Println(tmp_peers)
 			if tmp_peers != nil {

@@ -17,11 +17,34 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func Broadcast(vote database.Vote) {
+func BroadcastVote(vote database.Vote) {
 
 	payload := Payload{
 		Type:    "VOTES_ADD",
 		Payload: vote,
+	}
+
+	jsonVote, err := json.Marshal(payload)
+	if err != nil {
+		logger.Println("broadcast.go", "WebsocketsHandler", err.Error())
+	}
+
+	for i, conn := range Connections {
+		if err := conn.WriteMessage(1, jsonVote); err != nil {
+			conn.Close()
+			fmt.Println("connection closed")
+			Connections = append(Connections[:i], Connections[i+1:]...)
+		}
+		fmt.Println("message sent: hello")
+
+	}
+}
+
+func BroadcastRegistration(registration database.Registration) {
+
+	payload := Payload{
+		Type:    "USER_CONFIRM_PERMISSION",
+		Payload: registration,
 	}
 
 	jsonVote, err := json.Marshal(payload)
