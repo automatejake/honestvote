@@ -64,8 +64,18 @@ func ContainsVote(sender PublicKey, election string) bool {
 	}
 	return true
 }
-func MarkDishonestNode(n Node) {
+func MarkDishonestNode(n Node) error {
 	n.Role = "bad actor"
-	fmt.Println(n)
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
+	result, err := collection.UpdateOne(
+		context.Background(),
+		bson.M{"publickey": n.PublicKey},
+		n,
+	)
+	if err != nil {
+		return err
+	}
+	fmt.Println(result)
+	return nil
 }
