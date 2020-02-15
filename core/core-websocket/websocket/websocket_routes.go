@@ -36,7 +36,7 @@ func BroadcastVote(vote database.Vote) {
 			fmt.Println("connection closed")
 			delete(Connections, pubkey)
 		}
-		fmt.Println("message sent: hello")
+		// fmt.Println("message sent: hello")
 
 	}
 }
@@ -55,9 +55,12 @@ func SendRegistration(registration database.Registration) {
 
 	publicKey := registration.Receiver
 
+	if Connections[publicKey] == nil {
+		return
+	}
+
 	if err := Connections[publicKey].WriteMessage(1, jsonVote); err != nil {
 		Connections[publicKey].Close()
-		// fmt.Println("connection closed")
 		delete(Connections, publicKey)
 	}
 
