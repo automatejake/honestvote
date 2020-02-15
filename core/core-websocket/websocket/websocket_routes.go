@@ -57,7 +57,7 @@ func SendRegistration(registration database.Registration) {
 
 	if err := Connections[publicKey].WriteMessage(1, jsonVote); err != nil {
 		Connections[publicKey].Close()
-		fmt.Println("connection closed")
+		// fmt.Println("connection closed")
 		delete(Connections, publicKey)
 	}
 

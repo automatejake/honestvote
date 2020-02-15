@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/jneubaum/honestvote/core/core-websocket/websocket"
@@ -18,7 +17,7 @@ func HandleFullRoutes() {
 	Router.HandleFunc("/election/{electionid}/votes", GetVotesHandler).Methods("GET")       //good
 	Router.HandleFunc("/userpermissions/{publickey}", GetPermissionsHandler).Methods("GET") //good
 	Router.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("here there")
+		// fmt.Println("here there")
 
 	}).Methods("GET")
 

@@ -8,7 +8,7 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func ListenConn(port string, role string) {
+func ListenConn(port string, role string) error {
 	PreviousBlock = LatestHashAndIndex(database.MongoDB)
 
 	listen, err := net.Listen("tcp", ":"+port)
