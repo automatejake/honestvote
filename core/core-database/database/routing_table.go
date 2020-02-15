@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"log"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,13 +24,12 @@ func DoesNodeExist(node Node) bool {
 	err := collection.FindOne(context.TODO(), query).Decode(&result)
 	if err != nil {
 		if err.Error() != "mongo: no documents in result" {
-			logger.Println("routing_table.go", "ExistsInTable()", err.Error())
+			logger.Println("routing_table.go", "ExistsInTable()", "Node does not exist: "+err.Error())
 		}
-		log.Println("No documents in result")
 		return false
 	}
 
-	log.Println("Exists")
+	logger.Println("routing_table.go", "ExistsInTable()", "Node already exists")
 	return true
 }
 

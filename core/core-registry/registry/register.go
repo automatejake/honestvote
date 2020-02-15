@@ -2,10 +2,10 @@ package registry
 
 import (
 	"encoding/json"
-	"log"
 	"net"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 /**
@@ -33,12 +33,12 @@ func RegisterNode(conn *net.UDPConn, addr *net.UDPAddr, tcp_port int) {
 
 	peers_json, err := json.Marshal(tmp_peers)
 	if err != nil {
-		log.Println("File: register.go\nFunction:RegisterNode\n", err)
+		logger.Println("register.go", "RegisterNode\n", err.Error())
 	}
 
 	_, err = conn.WriteToUDP(peers_json, addr)
 	if err != nil {
-		log.Println("File: register.go\nFunction:RegisterNode\n", err)
+		logger.Println("register.go", "RegisterNode\n", err.Error())
 	}
 
 }

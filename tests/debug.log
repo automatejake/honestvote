@@ -10,3 +10,6 @@ mongo: no documents in result
 Timestamp: 2020/02/08 17:46:09 
 Function name:GetElection
 mongo: no documents in result
+Timestamp: 2020/02/15 10:27:30 
+Function name:GetElection
+mongo: no documents in result

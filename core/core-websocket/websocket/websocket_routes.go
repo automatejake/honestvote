@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-var Connections []*websocket.Conn
+var Connections map[database.PublicKey]*websocket.Conn
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -29,18 +30,18 @@ func BroadcastVote(vote database.Vote) {
 		logger.Println("broadcast.go", "WebsocketsHandler", err.Error())
 	}
 
-	for i, conn := range Connections {
+	for pubkey, conn := range Connections {
 		if err := conn.WriteMessage(1, jsonVote); err != nil {
 			conn.Close()
 			fmt.Println("connection closed")
-			Connections = append(Connections[:i], Connections[i+1:]...)
+			delete(Connections, pubkey)
 		}
 		fmt.Println("message sent: hello")
 
 	}
 }
 
-func BroadcastRegistration(registration database.Registration) {
+func SendRegistration(registration database.Registration) {
 
 	payload := Payload{
 		Type:    "USER_CONFIRM_PERMISSION",
@@ -52,22 +53,28 @@ func BroadcastRegistration(registration database.Registration) {
 		logger.Println("broadcast.go", "WebsocketsHandler", err.Error())
 	}
 
-	for i, conn := range Connections {
-		if err := conn.WriteMessage(1, jsonVote); err != nil {
-			conn.Close()
-			fmt.Println("connection closed")
-			Connections = append(Connections[:i], Connections[i+1:]...)
-		}
-		fmt.Println("message sent: hello")
+	publicKey := registration.Receiver
 
+	if err := Connections[publicKey].WriteMessage(1, jsonVote); err != nil {
+		Connections[publicKey].Close()
+		fmt.Println("connection closed")
+		delete(Connections, publicKey)
 	}
+
 }
 
 func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("here")
+	EnableCors(&w)
+	params := mux.Vars(r)
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		logger.Println("websocket_routes.go", "WebsocketsHandler", err.Error())
 	}
-	Connections = append(Connections, conn)
+	publicKey := database.PublicKey(params["publickey"])
+	Connections[publicKey] = conn
+}
+
+func EnableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }

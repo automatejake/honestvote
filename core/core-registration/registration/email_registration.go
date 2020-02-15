@@ -2,7 +2,6 @@ package registration
 
 import (
 	"fmt"
-	"log"
 	"net/smtp"
 	"time"
 
@@ -71,7 +70,6 @@ func SendRegistrationCode(registrant database.AwaitingRegistration, public_ip st
 	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
 	if err != nil {
 		logger.Println("email_registration.go", "SendRegistrationCode", err.Error())
-		log.Println(err)
 		return
 	}
 

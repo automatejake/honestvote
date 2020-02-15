@@ -89,7 +89,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		valid, err = validation.IsValidRegistration(*registration)
 
 		if valid {
-			websocket.BroadcastRegistration(*registration)
+			websocket.SendRegistration(*registration)
 			AddToBlock(registration, crypto.CalculateHash([]byte(registration.Signature)))
 		} else {
 			fmt.Println(err)

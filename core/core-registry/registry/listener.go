@@ -1,7 +1,6 @@
 package registry
 
 import (
-	"log"
 	"net"
 	"strconv"
 
@@ -38,11 +37,11 @@ func ListenConnections(udp_port string) {
 		// n is length of bytes, remoteaddr is ip and port of message sender
 		n, remote_address, err := listener.ReadFromUDP(buffer)
 		if err != nil {
-			log.Println("File: listener.go\nFunction:ListenConnections2\n", err)
+			logger.Println("listener.go", "ListenConnections", err.Error())
 			continue
 		}
 
-		log.Println("Registry receiving message from node: ", buffer[0:n])
+		// logger.Println("Registry receiving message from node: ", buffer[0:n])
 
 		if string(buffer[0:8]) == "findpeer" {
 			// default tcp port is 7632, otherwise it should be specified explicitly
