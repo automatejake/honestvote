@@ -94,6 +94,7 @@ type Node struct {
 	Port        int
 	Role        string // peer | full | registry
 	PublicKey   PublicKey
+	Timestamp   string
 	Signature   string
 }
 
