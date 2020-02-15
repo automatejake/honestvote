@@ -111,7 +111,7 @@ func GetVotes(election_signature string) ([]Vote, error) {
 	var votes []Vote
 	var vote Vote
 
-	query := bson.M{"transaction.type": "Vote", "transaction.election": election_signature}
+	query := bson.M{"transaction.type": "Vote", "transaction.electionName": election_signature}
 
 	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
