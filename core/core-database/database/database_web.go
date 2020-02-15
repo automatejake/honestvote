@@ -163,7 +163,7 @@ func GetPermissions(public_key string) ([]string, error) {
 	var registration Registration
 	var elections []string
 
-	query := bson.M{"transaction.type": "Registration", "transaction.sender": public_key}
+	query := bson.M{"transaction.type": "Registration", "transaction.receiver": public_key}
 	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
 		logger.Println("database_web", "GetElection", err.Error())

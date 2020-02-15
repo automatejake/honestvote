@@ -10,6 +10,7 @@ import (
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-validation/validation"
+	"github.com/jneubaum/honestvote/core/core-websocket/websocket"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -55,7 +56,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		valid, err = validation.IsValidVote(*vote)
 
 		if valid {
-			// websocket.BroadcastVote(*vote)
+			websocket.BroadcastVote(*vote)
 			AddToBlock(vote, crypto.CalculateHash([]byte(vote.Signature)))
 		} else {
 			fmt.Println(err)
@@ -88,7 +89,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		valid, err = validation.IsValidRegistration(*registration)
 
 		if valid {
-			// websocket.SendRegistration(*registration)
+			websocket.SendRegistration(*registration)
 			AddToBlock(registration, crypto.CalculateHash([]byte(registration.Signature)))
 		} else {
 			fmt.Println(err)
