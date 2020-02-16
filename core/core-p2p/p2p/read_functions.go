@@ -2,9 +2,7 @@ package p2p
 
 import (
 	"encoding/json"
-	"fmt"
 	"net"
-	"reflect"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -17,14 +15,13 @@ import (
 //Adds new connection to database and local Node array
 func AcceptConnectMessage(node database.Node, conn net.Conn) {
 
-	node.IPAddress = conn.RemoteAddr().String()[0:9]
+	node.IPAddress = conn.RemoteAddr().String()
 	if !database.DoesNodeExist(node) {
 		database.AddNode(node)
 	}
 
 	Nodes = append(Nodes, conn)
 
-	// fmt.Println(Nodes)
 }
 
 //Decoding the data sent from another peer, this data is from a database
@@ -35,7 +32,7 @@ func DecodeData(data []byte) {
 	if err != nil {
 		return
 	}
-	// fmt.Println(block)
+
 	PreviousBlock = block
 	database.UpdateMongo(database.MongoDB, block)
 
@@ -59,7 +56,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 			websocket.BroadcastVote(*vote)
 			AddToBlock(vote, crypto.CalculateHash([]byte(vote.Signature)))
 		} else {
-			fmt.Println(err)
+
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 
@@ -74,11 +71,10 @@ func ReceiveTransaction(mType string, data []byte) error {
 		if valid {
 			AddToBlock(election, crypto.CalculateHash([]byte(election.Signature)))
 		} else {
-			fmt.Println(err.Error())
+
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 	case "Registration":
-		fmt.Println("recieved registration")
 
 		registration := &database.Registration{}
 		err := json.Unmarshal(data, &registration)
@@ -92,7 +88,6 @@ func ReceiveTransaction(mType string, data []byte) error {
 			websocket.SendRegistration(*registration)
 			AddToBlock(registration, crypto.CalculateHash([]byte(registration.Signature)))
 		} else {
-			fmt.Println(err)
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 	}
@@ -108,12 +103,9 @@ func AddToBlock(transaction interface{}, hash string) {
 
 	block.MerkleRoot = hash
 
-	fmt.Println("created block")
 	//Check if there is a proposed block currently, if so, add to the queue
 
 	logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
-
-	fmt.Println("Transaction Type:\n", reflect.TypeOf(block.Transaction))
 
 	err = database.AddBlock(block)
 	if err != nil {

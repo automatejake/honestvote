@@ -23,6 +23,7 @@ var UDP_PORT string = "7001"  //udp PORT for node discovery
 var HTTP_PORT string = "7002" //tcp PORT for light nodes to http routes
 
 var ROLE string = "producer" //options producer || full || registry
+var DATABASE_HOST string = "127.0.0.1"
 var COLLECTION_PREFIX string = ""
 var REGISTRY_IP string
 var REGISTRY_PORT string = "7002"
@@ -55,6 +56,9 @@ func main() {
 	}
 	if os.Getenv("ROLE") != "" {
 		ROLE = os.Getenv("ROLE")
+	}
+	if os.Getenv("DATABASE_HOST") != "" {
+		ROLE = os.Getenv("DATABASE_HOST")
 	}
 	if os.Getenv("COLLECTION_PREFIX") != "" {
 		COLLECTION_PREFIX = os.Getenv("COLLECTION_PREFIX")
@@ -102,6 +106,8 @@ func main() {
 			HTTP_PORT = os.Args[index+1]
 		case "--role": //Set the role of the node options producer || FULL || REGISTRY
 			ROLE = os.Args[index+1]
+		case "--database-host":
+			DATABASE_HOST = os.Args[index+1]
 		case "--collection-prefix": //Collection prefix (useful for starting up multiple nodes with same database)
 			COLLECTION_PREFIX = os.Args[index+1]
 		case "--registry-host": //Sets the registry node
@@ -124,7 +130,7 @@ func main() {
 	p2p.SignatureMap = make(map[string]map[string]bool)
 
 	database.CollectionPrefix = COLLECTION_PREFIX
-	database.MongoDB = database.MongoConnect() // Connect to data store
+	database.MongoDB = database.MongoConnect(DATABASE_HOST) // Connect to data store
 
 	port, _ := strconv.Atoi(TCP_PORT)
 	p2p.Self = database.Node{
@@ -134,6 +140,7 @@ func main() {
 		PublicKey:   database.PublicKey(PUBLIC_KEY),
 		Institution: INSTITUTION_NAME,
 	}
+
 	p2p.PrivateKey = PRIVATE_KEY
 	p2p.PublicKey = PUBLIC_KEY
 

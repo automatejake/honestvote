@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -14,11 +13,10 @@ import (
 )
 
 func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 	params := mux.Vars(r)
 	registrant, err := database.IsValidRegistrationCode(params["id"])
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 
@@ -40,7 +38,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetEndpoint(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 	endpoint, err := database.GetEndpoint()
 	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{

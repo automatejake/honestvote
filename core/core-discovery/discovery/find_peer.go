@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -84,6 +85,18 @@ func ConnectMessage(peer database.Node) { //is run
 		logger.Println("find_peer.go", "ConnectMessage", "Dial Successful!")
 
 		write := new(p2p.Message)
+
+		p2p.Self.Timestamp = ""
+		encoded, err := p2p.Self.Encode()
+		if err != nil {
+
+		}
+		hash := crypto.CalculateHash(encoded)
+		signature, err := crypto.Sign([]byte(hash), p2p.PrivateKey)
+		if err != nil {
+
+		}
+		p2p.Self.Signature = signature
 
 		byteSelf, err := json.Marshal(p2p.Self)
 		if err != nil {

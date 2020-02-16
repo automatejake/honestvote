@@ -5,9 +5,10 @@ version: '2'
 services:
    peer:
      image: jneubaum/honestvote.io-peer-node:latest 
+     ipaddress:
      ports:
-       - 7002:9000
-       - 7003:9001
+       - 7002:7002
+       - 7003:7003
      links:
        - mongo
      depends_on:

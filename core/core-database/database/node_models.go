@@ -30,8 +30,8 @@ type Block struct {
 
 type Registration struct {
 	Type        string    `json:"type" bson:"type"`
-	Election    string    `json:"election" bson:"election"` //Data Start
-	Receiver    PublicKey `json:"receiver" bson:"receiver"` //Data End
+	Election    string    `json:"electionId" bson:"electionId"` //Data Start
+	Receiver    PublicKey `json:"receiver" bson:"receiver"`     //Data End
 	RecieverSig string    `json:"recieverSig" bson:"senderSig"`
 	Sender      PublicKey `json:"sender" bson:"sender"`
 	Signature   string    `json:"signature" bson:"signature"`
@@ -53,8 +53,8 @@ type AwaitingRegistration struct {
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
 	Type      string              `json:"type" bson:"type"`
-	Election  string              `json:"electionName" bson:"electionName"` //Data Start
-	Receiver  []SelectedCandidate `json:"receivers" bson:"receivers"`       //Data End
+	Election  string              `json:"electionId" bson:"electionId"` //Data Start
+	Receiver  []SelectedCandidate `json:"receivers" bson:"receivers"`   //Data End
 	Sender    PublicKey           `json:"sender" bson:"sender"`
 	Signature string              `json:"signature" bson:"signature"`
 }
@@ -89,18 +89,11 @@ type Candidate struct {
 }
 
 type Node struct {
-	Institution string
-	IPAddress   string
-	Port        int
-	Role        string // peer | full | registry
-	PublicKey   PublicKey
-	Timestamp   string
-	Signature   string
-}
-
-func (node Node) VerifySignature() bool {
-	if true {
-		return true
-	}
-	return false
+	Institution string    `json:"institution" bson:"institution"`
+	IPAddress   string    `json:"ipaddress" bson:"ipaddress"`
+	Port        int       `json:"port" bson:"port"`
+	Role        string    `json:"role" bson:"role"` // peer | full | registry
+	PublicKey   PublicKey `json:"publickey" bson:"publickey"`
+	Timestamp   string    `json:"timestamp" bson:"timestamp"`
+	Signature   string    `json:"signature" bson:"signature"`
 }

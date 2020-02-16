@@ -1,10 +1,8 @@
 package database
 
-import "fmt"
-
 func TransactionType(transaction interface{}) string {
 
-	switch t := transaction.(type) {
+	switch transaction.(type) {
 	case Vote:
 		return "Vote"
 	case Registration:
@@ -12,7 +10,7 @@ func TransactionType(transaction interface{}) string {
 	case Election:
 		return "Election"
 	default:
-		fmt.Println(t)
+
 	}
 
 	return ""

@@ -36,9 +36,6 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 		return false, customErr
 	}
 
-	// fmt.Println(database.TransactionType(block.Transaction))
-	// fmt.Println("\n\n\n\n\n\nTransactionType:\n\n", block.Transaction, "\n\n---------------")
-
 	// Iterate through transactions contained in block and make sure that they are valid
 	var honestTransaction bool
 
@@ -75,10 +72,10 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	}
 
 	// // Make sure that the merkle root is correct
-	if CalculateMerkleRoot(block) != block.MerkleRoot {
-		customErr.Message = "Block's merkle root is incorrect" + ending
-		return false, customErr
-	}
+	// if CalculateMerkleRoot(block) != block.MerkleRoot {
+	// 	customErr.Message = "Block's merkle root is incorrect" + ending
+	// 	return false, customErr
+	// }
 
 	// // Make sure that the block hash is correct
 	header, err := block.Encode()

@@ -3,7 +3,6 @@ package p2p
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net"
 	"strconv"
 
@@ -36,14 +35,11 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 
 	index, _ := strconv.Atoi(old_index)
 
-	fmt.Println("Old index is ", old_index, index)
-
 	current, err := collection.CountDocuments(context.TODO(), bson.M{})
 
 	difference := current - int64(index)
 
 	if difference > 0 && err == nil {
-		fmt.Println("Here's the difference: ", difference)
 
 		result, err := collection.Find(context.TODO(), bson.M{"index": bson.M{"$gt": index}})
 
@@ -94,7 +90,7 @@ func GrabDocuments(client *mongo.Client, conn net.Conn, old_index string) {
 			MoveDocuments(conn, block)
 		}
 	} else {
-		fmt.Println("Indexes are equal!")
+
 	}
 }
 
@@ -119,7 +115,6 @@ func MoveDocuments(conn net.Conn, block database.Block) {
 func ProposeBlock(block database.Block) {
 	j, err := json.Marshal(block)
 
-	fmt.Println("proposed block")
 	write := new(Message)
 	write.Message = "verify block"
 	write.Data = j
@@ -148,8 +143,6 @@ func LatestHashAndIndex(client *mongo.Client) database.Block {
 	documentReturned := collection.FindOne(context.TODO(), filter)
 
 	documentReturned.Decode(&block)
-
-	// fmt.Println(block)
 
 	return block
 
