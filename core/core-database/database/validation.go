@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mitchellh/mapstructure"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,8 +13,7 @@ func CorrespondingRegistration(v Vote) Registration {
 	var block Block
 	var registration Registration
 
-	query := bson.M{"transaction.type": "Registration", "transaction.election": v.Election, "transaction.receiver": v.Sender}
-
+	query := bson.M{"transaction.type": "Registration", "transaction.electionId": v.Election, "transaction.receiver": v.Sender}
 	result := collection.FindOne(context.TODO(), query)
 	result.Decode(&block)
 
@@ -30,7 +28,7 @@ func ContainsRegistration(sender PublicKey, election string) bool {
 	var block Block
 	var registration Registration
 
-	query := bson.M{"transaction.type": "Registration", "transaction.sender": sender, "transaction.election": election}
+	query := bson.M{"transaction.type": "Registration", "transaction.sender": sender, "transaction.electionId": election}
 	result := collection.FindOne(context.TODO(), query)
 	err := result.Decode(&block)
 	if err != nil {
@@ -50,7 +48,7 @@ func ContainsVote(sender PublicKey, election string) bool {
 	var block Block
 	var vote Vote
 
-	query := bson.M{"transaction.type": "Vote", "transaction.sender": sender, "transaction.election": election}
+	query := bson.M{"transaction.type": "Vote", "transaction.sender": sender, "transaction.electionId": election}
 	result := collection.FindOne(context.TODO(), query)
 	err := result.Decode(&block)
 	if err != nil {
@@ -68,7 +66,7 @@ func MarkDishonestNode(n Node) error {
 	n.Role = "bad actor"
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
-	result, err := collection.UpdateOne(
+	_, err := collection.UpdateOne(
 		context.Background(),
 		bson.M{"publickey": n.PublicKey},
 		n,
@@ -76,6 +74,6 @@ func MarkDishonestNode(n Node) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(result)
+
 	return nil
 }

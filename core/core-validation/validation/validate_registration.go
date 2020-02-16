@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -33,7 +32,6 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 	valid, err := crypto.Verify([]byte(registrationHeaders), r.Sender, r.Signature)
 	if !valid {
 		customErr.Message = "Registration transaction contains invalid signature" + ending
-		fmt.Println(err)
 		return false, customErr
 
 	}

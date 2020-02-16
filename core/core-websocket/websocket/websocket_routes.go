@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -33,10 +32,8 @@ func BroadcastVote(vote database.Vote) {
 	for pubkey, conn := range Connections {
 		if err := conn.WriteMessage(1, jsonVote); err != nil {
 			conn.Close()
-			fmt.Println("connection closed")
 			delete(Connections, pubkey)
 		}
-		// fmt.Println("message sent: hello")
 
 	}
 }
@@ -67,7 +64,7 @@ func SendRegistration(registration database.Registration) {
 }
 
 func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 	params := mux.Vars(r)
 
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -78,6 +75,8 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	Connections[publicKey] = conn
 }
 
-func EnableCors(w *http.ResponseWriter) {
+func SetupResponse(w *http.ResponseWriter, req *http.Request) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }

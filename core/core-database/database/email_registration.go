@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -31,8 +30,6 @@ func IsValidRegistrationCode(code string) (AwaitingRegistration, error) {
 		}
 		return AwaitingRegistration{}, err
 	}
-
-	fmt.Println(result.Timestamp)
 
 	// determine if registration code is young enough
 	linkAge, err := time.Parse(time.RFC1123, result.Timestamp)

@@ -22,10 +22,10 @@ func (b Block) Encode() ([]byte, error) {
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
-		return encoded, nil
+		return encoded, err
 	}
 
-	return nil, nil
+	return encoded, nil
 }
 
 type EncodedElection struct {
@@ -50,15 +50,15 @@ func (e Election) Encode() ([]byte, error) {
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
-		return encoded, nil
+		return encoded, err
 	}
 
 	return encoded, nil
 }
 
 type EncodedRegistration struct {
-	Election    string    `json:"election"` //Data Start
-	Receiver    PublicKey `json:"receiver"` //Data End
+	Election    string    `json:"electionId"` //Data Start
+	Receiver    PublicKey `json:"receiver"`   //Data End
 	RecieverSig string    `json:"recieverSig"`
 }
 
@@ -70,15 +70,15 @@ func (r Registration) Encode() ([]byte, error) {
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
-		return encoded, nil
+		return encoded, err
 	}
 
 	return encoded, nil
 }
 
 type EncodedVote struct {
-	Election string              `json:"electionName"` //Data Start
-	Receiver []SelectedCandidate `json:"receivers"`    //Data End
+	Election string              `json:"electionId"` //Data Start
+	Receiver []SelectedCandidate `json:"receivers"`  //Data End
 }
 
 func (v Vote) Encode() ([]byte, error) {
@@ -88,10 +88,34 @@ func (v Vote) Encode() ([]byte, error) {
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
-		return encoded, nil
+		return encoded, err
 	}
 
 	return encoded, nil
+}
+
+type EncodedNode struct {
+	Institution string `json:"institution" bson:"institution"`
+	IPAddress   string `json:"ipaddress" bson:"ipaddress"`
+	Port        int    `json:"port" bson:"port"`
+	Timestamp   string `json:"timestamp" bson:"timestamp"`
+	Role        string `json:"role" bson:"role"` // peer | full | registry
+}
+
+func (n Node) Encode() ([]byte, error) {
+	object := EncodedNode{
+		Institution: n.Institution,
+		IPAddress:   n.IPAddress,
+		Port:        n.Port,
+		Timestamp:   n.Timestamp,
+		Role:        n.Role,
+	}
+	encoded, err := asn1.Marshal(object)
+	if err != nil {
+		return encoded, err
+	}
+	return encoded, nil
+
 }
 
 type EncodedTransaction interface {

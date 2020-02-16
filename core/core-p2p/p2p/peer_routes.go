@@ -2,7 +2,6 @@ package p2p
 
 import (
 	"encoding/json"
-	"fmt"
 	"net"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
@@ -26,7 +25,6 @@ func HandleConn(conn net.Conn) {
 			logger.Println("peer_routes.go", "HandleConn()", err.Error())
 			return
 		}
-		fmt.Println(message)
 
 		switch message.Message {
 		case "connect":
@@ -44,7 +42,7 @@ func HandleConn(conn net.Conn) {
 				database.AddNode(node)
 			}
 			tmp_peers := database.FindNodes()
-			// fmt.Println(tmp_peers)
+
 			if tmp_peers != nil {
 				peers_json, err := json.Marshal(tmp_peers)
 				if err != nil {
@@ -60,7 +58,7 @@ func HandleConn(conn net.Conn) {
 		case "grab data":
 			GrabDocuments(database.MongoDB, conn, string(message.Data))
 		case "transaction":
-			// fmt.Println("recieved transaction")
+
 			// ReceiveTransaction(message.Type, message.Data)
 		case "register":
 			var registrant database.AwaitingRegistration

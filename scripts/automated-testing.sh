@@ -1,0 +1,1 @@
+../tests/automated-testing.sh

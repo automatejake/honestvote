@@ -13,8 +13,8 @@ var MongoDB *mongo.Client
 var Collection *mongo.Collection
 
 //Connect to MongoDB
-func MongoConnect() *mongo.Client {
-	uri := "mongodb://localhost:27017"
+func MongoConnect(remoteip string) *mongo.Client {
+	uri := "mongodb://" + remoteip + ":27017"
 	clientOptions := options.Client().ApplyURI(uri)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 

@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"math/rand"
 	"strconv"
 
@@ -31,8 +30,13 @@ func GetElections() ([]Election, error) {
 			logger.Println("database_web", "GetElection", err.Error())
 		}
 
-		annoying_mongo_form := block.Transaction.(primitive.D)
-		mapstructure.Decode(annoying_mongo_form.Map(), &election)
+		annoying_mongo_form := block.Transaction.(primitive.D).Map()
+		mapstructure.Decode(annoying_mongo_form, &election)
+
+		election.Start = annoying_mongo_form["startDate"].(string)
+		election.End = annoying_mongo_form["endDate"].(string)
+		election.Institution = annoying_mongo_form["institutionName"].(string)
+
 		elections = append(elections, election)
 
 	}
@@ -45,8 +49,6 @@ func GetElection(election_signature string) (Election, error) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
 	var block Block
 	var election Election
-
-	// fmt.Println("\n\n\n" + election_signature + "\n\n\n")
 
 	query := bson.M{"transaction.type": "Election", "transaction.signature": election_signature}
 
@@ -124,8 +126,6 @@ func GetVotes(election_signature string) ([]Vote, error) {
 			logger.Println("database_web", "GetElection", err.Error())
 		}
 
-		fmt.Println("Going through results!")
-
 		annoying_mongo_form := block.Transaction.(primitive.D)
 		mapstructure.Decode(annoying_mongo_form.Map(), &vote)
 
@@ -133,13 +133,13 @@ func GetVotes(election_signature string) ([]Vote, error) {
 
 		if tran, ok := block.Transaction.(primitive.D); ok {
 			tranMap := tran.Map()
-			fmt.Println("Transaction step")
+
 			if votes, ok := tranMap["receiver"].(primitive.A); ok {
 				for _, v := range votes {
-					fmt.Println("Votes step")
+
 					var candidate SelectedCandidate
 					if obj, ok := v.(primitive.D); ok {
-						fmt.Println("Position step")
+
 						voteInfo := obj.Map()
 						candidate.PositionId = voteInfo["positionid"].(string)
 						candidate.Recipient = voteInfo["recipient"].(string)

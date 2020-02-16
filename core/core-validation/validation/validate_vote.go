@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"time"
 
@@ -8,13 +9,15 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func GenerateVoteHeaders(v database.Vote) (string, error) {
+func GenerateVoteHeaders(v database.Vote) ([32]byte, error) {
 	encoded, err := v.Encode()
 	if err != nil {
-		return "", err
+		return [32]byte{}, err
 	}
 
-	hash := crypto.CalculateHash(encoded)
+	hash := sha256.Sum256(encoded)
+	// sum := hash.Sum(encoded)
+
 	return hash, nil
 
 }
@@ -26,14 +29,19 @@ func IsValidVote(v database.Vote) (bool, error) {
 	ending := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	voteHeaders, err := GenerateVoteHeaders(v)
+	voteHeaders32, err := GenerateVoteHeaders(v)
 	if err != nil {
 		return false, err
 	}
 
-	valid, err := crypto.Verify([]byte(voteHeaders), v.Sender, v.Signature)
-	if err != nil {
+	// voteHeaders := make([]byte, 32)
+	// copy(voteHeaders, voteHeaders32[:])
 
+	// fmt.Println(reflect.TypeOf(voteHeaders32[:]))
+
+	valid, err := crypto.VerifyRaw(voteHeaders32[:], v.Sender, v.Signature)
+	if err != nil {
+		return false, err
 	}
 	if !valid {
 		customErr.Message = "Vote transaction contains invalid signature" + ending
@@ -42,7 +50,6 @@ func IsValidVote(v database.Vote) (bool, error) {
 
 	//Check to see if election is a valid election
 	election, err := database.GetElection(v.Election)
-	fmt.Println(election, "\n", v.Election)
 	if err != nil {
 		customErr.Message = "Vote transactions must specify a valid election" + ending +
 			err.Error()
@@ -68,10 +75,15 @@ func IsValidVote(v database.Vote) (bool, error) {
 	eligibleCandidates := map[string]int{}
 	for _, position := range election.Positions {
 		for _, candidate := range position.Candidates {
-			eligibleCandidates[position.PositionId+candidate.Recipient] = 1
+			eligibleCandidates[candidate.Name+position.PositionId] = 1
+			fmt.Println("Election Position id", position.PositionId)
+			fmt.Println("Election Recipient id", candidate.Name)
 		}
 	}
 	for _, recipient := range v.Receiver {
+		fmt.Println("Vote Position id", recipient.Recipient)
+		fmt.Println("Vote Recipient id", recipient.PositionId)
+
 		if eligibleCandidates[recipient.PositionId+recipient.Recipient] == 0 {
 			customErr.Message = "Vote transactions must be for valid candidates" + ending
 			return false, customErr

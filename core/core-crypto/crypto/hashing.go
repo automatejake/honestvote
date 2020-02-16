@@ -5,10 +5,13 @@ import (
 	"encoding/base64"
 )
 
-func CalculateHash([]byte) string {
-	hash := sha256.New()
-	sum := hash.Sum(nil)
-	return base64.URLEncoding.EncodeToString(sum)
+func CalculateHash(encodedMessage []byte) string {
+	hash32 := sha256.Sum256(encodedMessage)
+
+	hash := make([]byte, 0, 32)
+	copy(hash32[:], hash[:])
+
+	return base64.URLEncoding.EncodeToString(hash)
 }
 
 func SignBlock(header []byte, privKey string) (string, error) {

@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"net"
 	"net/http"
 	"strconv"
@@ -15,7 +14,7 @@ import (
 )
 
 func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 	decoder := json.NewDecoder(r.Body)
 	var registrant database.AwaitingRegistration
 	err := decoder.Decode(&registrant)
@@ -54,7 +53,7 @@ func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 	decoder := json.NewDecoder(r.Body)
 	var vote database.Vote
 	err := decoder.Decode(&vote)
@@ -71,7 +70,7 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 	decoder := json.NewDecoder(r.Body)
 	var election database.Election
 	err := decoder.Decode(&election)
@@ -89,18 +88,22 @@ func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 
 	elections, err := database.GetElections()
 	var electionInfos []database.ElectionInfo
 	for _, election := range elections {
 		electionInfos = append(electionInfos, election.ConvertInfo())
-		fmt.Println(election.ConvertInfo())
 	}
 	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{
 		Timestamp: timestamp,
 	}
+
+	if electionInfos == nil {
+		electionInfos = []database.ElectionInfo{}
+	}
+
 	if err != nil {
 		payload.Status = "Bad Request"
 	} else {
@@ -111,7 +114,7 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 	params := mux.Vars(r)
 	election, err := database.GetElection(params["electionid"])
 	timestamp := time.Now().Format(time.RFC1123)
@@ -128,18 +131,16 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 	params := mux.Vars(r)
 	votes, err := database.GetVotes(params["electionid"])
-	fmt.Println(votes)
-	// var voteInfos []database.VoteInfo
-	// for _, vote := range votes {
-	// 	voteInfos = append(voteInfos, vote.ConvertInfo())
-	// }
 
 	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{
 		Timestamp: timestamp,
+	}
+	if votes == nil {
+		votes = []database.Vote{}
 	}
 	if err != nil {
 		payload.Status = "Bad Request"
@@ -151,17 +152,20 @@ func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPositionsHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 
 }
 
 func GetPermissionsHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCors(&w)
+	SetupResponse(&w, r)
 	params := mux.Vars(r)
 	permissions, err := database.GetPermissions(params["publickey"])
 	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{
 		Timestamp: timestamp,
+	}
+	if permissions == nil {
+		permissions = []string{}
 	}
 	if err != nil {
 		payload.Status = "Bad Request"

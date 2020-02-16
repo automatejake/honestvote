@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
@@ -23,10 +24,12 @@ func CreateServer(port string, server_type string) {
 
 	HTTP_Port = port
 	http.Handle("/", Router)
-	http.ListenAndServe(":"+port, Router)
+	http.ListenAndServe(":"+port, handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(Router))
 
 }
 
-func EnableCors(w *http.ResponseWriter) {
+func SetupResponse(w *http.ResponseWriter, req *http.Request) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }

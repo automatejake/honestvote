@@ -45,7 +45,6 @@ func AddNode(newNode Node) {
 	if err != nil {
 		logger.Println("routing_table.go", "AddNode", err.Error())
 	}
-	// fmt.Println(result)
 
 }
 
@@ -104,7 +103,7 @@ func FindNode(public_key string) (Node, error) {
 func DeleteNode(node Node) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
-	query := bson.M{"ipadress": node.IPAddress, "port": node.Port}
+	query := bson.M{"ipaddress": node.IPAddress, "port": node.Port}
 	_, err := collection.DeleteOne(context.TODO(), query)
 	if err != nil {
 		logger.Println("routing_table.go", "DeleteNode", err.Error())

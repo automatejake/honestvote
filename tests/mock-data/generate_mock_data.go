@@ -28,7 +28,7 @@ func main() {
 		Description:  "Spring Elections",
 		Start:        start,
 		End:          end,
-		EmailDomain:  "wcupa.edu",
+		EmailDomain:  "^\\w{2}\\d{6}@wcupa\\.edu$",
 		Sender:       database.PublicKey(admin_public_key),
 	}
 
@@ -135,9 +135,12 @@ func main() {
 		"\" \\\n--private-key \""+admin_private_key+"\" \\\n--public-key \""+admin_public_key+"\" & \\\n\n")
 
 	_, _ = io.WriteString(script, "sleep 5\n\n")
-	_, _ = io.WriteString(script, "go run main.go --tcp 7004 --http 7005 --role producer --collection-prefix b_ --registry-host 127.0.0.1 --registry-port 7002  & \\\n\n")
+
+	public_key, private_key = crypto.GenerateKeyPair()
+	_, _ = io.WriteString(script, "go run main.go --tcp 7004 --http 7005 --role producer --collection-prefix b_ --registry-host 127.0.0.1 --registry-port 7002 --private-key \""+private_key+"\" --public-key \""+public_key+"\" & \\\n\n")
 	_, _ = io.WriteString(script, "sleep 10\n\n")
-	_, _ = io.WriteString(script, "go run main.go --tcp 7006 --http 7007 --role producer --collection-prefix c_ --registry-host 127.0.0.1 --registry-port 7002  & \\")
+	public_key, private_key = crypto.GenerateKeyPair()
+	_, _ = io.WriteString(script, "go run main.go --tcp 7006 --http 7007 --role producer --collection-prefix c_ --registry-host 127.0.0.1 --registry-port 7002 --private-key \""+private_key+"\" --public-key \""+public_key+"\" & \\")
 
 }
 

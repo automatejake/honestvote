@@ -53,8 +53,6 @@ func SendRegistrationCode(registrant database.AwaitingRegistration, public_ip st
 	registrant.Code, _ = crypto.RandomHex(100)
 	database.SaveRegistrationCode(registrant)
 
-	fmt.Println("Sending registration")
-
 	email := registrant.Email
 	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
 	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator

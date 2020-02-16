@@ -2,18 +2,20 @@ package crypto
 
 import (
 	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/x509"
 	"encoding/asn1"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"math/big"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
 // signature is a structure for storing signature obtained from ecdsa.Sign
-type signature struct {
+type Signature struct {
 	R,
 	S *big.Int
 }
@@ -41,7 +43,7 @@ func Sign(hash []byte, private_key_hex string) (signature_hex string, err error)
 	}
 
 	// prepare a signature structure to marshal into json
-	signature := &signature{
+	signature := &Signature{
 		R: r,
 		S: s,
 	}
@@ -57,17 +59,20 @@ func Sign(hash []byte, private_key_hex string) (signature_hex string, err error)
 	return signature_hex, nil
 }
 
-// func GenerateSignature(e database.EncodedTransaction, private_key string) (string, error) {
-// 	encoded_data, err := e.Encode()
-// 	if err != nil {
-// 		return "", err
-// 	}
-// 	hashed_data := []byte(CalculateHash(encoded_data))
+type ECCPoint struct {
+	X string
+	Y string
+}
 
-// 	return Sign(hashed_data, private_key)
-// }
+func StringToBigInt(s string) *big.Int {
+	n := new(big.Int)
+	n, ok := n.SetString(s, 10)
+	if !ok {
 
-// Verify verifies a previously generated signature for byte array hash using hex-encoded public key
+	}
+	return n
+}
+
 func Verify(hash []byte, public_key_hex database.PublicKey, signature_hex string) (result bool, err error) {
 	// decode public key from hex
 	public_key_bytes, err := hex.DecodeString(string(public_key_hex))
@@ -89,7 +94,7 @@ func Verify(hash []byte, public_key_hex database.PublicKey, signature_hex string
 			return false, err
 		}
 		// unmarhsal signature structure to extract signature from
-		signature := new(signature)
+		signature := new(Signature)
 		_, err = asn1.Unmarshal(signature_bytes, signature)
 		if err != nil {
 			return false, err
@@ -102,4 +107,46 @@ func Verify(hash []byte, public_key_hex database.PublicKey, signature_hex string
 		// only ECDSA public keys are supported
 		return false, errors.New("only ECDSA public keys supported")
 	}
+}
+
+// Verify verifies a previously generated signature for byte array hash using hex-encoded public key
+func VerifyRaw(hash []byte, public_key_hex database.PublicKey, signature_hex string) (result bool, err error) {
+	// decode public key from hex
+	public_key_bytes, err := hex.DecodeString(string(public_key_hex))
+	if err != nil {
+		return false, err
+	}
+
+	point := new(ECCPoint)
+	_, err = asn1.Unmarshal(public_key_bytes, point)
+	if err != nil {
+		return false, err
+	}
+
+	public_key := &ecdsa.PublicKey{
+		Curve: elliptic.P256(),
+		X:     StringToBigInt(point.X),
+		Y:     StringToBigInt(point.Y),
+	}
+
+	// public_key := DecompressPoint(public_key_bytes)
+	fmt.Println("public key: ", public_key.X, "\npublic key y: ", public_key.Y)
+	// fmt.Println("\n")
+
+	signature_bytes, err := hex.DecodeString(string(signature_hex))
+	if err != nil {
+		return false, err
+	}
+
+	// unmarhsal signature structure to extract signature from
+	signature := new(Signature)
+	_, err = asn1.Unmarshal(signature_bytes, signature)
+	if err != nil {
+		return false, err
+	}
+	fmt.Println(hash)
+
+	// verify signature
+	return ecdsa.Verify(public_key, hash, signature.R, signature.S), nil
+
 }
