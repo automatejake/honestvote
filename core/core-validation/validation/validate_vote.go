@@ -2,7 +2,6 @@ package validation
 
 import (
 	"crypto/sha256"
-	"fmt"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -76,14 +75,9 @@ func IsValidVote(v database.Vote) (bool, error) {
 	for _, position := range election.Positions {
 		for _, candidate := range position.Candidates {
 			eligibleCandidates[candidate.Name+position.PositionId] = 1
-			fmt.Println("Election Position id", position.PositionId)
-			fmt.Println("Election Recipient id", candidate.Name)
 		}
 	}
 	for _, recipient := range v.Receiver {
-		fmt.Println("Vote Position id", recipient.Recipient)
-		fmt.Println("Vote Recipient id", recipient.PositionId)
-
 		if eligibleCandidates[recipient.PositionId+recipient.Recipient] == 0 {
 			customErr.Message = "Vote transactions must be for valid candidates" + ending
 			return false, customErr

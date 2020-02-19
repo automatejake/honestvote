@@ -106,14 +106,14 @@ func GetElection(election_signature string) (Election, error) {
 	return election, nil
 }
 
-func GetVotes(election_signature string) ([]Vote, error) {
+func GetVotes(electionId string) ([]Vote, error) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
 	var block Block
 
 	var votes []Vote
 	var vote Vote
 
-	query := bson.M{"transaction.type": "Vote", "transaction.electionName": election_signature}
+	query := bson.M{"transaction.type": "Vote", "transaction.electionId": electionId}
 
 	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
@@ -134,15 +134,15 @@ func GetVotes(election_signature string) ([]Vote, error) {
 		if tran, ok := block.Transaction.(primitive.D); ok {
 			tranMap := tran.Map()
 
-			if votes, ok := tranMap["receiver"].(primitive.A); ok {
+			if votes, ok := tranMap["receivers"].(primitive.A); ok {
 				for _, v := range votes {
 
 					var candidate SelectedCandidate
 					if obj, ok := v.(primitive.D); ok {
 
 						voteInfo := obj.Map()
-						candidate.PositionId = voteInfo["positionid"].(string)
-						candidate.Recipient = voteInfo["recipient"].(string)
+						candidate.PositionId = voteInfo["key"].(string)
+						candidate.Recipient = voteInfo["id"].(string)
 					}
 					vote.Receiver = append(vote.Receiver, candidate)
 				}

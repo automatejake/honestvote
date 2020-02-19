@@ -2,6 +2,7 @@ package p2p
 
 import (
 	"encoding/json"
+	"fmt"
 	"net"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
@@ -51,7 +52,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		}
 
 		valid, err = validation.IsValidVote(*vote)
-
+		fmt.Println("\n\n\n\n\nHERE\nHERE\nHERE\n\n\n\n\nHERE", valid, "\n", valid, "\n", valid)
 		if valid {
 			websocket.BroadcastVote(*vote)
 			AddToBlock(vote, crypto.CalculateHash([]byte(vote.Signature)))

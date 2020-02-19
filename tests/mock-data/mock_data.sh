@@ -5,15 +5,9 @@ curl --header "Content-Type: application/json" --request POST --data '{
 	"electionName": "Student Government Elections",
 	"institutionName": "West Chester University",
 	"description": "Spring Elections",
-<<<<<<< HEAD
-	"startDate": "Sat, 15 Feb 2020 11:59:42 EST",
-	"endDate": "Wed, 02 Sep 2020 11:59:42 EDT",
-	"emailDomain": "wcupa.edu",
-=======
 	"startDate": "Sun, 16 Feb 2020 10:24:11 EST",
 	"endDate": "Thu, 03 Sep 2020 10:24:11 EDT",
 	"emailDomain": "^\\w{2}\\d{6}@wcupa\\.edu$",
->>>>>>> 0c7e579f74e62359838040d6660050c5fc8ec257
 	"positions": [
 		{
 			"id": "demfrmeororev",
@@ -40,8 +34,12 @@ curl --header "Content-Type: application/json" --request POST --data '{
 =======
 	"sender": "3059301306072a8648ce3d020106082a8648ce3d0301070342000420f6ae9be26dfde8b50f550bfb273ad77d1012a9c427f4e5ea761faa108ab0b69a042448b15e09c67075cba02931c2ae602b9125afad8f0480f83d24c55d3bc5",
 	"signature": "3045022100cd48a8cdc1f1178532cfe2390847f0edcc549cc8173b1c59be8876a0826d57760220645a019ebb29c60920d24942390406ac9a05c84085e70d7b730976fbd7556f43"
+<<<<<<< HEAD
 >>>>>>> 0c7e579f74e62359838040d6660050c5fc8ec257
 }' http://localhost:7003/election
+=======
+}' http://portainer.honestvote.io:7003/election
+>>>>>>> 50d3e5012a2b075a55befe1d7391cbbd3761fac8
 
 
 

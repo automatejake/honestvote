@@ -31,7 +31,8 @@ var REGISTRY bool = false // is producer registry node or not
 var INSTITUTION_NAME string
 var PUBLIC_KEY string
 var PRIVATE_KEY string
-var LOGGING_MODE string = "Info" // Levels of Debugging All | Debug | Info
+var LOGGING_MODE string = "" // Levels of Debugging All | Debug | Info
+var HOSTNAME string = "localhost"
 
 //this file will be responsible for deploying the app
 
@@ -78,8 +79,8 @@ func main() {
 	if os.Getenv("PUBLIC_KEY") != "" {
 		PUBLIC_KEY = os.Getenv("PUBLIC_KEY")
 	}
-	if os.Getenv("PUBLIC_IP_ADDRESS") != "" {
-		p2p.PublicIP = os.Getenv("PUBLIC_IP_ADDRESS")
+	if os.Getenv("HOSTNAME") != "" {
+		HOSTNAME = os.Getenv("HOSTNAME")
 	}
 	if os.Getenv("INSTITUTION_NAME") != "" {
 		INSTITUTION_NAME = os.Getenv("INSTITUTION_NAME")
@@ -120,8 +121,8 @@ func main() {
 			PRIVATE_KEY = os.Args[index+1]
 		case "--public-key": //Sets the public key
 			PUBLIC_KEY = os.Args[index+1]
-		case "--public-ip": //sets the public ip address
-			p2p.PublicIP = os.Args[index+1]
+		case "--hostname": //sets the public ip address
+			HOSTNAME = os.Args[index+1]
 		case "--institution-name": //sets the public ip address
 			INSTITUTION_NAME = os.Args[index+1]
 		}
@@ -134,7 +135,7 @@ func main() {
 
 	port, _ := strconv.Atoi(TCP_PORT)
 	p2p.Self = database.Node{
-		IPAddress:   "127.0.0.1",
+		IPAddress:   HOSTNAME,
 		Port:        port,
 		Role:        ROLE,
 		PublicKey:   database.PublicKey(PUBLIC_KEY),
