@@ -17,11 +17,12 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	registrant, err := database.IsValidRegistrationCode(params["id"])
 	if err != nil {
+		logger.Println("producer_handlers.go", "VerifyEmailHandler()", err.Error())
 		return
 	}
 
 	if params["verified"] == "true" {
-		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is registered to vote for "+registrant.ElectionName)
+		logger.Println("producer_handlers.go", "VerifyEmailHandler()", string(registrant.Sender)+" is registered to vote for "+registrant.ElectionName)
 		if registration.VerifyStudent(registrant) {
 			err := p2p.SendRegistrationTransaction(registrant)
 			if err != nil {
@@ -31,7 +32,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else if params["verified"] == "false" {
-		logger.Println("peer_http_routes.go", "VerifyEmailHandler()", string(registrant.Sender)+" is not supposed to be registered to vote for "+registrant.ElectionName)
+		logger.Println("producer_handlers.go", "VerifyEmailHandler()", string(registrant.Sender)+" is not supposed to be registered to vote for "+registrant.ElectionName)
 		registration.SendWarningEmail(registrant.Email, registrant.ElectionName)
 	}
 

@@ -67,6 +67,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	SetupResponse(&w, r)
 	params := mux.Vars(r)
 
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		logger.Println("websocket_routes.go", "WebsocketsHandler", err.Error())

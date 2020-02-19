@@ -26,7 +26,6 @@ var BlockQueue []database.Block
 
 //Nested to pair answer with public_key/signature
 var SignatureMap map[string]map[string]bool
-var PublicIP string
 
 type Message struct {
 	Message string `json:"message"`

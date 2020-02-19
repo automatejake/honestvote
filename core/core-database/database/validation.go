@@ -2,6 +2,9 @@ package database
 
 import (
 	"context"
+	"fmt"
+
+	"github.com/jneubaum/honestvote/tests/logger"
 
 	"github.com/mitchellh/mapstructure"
 	"go.mongodb.org/mongo-driver/bson"
@@ -17,18 +20,24 @@ func CorrespondingRegistration(v Vote) Registration {
 	result := collection.FindOne(context.TODO(), query)
 	result.Decode(&block)
 
+	fmt.Println(v.Sender)
+	fmt.Println("\n\n\n\n\nBlock is here:\n", block, "\n\n\n\n")
+
 	annoying_mongo_form := block.Transaction.(primitive.D)
-	mapstructure.Decode(annoying_mongo_form.Map(), &registration)
+	err := mapstructure.Decode(annoying_mongo_form.Map(), &registration)
+	if err != nil {
+		logger.Println("validation.go", "CorrespondingRegistration", err.Error())
+	}
 
 	return registration
 }
 
-func ContainsRegistration(sender PublicKey, election string) bool {
+func ContainsRegistration(receiver PublicKey, election string) bool {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
 	var block Block
 	var registration Registration
 
-	query := bson.M{"transaction.type": "Registration", "transaction.sender": sender, "transaction.electionId": election}
+	query := bson.M{"transaction.type": "Registration", "transaction.receiver": receiver, "transaction.electionId": election}
 	result := collection.FindOne(context.TODO(), query)
 	err := result.Decode(&block)
 	if err != nil {

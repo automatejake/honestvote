@@ -8,7 +8,6 @@ import (
 	"encoding/asn1"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"math/big"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -129,10 +128,6 @@ func VerifyRaw(hash []byte, public_key_hex database.PublicKey, signature_hex str
 		Y:     StringToBigInt(point.Y),
 	}
 
-	// public_key := DecompressPoint(public_key_bytes)
-	fmt.Println("public key: ", public_key.X, "\npublic key y: ", public_key.Y)
-	// fmt.Println("\n")
-
 	signature_bytes, err := hex.DecodeString(string(signature_hex))
 	if err != nil {
 		return false, err
@@ -144,7 +139,6 @@ func VerifyRaw(hash []byte, public_key_hex database.PublicKey, signature_hex str
 	if err != nil {
 		return false, err
 	}
-	fmt.Println(hash)
 
 	// verify signature
 	return ecdsa.Verify(public_key, hash, signature.R, signature.S), nil
