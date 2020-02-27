@@ -32,7 +32,7 @@ var INSTITUTION_NAME string
 var PUBLIC_KEY string
 var PRIVATE_KEY string
 var LOGGING_MODE string = "" // Levels of Debugging All | Debug | Info
-var HOSTNAME string = "localhost"
+var HOSTNAME string = "127.0.0.1"
 
 //this file will be responsible for deploying the app
 

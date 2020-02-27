@@ -160,7 +160,6 @@ func GetVotes(electionId string) ([]Vote, error) {
 func GetPermissions(public_key string) ([]string, error) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
 	var block Block
-	var registration Registration
 	var elections []string
 
 	query := bson.M{"transaction.type": "Registration", "transaction.receiver": public_key}
@@ -176,12 +175,10 @@ func GetPermissions(public_key string) ([]string, error) {
 		}
 
 		annoying_mongo_form := block.Transaction.(primitive.D)
-		err = mapstructure.Decode(annoying_mongo_form.Map(), &registration)
-		if err != nil {
-			logger.Println("database_web", "GetElection", err.Error())
-		}
+		election := annoying_mongo_form.Map()["electionId"].(string)
 
-		elections = append(elections, registration.Election)
+		// fmt.Println(annoying_mongo_form)
+		elections = append(elections, election)
 
 	}
 
