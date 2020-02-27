@@ -26,7 +26,7 @@ func HandleFullRoutes() {
 	Router.HandleFunc("/election", PostElectionHandler).Methods("POST")
 
 	//WEBSOCKET
-	Router.HandleFunc("/websocket", websocket.WebsocketHandler) //good
+	Router.HandleFunc("/websocket/{publickey}", websocket.WebsocketHandler) //good
 
 }
 
