@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -43,7 +42,6 @@ func BroadcastVote(vote database.Vote) {
 }
 
 func SendRegistration(registration database.Registration) {
-	fmt.Println("Sending registration...")
 	payload := Payload{
 		Type:    "USER_CONFIRM_PERMISSION",
 		Payload: registration.Election,
