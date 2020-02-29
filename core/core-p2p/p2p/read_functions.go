@@ -52,8 +52,9 @@ func ReceiveTransaction(mType string, data []byte) error {
 		}
 
 		valid, err = validation.IsValidVote(*vote)
-		fmt.Println("\n\n\n\n\nHERE\nHERE\nHERE\n\n\n\n\nHERE", valid, "\n", valid, "\n", valid)
+
 		if valid {
+			logger.Println("read_functions.go","RecieveTransaction()","Passed validation")
 			websocket.BroadcastVote(*vote)
 			AddToBlock(vote, crypto.CalculateHash([]byte(vote.Signature)))
 		} else {
@@ -72,7 +73,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		if valid {
 			AddToBlock(election, crypto.CalculateHash([]byte(election.Signature)))
 		} else {
-
+			fmt.Println(err)
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 	case "Registration":
@@ -86,9 +87,11 @@ func ReceiveTransaction(mType string, data []byte) error {
 		valid, err = validation.IsValidRegistration(*registration)
 
 		if valid {
+			logger.Println("","","Sending Registration")
 			websocket.SendRegistration(*registration)
 			AddToBlock(registration, crypto.CalculateHash([]byte(registration.Signature)))
 		} else {
+			fmt.Println(err)
 			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
 		}
 	}

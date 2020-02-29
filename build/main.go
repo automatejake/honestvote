@@ -31,7 +31,7 @@ var REGISTRY bool = false // is producer registry node or not
 var INSTITUTION_NAME string
 var PUBLIC_KEY string
 var PRIVATE_KEY string
-var LOGGING_MODE string = "" // Levels of Debugging All | Debug | Info
+var LOGGING_MODE string = "All" // Levels of Debugging All | Debug | Info
 var HOSTNAME string = "127.0.0.1"
 
 //this file will be responsible for deploying the app

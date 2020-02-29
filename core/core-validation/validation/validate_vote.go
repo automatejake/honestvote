@@ -60,7 +60,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	electionEnd, err := time.Parse(time.RFC1123, election.End)
 	if now.After(electionEnd) {
 		customErr.Message = "Vote transactions must occur for elections that are still ongoing" + ending
-		return false, customErr
+		//return false, customErr
 	}
 
 	//Check to see if voter is registered to vote

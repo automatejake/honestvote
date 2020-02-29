@@ -55,7 +55,7 @@ func SendRegistrationCode(registrant database.AwaitingRegistration, hostname str
 
 	email := registrant.Email
 	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
-	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
+	pass := "wak5H~b_TM*aq:dGSAFp"                //should be environmental variable that is updated by administrator
 	to := email
 
 	msg := "From: " + from + "\n" +
@@ -75,7 +75,7 @@ func SendRegistrationCode(registrant database.AwaitingRegistration, hostname str
 
 func SendWarningEmail(email string, election string) {
 	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
-	pass := "Passw0rd123!"                //should be environmental variable that is updated by administrator
+	pass := "wak5H~b_TM*aq:dGSAFp"                //should be environmental variable that is updated by administrator
 	to := email
 
 	msg := "From: " + from + "\n" +

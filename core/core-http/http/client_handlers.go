@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
@@ -65,7 +65,7 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 
 	}
-
+	fmt.Printf("%+v\n",v)
 	p2p.ReceiveTransaction("Vote", v)
 }
 
