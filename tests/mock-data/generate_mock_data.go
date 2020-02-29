@@ -26,7 +26,7 @@ func main() {
 	var election database.Election = database.Election{
 		Type:         "Election",
 		ElectionName: "Vote for Charity",
-		Institution:  "West Chester University",
+		Institution:  "Honestvote",
 		Description:  "Whichever charities get the most votes, will be donated $50 each by Honestvote",
 		Start:        start,
 		End:          end,

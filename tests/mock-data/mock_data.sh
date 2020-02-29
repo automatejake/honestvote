@@ -3,10 +3,10 @@ echo "Election Transaction:"
 curl --header "Content-Type: application/json" --request POST --data '{
 	"type": "Election",
 	"electionName": "Vote for Charity",
-	"institutionName": "West Chester University",
+	"institutionName": "Honestvote",
 	"description": "Whichever charities get the most votes, will be donated $50 each by Honestvote",
-	"startDate": "Wed, 26 Feb 2020 13:18:15 EST",
-	"endDate": "Sun, 13 Sep 2020 13:18:15 EDT",
+	"startDate": "Sat, 29 Feb 2020 16:44:17 EST",
+	"endDate": "Wed, 16 Sep 2020 16:44:17 EDT",
 	"emailDomain": "^\\w{2}\\d{6}@wcupa\\.edu$",
 	"positions": [
 		{
@@ -47,7 +47,7 @@ curl --header "Content-Type: application/json" --request POST --data '{
 		}
 	],
 	"sender": "3059301306072a8648ce3d020106082a8648ce3d0301070342000420f6ae9be26dfde8b50f550bfb273ad77d1012a9c427f4e5ea761faa108ab0b69a042448b15e09c67075cba02931c2ae602b9125afad8f0480f83d24c55d3bc5",
-	"signature": "3046022100ed94b1c26cbc9084370f5c8fc42705381f4dfd52678b566cf13dd4c800425876022100876b06affe21813d918d003aa33a9ecaa346f6304ba603d47e1f29d72e401674"
+	"signature": "304602210084818b43a140d99760b39d2ec7fe45de64d370000ba945673048d52b1addb2ad0221009e596631e726564a02d45c2e7763e0b626c49fbf4797261f3cce844dbbaea0e4"
 }' http://localhost:7003/election
 
 
@@ -59,9 +59,9 @@ curl --header "Content-Type: application/json" --request POST --data '{
 	"firstName": "Jacob",
 	"lastName": "Neubaum",
 	"dateOfBirth": "3/9/1999",
-	"electionName": "3046022100ed94b1c26cbc9084370f5c8fc42705381f4dfd52678b566cf13dd4c800425876022100876b06affe21813d918d003aa33a9ecaa346f6304ba603d47e1f29d72e401674",
+	"electionName": "304602210084818b43a140d99760b39d2ec7fe45de64d370000ba945673048d52b1addb2ad0221009e596631e726564a02d45c2e7763e0b626c49fbf4797261f3cce844dbbaea0e4",
 	"electionAdmin": "3059301306072a8648ce3d020106082a8648ce3d0301070342000420f6ae9be26dfde8b50f550bfb273ad77d1012a9c427f4e5ea761faa108ab0b69a042448b15e09c67075cba02931c2ae602b9125afad8f0480f83d24c55d3bc5",
-	"publicKey": "3059301306072a8648ce3d020106082a8648ce3d030107034200043870783f641130b7fedd13ad176effb966fd0d4789f32bd2749abf1f18dae7ff3f48bd581c598b219220f57b58c523404b16dea124ea97ce3a7ad25cd93c8893",
+	"publicKey": "3059301306072a8648ce3d020106082a8648ce3d0301070342000433309ab03a630fba855471711ad0ccdb2344479abfd480990228127502a23d447fb2635b876387fa40f91cdab173b34f4b0a7a450afeaa0af59ec7e4d1c24f26",
 	"senderSig": "",
 	"code": "",
 	"timestamp": ""
@@ -73,15 +73,15 @@ echo "Vote Transaction:"
 
 curl --header "Content-Type: application/json" --request POST --data '{
 	"type": "Vote",
-	"electionId": "3046022100ed94b1c26cbc9084370f5c8fc42705381f4dfd52678b566cf13dd4c800425876022100876b06affe21813d918d003aa33a9ecaa346f6304ba603d47e1f29d72e401674",
+	"electionId": "304602210084818b43a140d99760b39d2ec7fe45de64d370000ba945673048d52b1addb2ad0221009e596631e726564a02d45c2e7763e0b626c49fbf4797261f3cce844dbbaea0e4",
 	"receivers": [
 		{
-			"id": "demfrmeororev",
-			"key": "test1"
+			"positionId": "demfrmeororev",
+			"candidateName": "test1"
 		}
 	],
-	"sender": "3059301306072a8648ce3d020106082a8648ce3d030107034200043870783f641130b7fedd13ad176effb966fd0d4789f32bd2749abf1f18dae7ff3f48bd581c598b219220f57b58c523404b16dea124ea97ce3a7ad25cd93c8893",
-	"signature": "3045022100ca03e723b5d31f0ca92f38b806b5afbb70b8a5ab079514d5953e4a3aae659c15022008f1c23095c79a0bfd1334526c49c687fc649aaddef1df72d2157bcc8cf9224a"
+	"sender": "3059301306072a8648ce3d020106082a8648ce3d0301070342000433309ab03a630fba855471711ad0ccdb2344479abfd480990228127502a23d447fb2635b876387fa40f91cdab173b34f4b0a7a450afeaa0af59ec7e4d1c24f26",
+	"signature": "30460221008eee6e158ff2df002ae05aa2dadd827cf4ecdee4ab015b7808e6b210d104d6c8022100f3403f8d292a60966ca911a0f14c3d1ae499083762aa265873615af785cd0b12"
 }' http://localhost:7003/election/test/vote
 
 
