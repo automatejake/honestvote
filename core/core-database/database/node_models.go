@@ -60,8 +60,8 @@ type Vote struct {
 }
 
 type SelectedCandidate struct {
-	PositionId string `json:"id" bson:"id"`
-	Recipient  string `json:"key" bson:"key"`
+	PositionId string `json:"positionId" bson:"positionId"`
+	Recipient  string `json:"candidateName" bson:"candidateName"`
 }
 
 type Election struct {
