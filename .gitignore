@@ -1,2 +1,4 @@
-*.env
-*.log
+build/.env
+build/debug.log
+tests/mock-data/mock_data.sh
+.vscode/
