@@ -2,8 +2,9 @@ package websocket
 
 import (
 	"encoding/json"
-	"net/http"
 	"fmt"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/jneubaum/honestvote/core/core-database/database"
@@ -27,14 +28,13 @@ func BroadcastVote(vote database.Vote) {
 		Payload: vote,
 	}
 
-	fmt.Printf("%+v\n",vote)
+	fmt.Printf("%+v\n", vote)
 
-	logger.Println("","BroadcastVote()","Sending Vote...")
+	logger.Println("websocket_routes.go", "BroadcastVote()", "Sending Vote...")
 	jsonVote, err := json.Marshal(payload)
 	if err != nil {
 		logger.Println("broadcast.go", "WebsocketsHandler", err.Error())
 	}
-
 
 	for pubkey, conn := range Connections {
 		if err := conn.WriteMessage(1, jsonVote); err != nil {
@@ -43,11 +43,11 @@ func BroadcastVote(vote database.Vote) {
 		}
 
 	}
-	
+
 }
 
 func SendRegistration(registration database.Registration) {
-	logger.Println("","SendRegistration()","Registration is being sent")
+	logger.Println("websocket_routes.go", "SendRegistration()", "Registration is being sent")
 	payload := Payload{
 		Type:    "USER_CONFIRM_PERMISSION",
 		Payload: registration.Election,
@@ -55,23 +55,23 @@ func SendRegistration(registration database.Registration) {
 
 	jsonVote, err := json.Marshal(payload)
 	if err != nil {
-		logger.Println("broadcast.go", "WebsocketsHandler", err.Error())
+		logger.Println("websocket_routes.go", "SendRegistration()", err.Error())
 	}
 
-	logger.Println("","",payload.Payload.(string))
+	logger.Println("websocket_routes.go", "SendRegistration()", payload.Payload.(string))
 	publicKey := registration.Receiver
 	if Connections[publicKey] == nil {
-		logger.Println("","","Public key does not exist in map")
+		logger.Println("", "", "Public key does not exist in map")
 		return
 	}
 
 	if err := Connections[publicKey].WriteMessage(1, jsonVote); err != nil {
-		logger.Println("","SendRegistration()", "Error sending registration transaction" + err.Error())
+		logger.Println("websocket_routes.go", "SendRegistration()", "Error sending registration transaction"+err.Error())
 		Connections[publicKey].Close()
 		delete(Connections, publicKey)
 	}
 
-	logger.Println("","SendRegistration()","Registration sent successfully")
+	logger.Println("", "SendRegistration()", "Registration sent successfully")
 }
 
 func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
