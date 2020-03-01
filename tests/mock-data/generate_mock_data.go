@@ -14,7 +14,9 @@ import (
 
 func main() {
 	// timestamp := time.Now().Format(time.RFC1123)
-	admin_private_key, admin_public_key := crypto.GenerateKeyPair()
+	// admin_private_key, admin_public_key := crypto.GenerateKeyPair()
+	admin_private_key := "3077020101042061a9cec9f6502df62d8190c008ef29f485142e8e03de993e469c250966e574ada00a06082a8648ce3d030107a1440342000420f6ae9be26dfde8b50f550bfb273ad77d1012a9c427f4e5ea761faa108ab0b69a042448b15e09c67075cba02931c2ae602b9125afad8f0480f83d24c55d3bc5"
+	admin_public_key := "3059301306072a8648ce3d020106082a8648ce3d0301070342000420f6ae9be26dfde8b50f550bfb273ad77d1012a9c427f4e5ea761faa108ab0b69a042448b15e09c67075cba02931c2ae602b9125afad8f0480f83d24c55d3bc5"
 	fmt.Println("Admin Private Key:\n" + admin_private_key + "\n")
 	fmt.Println("Admin Public Key\n" + admin_public_key + "\n")
 
@@ -23,9 +25,9 @@ func main() {
 
 	var election database.Election = database.Election{
 		Type:         "Election",
-		ElectionName: "Student Government Elections",
+		ElectionName: "Vote for Charity",
 		Institution:  "West Chester University",
-		Description:  "Spring Elections",
+		Description:  "Whichever charities get the most votes, will be donated $50 each by Honestvote",
 		Start:        start,
 		End:          end,
 		EmailDomain:  "^\\w{2}\\d{6}@wcupa\\.edu$",
@@ -35,19 +37,37 @@ func main() {
 	election.Positions = []database.Position{
 		database.Position{
 			PositionId: "demfrmeororev",
-			Name:       "Student Government President",
+			Name:       "Youth Charities",
 			Candidates: []database.Candidate{
 				database.Candidate{
-					Name:      "John Doe",
+					Name:      "Beverlys Birthdays",
 					Recipient: "test1",
 				},
 				database.Candidate{
-					Name:      "Sarah Jennings",
+					Name:      "Brittanys Hope",
 					Recipient: "test2",
 				},
 				database.Candidate{
-					Name:      "Maximus Footless",
+					Name:      "Ronald McDonald House",
 					Recipient: "test3",
+				},
+			},
+		},
+		database.Position{
+			PositionId: "defmrfmrkmef",
+			Name:       "Sustainability",
+			Candidates: []database.Candidate{
+				database.Candidate{
+					Name:      "Art of Recycle",
+					Recipient: "test4",
+				},
+				database.Candidate{
+					Name:      "Safe Harbor of Chester County",
+					Recipient: "test5",
+				},
+				database.Candidate{
+					Name:      "Global Links",
+					Recipient: "test6",
 				},
 			},
 		},

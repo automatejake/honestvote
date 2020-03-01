@@ -17,6 +17,9 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
+func MakeWebSocketMap() {
+	Connections = make(map[database.PublicKey]*websocket.Conn)
+}
 func BroadcastVote(vote database.Vote) {
 
 	payload := Payload{
@@ -39,10 +42,9 @@ func BroadcastVote(vote database.Vote) {
 }
 
 func SendRegistration(registration database.Registration) {
-
 	payload := Payload{
 		Type:    "USER_CONFIRM_PERMISSION",
-		Payload: registration,
+		Payload: registration.Election,
 	}
 
 	jsonVote, err := json.Marshal(payload)
@@ -51,7 +53,6 @@ func SendRegistration(registration database.Registration) {
 	}
 
 	publicKey := registration.Receiver
-
 	if Connections[publicKey] == nil {
 		return
 	}
@@ -60,7 +61,6 @@ func SendRegistration(registration database.Registration) {
 		Connections[publicKey].Close()
 		delete(Connections, publicKey)
 	}
-
 }
 
 func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
@@ -74,6 +74,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	publicKey := database.PublicKey(params["publickey"])
 	Connections[publicKey] = conn
+
 }
 
 func SetupResponse(w *http.ResponseWriter, req *http.Request) {

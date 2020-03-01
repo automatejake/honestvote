@@ -4,11 +4,12 @@
 version: '2'
 services:
    peer:
-     image: jneubaum/honestvote.io-peer-node:latest 
-     ipaddress:
+     image: jneubaum/honestvote-peer-node:latest 
      ports:
        - 7002:7002
        - 7003:7003
+     logging:
+        driver: none
      links:
        - mongo
      depends_on:
@@ -17,3 +18,11 @@ services:
      image: mongo:latest
      ports:
        - 27017:27017
+     logging:
+        driver: none
+   client:
+     image: jneubaum/honestvote-client:latest
+     ports:
+       - 8080:8080
+     logging:
+        driver: none

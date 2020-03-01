@@ -5,6 +5,8 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+
+	"github.com/jneubaum/honestvote/core/core-websocket/websocket"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -14,6 +16,7 @@ var HTTP_Port string
 func CreateServer(port string, server_type string) {
 	logger.Println("server.go", "main", "HTTP server running on port: "+port)
 
+	websocket.MakeWebSocketMap()
 	if server_type == "producer" {
 		HandleProducerRoutes()
 		HandleFullRoutes()
