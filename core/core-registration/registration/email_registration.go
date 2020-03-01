@@ -48,14 +48,14 @@ func isValidEmail(email string) bool {
 }
 
 // Create registration code, save to database, send email with code and link
-func SendRegistrationCode(registrant database.AwaitingRegistration, hostname string, tcp_port string) {
+func SendRegistrationCode(registrant database.AwaitingRegistration, hostname string, tcp_port string, email_address string, email_password string) {
 	registrant.Timestamp = time.Now().Format(time.RFC3339)
 	registrant.Code, _ = crypto.RandomHex(100)
 	database.SaveRegistrationCode(registrant)
 
 	email := registrant.Email
-	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
-	pass := "wak5H~b_TM*aq:dGSAFp"                //should be environmental variable that is updated by administrator
+	from := email_address  //should be environmental variable that is updated by administrator
+	pass := email_password //should be environmental variable that is updated by administrator
 	to := email
 
 	msg := "From: " + from + "\n" +
@@ -75,7 +75,7 @@ func SendRegistrationCode(registrant database.AwaitingRegistration, hostname str
 
 func SendWarningEmail(email string, election string) {
 	from := "testhonestvote.io@gmail.com" //should be environmental variable that is updated by administrator
-	pass := "wak5H~b_TM*aq:dGSAFp"                //should be environmental variable that is updated by administrator
+	pass := "wak5H~b_TM*aq:dGSAFp"        //should be environmental variable that is updated by administrator
 	to := email
 
 	msg := "From: " + from + "\n" +
