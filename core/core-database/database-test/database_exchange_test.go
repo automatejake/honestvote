@@ -11,7 +11,7 @@ import (
 func TestAddBlock(t *testing.T) {
 	//gets the blockchain length, add a block, then makes sure the current blockchain length is one higher
 
-	database.MongoDB = database.MongoConnect()
+	database.MongoDB = database.MongoConnect("localhost")
 
 	//collection := database.MongoDB.Database("honestvote").Collection(CollectionPrefix + "blockchain")
 	collection := database.MongoDB.Database("honestvote").Collection("blockchain")
@@ -30,7 +30,7 @@ func TestAddBlock(t *testing.T) {
 
 }
 func TestLastIndex(t *testing.T) {
-	database.MongoDB = database.MongoConnect()
+	database.MongoDB = database.MongoConnect("localhost")
 
 	//1) test that the latest index is the latest index
 

@@ -67,7 +67,7 @@ func HandleConn(conn net.Conn) {
 
 			}
 			if registration.IsValidRegistrant(&registrant) {
-				registration.SendRegistrationCode(registrant, Self.IPAddress, HTTP_Port)
+				registration.SendRegistrationCode(registrant, Self.IPAddress, HTTP_Port, Email_Address, Email_Password)
 			}
 
 			// tcp_port := strconv.Itoa(TCP_PORT)

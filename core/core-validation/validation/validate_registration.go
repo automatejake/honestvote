@@ -53,7 +53,7 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 	}
 	if now.After(electionEnd) {
 		customErr.Message = "Registration transactions must occur for elections that are still ongoing" + ending
-		return false, customErr
+		//return false, customErr
 	}
 
 	// Check to see if registration was sent by the administrator that declared the election

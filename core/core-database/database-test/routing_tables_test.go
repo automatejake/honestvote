@@ -10,7 +10,7 @@ import (
 
 func TestDoesNodeExist(t *testing.T) {
 	//Test case 1: passing in a node that does exist
-	database.MongoDB = database.MongoConnect()
+	database.MongoDB = database.MongoConnect("localhost")
 	var node1 database.Node
 	//database.AddNode(node1) //node is added
 	got := database.DoesNodeExist(node1)
@@ -23,7 +23,7 @@ func TestDoesNodeExist(t *testing.T) {
 
 func TestAddNode(t *testing.T) {
 	//gets the node_list length, add a node, then makes sure the current node_list length is one higher
-	database.MongoDB = database.MongoConnect()
+	database.MongoDB = database.MongoConnect("localhost")
 
 	//collection := database.MongoDB.Database("honestvote").Collection(CollectionPrefix + "blockchain")
 	collection := database.MongoDB.Database("honestvote").Collection("node_list")
@@ -51,7 +51,7 @@ func TestAddNode(t *testing.T) {
 
 func TestDeleteNode(t *testing.T) { //Fails
 
-	database.MongoDB = database.MongoConnect()
+	database.MongoDB = database.MongoConnect("localhost")
 
 	var nodex database.Node
 	database.AddNode(nodex)

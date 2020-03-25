@@ -14,6 +14,8 @@ import (
 var PublicKey string
 var PrivateKey string
 var HTTP_Port string
+var Email_Address string
+var Email_Password string
 
 var Nodes []net.Conn
 var PreviousBlock database.Block

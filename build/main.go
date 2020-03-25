@@ -31,8 +31,10 @@ var REGISTRY bool = false // is producer registry node or not
 var INSTITUTION_NAME string
 var PUBLIC_KEY string
 var PRIVATE_KEY string
-var LOGGING_MODE string = "" // Levels of Debugging All | Debug | Info
+var LOGGING_MODE string = "All" // Levels of Debugging All | Debug | Info
 var HOSTNAME string = "127.0.0.1"
+var EMAIL_ADDRESS string
+var EMAIL_PASSWORD string
 
 //this file will be responsible for deploying the app
 
@@ -85,6 +87,12 @@ func main() {
 	if os.Getenv("INSTITUTION_NAME") != "" {
 		INSTITUTION_NAME = os.Getenv("INSTITUTION_NAME")
 	}
+	if os.Getenv("EMAIL_ADDRESS") != "" {
+		INSTITUTION_NAME = os.Getenv("EMAIL_ADDRESS")
+	}
+	if os.Getenv("EMAIL_PASSWORD") != "" {
+		INSTITUTION_NAME = os.Getenv("EMAIL_PASSWORD")
+	}
 
 	//this domain is the default host to resolve traffic
 	if REGISTRY_IP == "" {
@@ -123,8 +131,12 @@ func main() {
 			PUBLIC_KEY = os.Args[index+1]
 		case "--hostname": //sets the public ip address
 			HOSTNAME = os.Args[index+1]
-		case "--institution-name": //sets the public ip address
+		case "--institution-name": //sets the institutions name
 			INSTITUTION_NAME = os.Args[index+1]
+		case "--email-address": //sets the public ip address
+			EMAIL_ADDRESS = os.Args[index+1]
+		case "--email-password": //sets the institutions name
+			EMAIL_PASSWORD = os.Args[index+1]
 		}
 	}
 
@@ -144,6 +156,8 @@ func main() {
 
 	p2p.PrivateKey = PRIVATE_KEY
 	p2p.PublicKey = PUBLIC_KEY
+	p2p.Email_Address = EMAIL_ADDRESS
+	p2p.Email_Password = EMAIL_PASSWORD
 
 	if !database.DoesNodeExist(p2p.Self) {
 		database.AddNode(p2p.Self)

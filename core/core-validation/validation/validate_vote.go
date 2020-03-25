@@ -60,7 +60,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	electionEnd, err := time.Parse(time.RFC1123, election.End)
 	if now.After(electionEnd) {
 		customErr.Message = "Vote transactions must occur for elections that are still ongoing" + ending
-		return false, customErr
+		//return false, customErr
 	}
 
 	//Check to see if voter is registered to vote
@@ -78,15 +78,15 @@ func IsValidVote(v database.Vote) (bool, error) {
 		}
 	}
 	for _, recipient := range v.Receiver {
-		if eligibleCandidates[recipient.PositionId+recipient.Recipient] == 0 {
+		if eligibleCandidates[recipient.Recipient+recipient.PositionId] == 0 {
 			customErr.Message = "Vote transactions must be for valid candidates" + ending
 			return false, customErr
 		}
-		if eligibleCandidates[recipient.PositionId+recipient.Recipient] > 1 {
+		if eligibleCandidates[recipient.Recipient+recipient.PositionId] > 1 {
 			customErr.Message = "Vote transactions cannot contain multiple selections for a single candidate" + ending
 			return false, customErr
 		}
-		eligibleCandidates[recipient.PositionId+recipient.Recipient]++
+		eligibleCandidates[recipient.Recipient+recipient.PositionId]++
 	}
 
 	//Check to see if Vote type is correctly stored in transaction

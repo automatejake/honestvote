@@ -10,13 +10,33 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	// timestamp := time.Now().Format(time.RFC1123)
-	// admin_private_key, admin_public_key := crypto.GenerateKeyPair()
-	admin_private_key := "3077020101042061a9cec9f6502df62d8190c008ef29f485142e8e03de993e469c250966e574ada00a06082a8648ce3d030107a1440342000420f6ae9be26dfde8b50f550bfb273ad77d1012a9c427f4e5ea761faa108ab0b69a042448b15e09c67075cba02931c2ae602b9125afad8f0480f83d24c55d3bc5"
-	admin_public_key := "3059301306072a8648ce3d020106082a8648ce3d0301070342000420f6ae9be26dfde8b50f550bfb273ad77d1012a9c427f4e5ea761faa108ab0b69a042448b15e09c67075cba02931c2ae602b9125afad8f0480f83d24c55d3bc5"
+
+	err := os.Chdir("../../build")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	godotenv.Load()
+	admin_private_key := os.Getenv("PRIVATE_KEY")
+	admin_public_key := os.Getenv("PUBLIC_KEY")
+	if admin_private_key == "" || admin_public_key == "" {
+		fmt.Println("Generating new public/private key pair...")
+		admin_private_key, admin_public_key = crypto.GenerateKeyPair()
+
+		envfile := ".env"
+		f, err := os.OpenFile(envfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		_, _ = f.WriteString("\nPRIVATE_KEY=" + admin_private_key + "\nPUBLIC_KEY=" + admin_public_key)
+	}
+
 	fmt.Println("Admin Private Key:\n" + admin_private_key + "\n")
 	fmt.Println("Admin Public Key\n" + admin_public_key + "\n")
 
@@ -26,7 +46,7 @@ func main() {
 	var election database.Election = database.Election{
 		Type:         "Election",
 		ElectionName: "Vote for Charity",
-		Institution:  "West Chester University",
+		Institution:  "Honestvote",
 		Description:  "Whichever charities get the most votes, will be donated $50 each by Honestvote",
 		Start:        start,
 		End:          end,
@@ -80,6 +100,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+
 	hash := crypto.CalculateHash(encoded)
 	election.Signature, err = crypto.Sign([]byte(hash), admin_private_key)
 	if err != nil {
@@ -134,14 +155,22 @@ func main() {
 
 	// jsonData, _ := json.Marshal(jsonArray)
 
-	filename := "mock_data.sh"
-	scriptname := "../../scripts/deploy-local-chain.sh"
-	// _ = ioutil.WriteFile(filename, jsonElection, 0644)
+	filename := "../tests/mock-data/mock_data.sh"
+	scriptname := "../scripts/deploy-local-chain.sh"
+
 	// _ = ioutil.WriteFile(filename, jsonRegistration, 0644)
 	// _ = ioutil.WriteFile(filename, jsonVote, 0644)
 
-	file, _ := os.Create(filename)
-	script, _ := os.Create(scriptname)
+	file, err := os.Create(filename)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	script, err := os.Create(scriptname)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	defer file.Close()
 
 	_, _ = io.WriteString(file, "echo \"Election Transaction:\"\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
@@ -151,8 +180,7 @@ func main() {
 	_, _ = io.WriteString(file, "echo \"Vote Transaction:\"\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
 		string(jsonVote)+"' http://localhost:7003/election/test/vote\n\n\n\n")
 
-	_, _ = io.WriteString(script, "go run main.go --tcp 7002 --http 7003 --role producer --collection-prefix a_ --registry true --institution-name \""+election.Institution+
-		"\" \\\n--private-key \""+admin_private_key+"\" \\\n--public-key \""+admin_public_key+"\" & \\\n\n")
+	_, _ = io.WriteString(script, "go run main.go --tcp 7002 --http 7003 --role producer --collection-prefix a_ --registry true --institution-name \""+election.Institution+"\n\n")
 
 	_, _ = io.WriteString(script, "sleep 5\n\n")
 

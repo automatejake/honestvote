@@ -141,8 +141,8 @@ func GetVotes(electionId string) ([]Vote, error) {
 					if obj, ok := v.(primitive.D); ok {
 
 						voteInfo := obj.Map()
-						candidate.PositionId = voteInfo["key"].(string)
-						candidate.Recipient = voteInfo["id"].(string)
+						candidate.PositionId = voteInfo["positionId"].(string)
+						candidate.Recipient = voteInfo["candidateName"].(string)
 					}
 					vote.Receiver = append(vote.Receiver, candidate)
 				}
