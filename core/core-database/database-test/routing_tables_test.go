@@ -61,6 +61,7 @@ func TestFindNode(t *testing.T) {
 
 	if err != nil {
 		t.Error("There shouldn't be an error when trying to grab the node from the database. Error: ", err)
+		return
 	}
 
 	t.Log("There wasn't an error when grabbing the node: ", node)

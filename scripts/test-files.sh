@@ -8,4 +8,6 @@ cd ../core/core-database/database-test
 
 #go test -v routing_tables_test.go
 
-go test -v type_casting_test.go
+#go test -v type_casting_test.go
+
+go test -v web_models_test.go
