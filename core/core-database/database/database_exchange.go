@@ -34,8 +34,10 @@ func LastIndex(client *mongo.Client) int64 {
 	return 0
 }
 
-func UpdateMongo(client *mongo.Client, data Block) {
+func UpdateMongo(client *mongo.Client, data Block) error {
 	collection := client.Database("honestvote").Collection(CollectionPrefix + "blockchain")
 
-	collection.InsertOne(context.TODO(), data)
+	_, err := collection.InsertOne(context.TODO(), data)
+
+	return err
 }

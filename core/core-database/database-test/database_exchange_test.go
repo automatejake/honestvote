@@ -57,6 +57,11 @@ func TestLastIndex(t *testing.T) {
 
 }
 func TestUpdateMongo(t *testing.T) {
-	//database.UpdateMongo()
+	database.MongoDB = database.MongoConnect("localhost")
 
+	err := database.UpdateMongo(database.MongoDB, database.Block{})
+
+	if err != nil {
+		t.Error("There shouldn't be an error when inserting a new block into the database.")
+	}
 }
