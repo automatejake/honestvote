@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	"net"
 	"net/http"
 	"strconv"
@@ -115,6 +116,9 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 	SetupResponse(&w, r)
 	params := mux.Vars(r)
+
+	fmt.Println(r, "\n\nElection id", params["electionid"], "\n", params)
+
 	election, err := database.GetElection(params["electionid"])
 	timestamp := time.Now().Format(time.RFC1123)
 	payload := Payload{
