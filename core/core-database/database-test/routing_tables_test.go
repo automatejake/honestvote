@@ -42,12 +42,30 @@ func TestAddNode(t *testing.T) {
 
 }
 
-// func TestFindNodes(t *testing.T) {
-// 	//	database.FindNodes()
-// }
-// func TestFindNode(t *testing.T) {
-// 	//	database.FindNode()
-// }
+func TestFindNodes(t *testing.T) {
+	database.MongoDB = database.MongoConnect("localhost")
+
+	nodes := database.FindNodes()
+
+	if nodes == nil {
+		t.Log("There were no nodes returned from the database, this could be an error.")
+	}
+
+	t.Log("There were no errors when looking for nodes from the database: ", nodes)
+}
+
+func TestFindNode(t *testing.T) {
+	database.MongoDB = database.MongoConnect("localhost")
+
+	node, err := database.FindNode(" ") //TODO: This should not be empty
+
+	if err != nil {
+		t.Error("There shouldn't be an error when trying to grab the node from the database. Error: ", err)
+	}
+
+	t.Log("There wasn't an error when grabbing the node: ", node)
+
+}
 
 func TestDeleteNode(t *testing.T) { //Fails
 
@@ -76,5 +94,5 @@ func TestDeleteNode(t *testing.T) { //Fails
 }
 
 // func TestConnectFullNode(t *testing.T) {
-// 	//	database.ConnectFullNode()
+// 	database.ConnectFullNode()
 // }
