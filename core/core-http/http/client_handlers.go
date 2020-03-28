@@ -89,7 +89,6 @@ func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	SetupResponse(&w, r)
-
 	elections, err := database.GetElections()
 	var electionInfos []database.ElectionInfo
 	for _, election := range elections {
