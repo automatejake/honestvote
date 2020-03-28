@@ -1,6 +1,6 @@
 cd ../core/core-database/database-test
 
-#go test -v database_web_test.go
+go test -v database_web_test.go
 
 #go test -v database_exchange_test.go
 
@@ -10,4 +10,6 @@ cd ../core/core-database/database-test
 
 #go test -v type_casting_test.go
 
-go test -v web_models_test.go
+#go test -v web_models_test.go
+
+#go test -v validation_test.go

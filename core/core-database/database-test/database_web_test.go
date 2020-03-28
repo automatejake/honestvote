@@ -23,8 +23,10 @@ func TestGetElections(t *testing.T) {
 }
 func TestGetElection(t *testing.T) {
 	database.MongoDB = database.MongoConnect("localhost")
+	database.CollectionPrefix = "a_"
 
-	election, err := database.GetElection(" ") //TODO: This shouldn't be an empty string
+	election, err := database.GetElection(
+		"30440220391cca210fde6ed8b1b7315da6b9e12b1c3b314d76b9c5ebc2a4ec5a1854397302200200e0448984b94a9c95cc1112449f6e4f611ec2092ae30376da674c8762f5f9") //TODO: This shouldn't be an empty string
 
 	if err != nil {
 		t.Error("There shouldn't be an error when grabbing elections from database. Error: ", err)
@@ -35,8 +37,10 @@ func TestGetElection(t *testing.T) {
 }
 func TestGetVotes(t *testing.T) {
 	database.MongoDB = database.MongoConnect("localhost")
+	database.CollectionPrefix = "a_"
 
-	votes, err := database.GetVotes(" ") //TODO: This shouldn't be an empty string
+	votes, err := database.GetVotes(
+		"30440220391cca210fde6ed8b1b7315da6b9e12b1c3b314d76b9c5ebc2a4ec5a1854397302200200e0448984b94a9c95cc1112449f6e4f611ec2092ae30376da674c8762f5f9") //TODO: This shouldn't be an empty string
 
 	if err != nil {
 		t.Error("There shouldn't be an error when grabbing votes from database. Error: ", err)
@@ -50,8 +54,10 @@ func TestGetVotes(t *testing.T) {
 }
 func TestGetPermissions(t *testing.T) {
 	database.MongoDB = database.MongoConnect("localhost")
+	database.CollectionPrefix = "a_"
 
-	permissions, err := database.GetPermissions(" ") //TODO: This shouldn't be an empty string
+	permissions, err := database.GetPermissions(
+		"30819e134d3130333232323837363238303134313435323230373237353435313335353934353139313231313731333136363030313434313830323734343038363138373438363734353233343433353332134d3231363537383431343132303231373936373339323136333034303030313930343935363530383737313139383235303432353931353234333632323035393333363039303435343534373233") //TODO: This shouldn't be an empty string
 
 	if err != nil {
 		t.Error("There shouldn't be an error when grabbing permissions from database. Error: ", err)
@@ -66,6 +72,7 @@ func TestGetPermissions(t *testing.T) {
 
 func TestGetEndPoint(t *testing.T) {
 	database.MongoDB = database.MongoConnect("localhost")
+	database.CollectionPrefix = "a_"
 
 	endpoint, err := database.GetEndpoint()
 
