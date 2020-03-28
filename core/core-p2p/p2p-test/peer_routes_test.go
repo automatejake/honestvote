@@ -9,6 +9,10 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
+func TestHandleConn(t *testing.T) {
+
+}
+
 func TestAcceptConnectMessage(t *testing.T) {
 	logger.Mode = "all"
 	// p2p.AcceptConnectMessage
