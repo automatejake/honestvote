@@ -88,10 +88,10 @@ func main() {
 		INSTITUTION_NAME = os.Getenv("INSTITUTION_NAME")
 	}
 	if os.Getenv("EMAIL_ADDRESS") != "" {
-		INSTITUTION_NAME = os.Getenv("EMAIL_ADDRESS")
+		EMAIL_ADDRESS = os.Getenv("EMAIL_ADDRESS")
 	}
 	if os.Getenv("EMAIL_PASSWORD") != "" {
-		INSTITUTION_NAME = os.Getenv("EMAIL_PASSWORD")
+		EMAIL_PASSWORD = os.Getenv("EMAIL_PASSWORD")
 	}
 
 	//this domain is the default host to resolve traffic

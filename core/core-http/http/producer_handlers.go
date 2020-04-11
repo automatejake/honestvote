@@ -26,7 +26,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 		if registration.VerifyStudent(registrant) {
 			err := p2p.SendRegistrationTransaction(registrant)
 			if err != nil {
-
+				logger.Println("producer_handlers.go", "VerifyEmailHandler()", "Registration Transaction not sent correctly. "+err.Error())
 			} else {
 				w.Write([]byte("You have registered successfully!  Go back to the app to vote."))
 			}

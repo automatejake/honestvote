@@ -129,8 +129,8 @@ func main() {
 		Election: election.Signature,
 		Receiver: []database.SelectedCandidate{
 			database.SelectedCandidate{
-				PositionId: "demfrmeororev",
-				Recipient:  "test1",
+				PositionId: election.Positions[0].PositionId,
+				Recipient:  election.Positions[0].Candidates[0].Name,
 			},
 		},
 		Sender: public_key,
@@ -180,7 +180,7 @@ func main() {
 	_, _ = io.WriteString(file, "echo \"Vote Transaction:\"\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
 		string(jsonVote)+"' http://localhost:7003/election/test/vote\n\n\n\n")
 
-	_, _ = io.WriteString(script, "go run main.go --tcp 7002 --http 7003 --role producer --collection-prefix a_ --registry true --institution-name \""+election.Institution+"\" --private-key \""+admin_private_key+"\"--public-key \""+admin_public_key+"\"\n\n")
+	_, _ = io.WriteString(script, "go run main.go --tcp 7002 --http 7003 --role producer --collection-prefix a_ --registry true --institution-name \""+election.Institution+"\"\n\n")
 
 	_, _ = io.WriteString(script, "sleep 5\n\n")
 
