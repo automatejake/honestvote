@@ -15,17 +15,18 @@ import (
 )
 
 func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
+
 	SetupResponse(&w, r)
 	decoder := json.NewDecoder(r.Body)
 	var registrant database.AwaitingRegistration
 	err := decoder.Decode(&registrant)
 	if err != nil {
-		panic(err)
+		logger.Println("client_handler.go", "PostRegisterHandler", "Error decoding registrant - "+err.Error())
 	}
 
 	registrant_json, err := json.Marshal(registrant)
 	if err != nil {
-
+		logger.Println("client_handler.go", "PostRegisterHandler", "Error marshalling registrant into JSON - "+err.Error())
 	}
 	var message p2p.Message = p2p.Message{
 		Message: "register",
@@ -35,18 +36,18 @@ func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	byte_message, err := json.Marshal(message)
 	if err != nil {
-
+		logger.Println("client_handler.go", "PostRegisterHandler", "Error converting message to bytes - "+err.Error())
 	}
 
 	admin, err := database.FindNode(registrant.ElectionAdmin)
 	if err != nil {
-
+		logger.Println("client_handler.go", "PostRegisterHandler", "Error finding node from database - "+err.Error())
 	}
 
 	port := strconv.Itoa(admin.Port)
 	conn, err := net.Dial("tcp", admin.IPAddress+":"+port)
 	if err != nil {
-		logger.Println("find_peers.go", "FetchLatestPeers", err.Error())
+		logger.Println("client_handler.go", "PostRegisterHandler", "Error dialing administrator node - "+err.Error())
 	}
 
 	conn.Write(byte_message)

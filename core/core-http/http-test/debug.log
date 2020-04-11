@@ -64,3 +64,42 @@ mongo: no documents in result
 Timestamp: 2020/03/28 17:24:40 
 Function name:GetElection
 mongo: no documents in result
+Timestamp: 2020/04/11 09:22:25 
+Function name:MongoConnect()
+server selection error: server selection timeout, current topology: { Type: Unknown, Servers: [{ Addr: localhost:27017, Type: Unknown, State: Connected, Average RTT: 0, Last error: connection() : dial tcp 127.0.0.1:27017: connect: connection refused }, ] }
+Timestamp: 2020/04/11 09:52:57 
+Function name:PostRegisterHandler
+File Entry
+Timestamp: 2020/04/11 09:53:39 
+Function name:PostRegisterHandler
+File Entry
+Timestamp: 2020/04/11 10:18:40 
+Function name:PostRegisterHandler
+File Entry
+Timestamp: 2020/04/11 10:18:40 
+Function name:PostRegisterHandler
+mongo: no documents in result
+Timestamp: 2020/04/11 10:18:40 
+Function name:PostRegisterHandler
+dial tcp :0: connect: can't assign requested address
+Timestamp: 2020/04/11 10:22:36 
+Function name:PostRegisterHandler
+Error finding node from database
+mongo: no documents in result
+Timestamp: 2020/04/11 10:22:36 
+Function name:PostRegisterHandler
+Error dialing administrator node
+dial tcp :0: connect: can't assign requested address
+Timestamp: 2020/04/11 10:23:06 
+Function name:PostRegisterHandler
+Error finding node from database
+mongo: no documents in result
+Timestamp: 2020/04/11 10:23:06 
+Function name:PostRegisterHandler
+Error dialing administrator node	dial tcp :0: connect: can't assign requested address
+Timestamp: 2020/04/11 10:55:52 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/04/11 10:58:45 
+Function name:GetElection
+mongo: no documents in result
