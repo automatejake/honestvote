@@ -25,3 +25,18 @@ mongo: no documents in result
 Timestamp: 2020/03/28 14:26:19 
 Function name:ExistsInTable()
 Node already exists
+Timestamp: 2020/04/11 18:16:15 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/04/11 18:16:17 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/04/11 18:16:17 
+Function name:ExistsInTable()
+Node already exists
+Timestamp: 2020/04/11 18:17:46 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/04/11 18:17:46 
+Function name:ExistsInTable()
+Node already exists

@@ -11,7 +11,7 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-var Connections map[database.PublicKey]*websocket.Conn
+var Connections map[string]*websocket.Conn
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -19,7 +19,7 @@ var upgrader = websocket.Upgrader{
 }
 
 func MakeWebSocketMap() {
-	Connections = make(map[database.PublicKey]*websocket.Conn)
+	Connections = make(map[string]*websocket.Conn)
 }
 func BroadcastVote(vote database.Vote) {
 
@@ -83,7 +83,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Println("websocket_routes.go", "WebsocketsHandler", err.Error())
 	}
-	publicKey := database.PublicKey(params["publickey"])
+	publicKey := params["publickey"]
 	Connections[publicKey] = conn
 
 }

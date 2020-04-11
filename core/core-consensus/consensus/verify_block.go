@@ -89,7 +89,7 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	}
 
 	// // Make sure that the block signature is correct
-	valid, err := crypto.Verify([]byte(hash), database.PublicKey(block.Validator), block.Signature)
+	valid, err := crypto.Verify([]byte(hash), block.Validator, block.Signature)
 	if err != nil {
 		customErr.Message = "Block's signature is invalid\n |" + err.Error() + "\n" + ending
 		return false, customErr

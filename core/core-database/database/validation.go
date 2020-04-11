@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 
@@ -20,9 +19,6 @@ func CorrespondingRegistration(v Vote) Registration {
 	result := collection.FindOne(context.TODO(), query)
 	result.Decode(&block)
 
-	fmt.Println(v.Sender)
-	fmt.Println("\n\n\n\n\nBlock is here:\n", block, "\n\n\n\n")
-
 	annoying_mongo_form := block.Transaction.(primitive.D)
 	err := mapstructure.Decode(annoying_mongo_form.Map(), &registration)
 	if err != nil {
@@ -32,7 +28,7 @@ func CorrespondingRegistration(v Vote) Registration {
 	return registration
 }
 
-func ContainsRegistration(receiver PublicKey, election string) bool {
+func ContainsRegistration(receiver string, election string) bool {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
 	var block Block
 	var registration Registration
@@ -52,7 +48,7 @@ func ContainsRegistration(receiver PublicKey, election string) bool {
 	return true
 }
 
-func ContainsVote(sender PublicKey, election string) bool {
+func ContainsVote(sender string, election string) bool {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
 	var block Block
 	var vote Vote

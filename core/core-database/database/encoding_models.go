@@ -57,9 +57,9 @@ func (e Election) Encode() ([]byte, error) {
 }
 
 type EncodedRegistration struct {
-	Election    string    `json:"electionId"` //Data Start
-	Receiver    PublicKey `json:"receiver"`   //Data End
-	RecieverSig string    `json:"recieverSig"`
+	Election    string `json:"electionId"` //Data Start
+	Receiver    string `json:"receiver"`   //Data End
+	RecieverSig string `json:"recieverSig"`
 }
 
 func (r Registration) Encode() ([]byte, error) {

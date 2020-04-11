@@ -150,7 +150,7 @@ func main() {
 		IPAddress:   HOSTNAME,
 		Port:        port,
 		Role:        ROLE,
-		PublicKey:   database.PublicKey(PUBLIC_KEY),
+		PublicKey:   PUBLIC_KEY,
 		Institution: INSTITUTION_NAME,
 	}
 

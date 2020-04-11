@@ -5,8 +5,6 @@ var DatabaseName string = "honestvote"  // Database is the same for all nodes ev
 var ElectionHistory string = "election" // Elections
 var Connections string = "node_list"    // Nodes on network
 
-type PublicKey string
-
 // Email registrants
 var EmailRegistrants string = "email_registrants"
 
@@ -29,25 +27,25 @@ type Block struct {
  */
 
 type Registration struct {
-	Type        string    `json:"type" bson:"type"`
-	Election    string    `json:"electionId" bson:"electionId"` //Data Start
-	Receiver    PublicKey `json:"receiver" bson:"receiver"`     //Data End
-	RecieverSig string    `json:"recieverSig" bson:"senderSig"`
-	Sender      PublicKey `json:"sender" bson:"sender"`
-	Signature   string    `json:"signature" bson:"signature"`
+	Type        string `json:"type" bson:"type"`
+	Election    string `json:"electionId" bson:"electionId"` //Data Start
+	Receiver    string `json:"receiver" bson:"receiver"`     //Data End
+	RecieverSig string `json:"recieverSig" bson:"senderSig"`
+	Sender      string `json:"sender" bson:"sender"`
+	Signature   string `json:"signature" bson:"signature"`
 }
 
 type AwaitingRegistration struct {
-	Email         string    `json:"emailAddress"`
-	FirstName     string    `json:"firstName"`
-	LastName      string    `json:"lastName"`
-	DateOfBirth   string    `json:"dateOfBirth"`
-	ElectionName  string    `json:"electionName"`
-	ElectionAdmin string    `json:"electionAdmin"`
-	Sender        PublicKey `json:"publicKey"`
-	SenderSig     string    `json:"senderSig"`
-	Code          string    `json:"code"`
-	Timestamp     string    `json:"timestamp"`
+	Email         string `json:"emailAddress"`
+	FirstName     string `json:"firstName"`
+	LastName      string `json:"lastName"`
+	DateOfBirth   string `json:"dateOfBirth"`
+	ElectionName  string `json:"electionName"`
+	ElectionAdmin string `json:"electionAdmin"`
+	Sender        string `json:"publicKey"`
+	SenderSig     string `json:"senderSig"`
+	Code          string `json:"code"`
+	Timestamp     string `json:"timestamp"`
 }
 
 // valid votes have a corresponding registration transaction with the public key
@@ -55,7 +53,7 @@ type Vote struct {
 	Type      string              `json:"type" bson:"type"`
 	Election  string              `json:"electionId" bson:"electionId"` //Data Start
 	Receiver  []SelectedCandidate `json:"receivers" bson:"receivers"`   //Data End
-	Sender    PublicKey           `json:"sender" bson:"sender"`
+	Sender    string              `json:"sender" bson:"sender"`
 	Signature string              `json:"signature" bson:"signature"`
 }
 
@@ -73,7 +71,7 @@ type Election struct {
 	End          string     `json:"endDate" bson:"endDate"`
 	EmailDomain  string     `json:"emailDomain" bson:"emailDomain"`
 	Positions    []Position `json:"positions" bson:"positions"` //Data End
-	Sender       PublicKey  `json:"sender" bson:"sender"`
+	Sender       string     `json:"sender" bson:"sender"`
 	Signature    string     `json:"signature" bson:"signature"`
 }
 
@@ -89,11 +87,11 @@ type Candidate struct {
 }
 
 type Node struct {
-	Institution string    `json:"institution" bson:"institution"`
-	IPAddress   string    `json:"ipaddress" bson:"ipaddress"`
-	Port        int       `json:"port" bson:"port"`
-	Role        string    `json:"role" bson:"role"` // peer | full | registry
-	PublicKey   PublicKey `json:"publickey" bson:"publickey"`
-	Timestamp   string    `json:"timestamp" bson:"timestamp"`
-	Signature   string    `json:"signature" bson:"signature"`
+	Institution string `json:"institution" bson:"institution"`
+	IPAddress   string `json:"ipaddress" bson:"ipaddress"`
+	Port        int    `json:"port" bson:"port"`
+	Role        string `json:"role" bson:"role"` // peer | full | registry
+	PublicKey   string `json:"publickey" bson:"publickey"`
+	Timestamp   string `json:"timestamp" bson:"timestamp"`
+	Signature   string `json:"signature" bson:"signature"`
 }

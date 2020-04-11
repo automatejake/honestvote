@@ -36,7 +36,7 @@ func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	byte_message, err := json.Marshal(message)
 	if err != nil {
-		logger.Println("client_handler.go", "PostRegisterHandler", "Error converting message to bytes - "+err.Error())
+		logger.Println("client_handler.go", "PostRegisterHandler", "Error converting message to json - "+err.Error())
 	}
 
 	admin, err := database.FindNode(registrant.ElectionAdmin)
@@ -60,12 +60,12 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 	var vote database.Vote
 	err := decoder.Decode(&vote)
 	if err != nil {
-		panic(err)
+		logger.Println("client_handler.go", "PostVoteHandler", "Error decoding vote - "+err.Error())
 	}
 	vote.Type = "Vote"
 	v, err := json.Marshal(vote)
 	if err != nil {
-
+		logger.Println("client_handler.go", "PostVoteHandler", "Error converting vote to json - "+err.Error())
 	}
 
 	p2p.ReceiveTransaction("Vote", v)
@@ -77,12 +77,12 @@ func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
 	var election database.Election
 	err := decoder.Decode(&election)
 	if err != nil {
-		panic(err)
+		logger.Println("client_handler.go", "PostElectionHandler", "Error decoding election - "+err.Error())
 	}
 	election.Type = "Election"
 	e, err := json.Marshal(election)
 	if err != nil {
-
+		logger.Println("client_handler.go", "PostElectionHandler", "Error converting election to json - "+err.Error())
 	}
 
 	p2p.ReceiveTransaction("Election", e)

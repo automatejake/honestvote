@@ -38,7 +38,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 
 	// fmt.Println(reflect.TypeOf(voteHeaders32[:]))
 
-	valid, err := crypto.VerifyRaw(voteHeaders32[:], v.Sender, v.Signature)
+	valid, err := crypto.Verify(voteHeaders32[:], v.Sender, v.Signature)
 	if err != nil {
 		return false, err
 	}

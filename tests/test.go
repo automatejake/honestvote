@@ -2,23 +2,25 @@ package main
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 )
 
-var okay map[string]int
+var plaintext string = "this should work, please work.  I wonder why this does not work.  Kernel Sanders is king of all chicken and I wonder how chicken would taste if it were not for the great KFC Lord"
 
 func main() {
-	godotenv.Load()
-	a := os.Getenv("TEST")
-
-	err := os.Chdir("../../build")
+	private_key, public_key := crypto.GenerateKeyPair()
+	hash := []byte(plaintext)
+	signature, err := crypto.Sign(hash, private_key)
+	fmt.Println(signature)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Signature bad", err)
+		return
 	}
-	godotenv.Load()
 
-	b := os.Getenv("KEY")
-	fmt.Println(a, b)
+	itShouldWork, err := crypto.Verify(hash, public_key, signature)
+	if !itShouldWork {
+		fmt.Println("not verified sir", err)
+		return
+	}
 }
