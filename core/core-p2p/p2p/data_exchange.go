@@ -159,6 +159,7 @@ func SendRegistrationTransaction(registrant database.AwaitingRegistration) error
 	}
 	encoded, err := registration.Encode()
 	if err != nil {
+		logger.Println("data_exchange.go", "SendRegistrationTransaction()", err)
 		return err
 	}
 
@@ -167,6 +168,7 @@ func SendRegistrationTransaction(registrant database.AwaitingRegistration) error
 	fmt.Println("Privatekey: " + PrivateKey)
 	signature, err := crypto.Sign([]byte(hash), PrivateKey)
 	if err != nil {
+		logger.Println("data_exchange.go", "SendRegistrationTransaction()", err)
 		return err
 	}
 
@@ -174,6 +176,7 @@ func SendRegistrationTransaction(registrant database.AwaitingRegistration) error
 
 	data, err := json.Marshal(registration)
 	if err != nil {
+		logger.Println("data_exchange.go", "SendRegistrationTransaction()", err)
 		return err
 	}
 

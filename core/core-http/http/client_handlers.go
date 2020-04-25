@@ -106,6 +106,7 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
+		logger.Println("client_handlers.go", "GetElectionsHandler()", err)
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
@@ -126,6 +127,7 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 		Timestamp: timestamp,
 	}
 	if err != nil {
+		logger.Println("client_handlers.go", "GetElectionHandler()", err)
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
@@ -147,6 +149,7 @@ func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 		votes = []database.Vote{}
 	}
 	if err != nil {
+		logger.Println("client_handlers.go", "GetVotesHandler()", err)
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
@@ -172,6 +175,7 @@ func GetPermissionsHandler(w http.ResponseWriter, r *http.Request) {
 		permissions = []string{}
 	}
 	if err != nil {
+		logger.Println("client_handlers.go", "GetPermissionsHandler()", err)
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"

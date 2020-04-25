@@ -64,7 +64,7 @@ func HandleConn(conn net.Conn) {
 			var registrant database.AwaitingRegistration
 			err := json.Unmarshal(message.Data, &registrant)
 			if err != nil {
-
+				logger.Println("peer_routes.go", "HandleConn()", err)
 			}
 			if registration.IsValidRegistrant(&registrant) {
 				registration.SendRegistrationCode(registrant, Self.IPAddress, HTTP_Port, Email_Address, Email_Password)
@@ -79,12 +79,13 @@ func HandleConn(conn net.Conn) {
 			var block database.Block
 			err := json.Unmarshal(message.Data, &block)
 			if err != nil {
+				logger.Println("peer_routes.go", "HandleConn()", err)
 			}
 			verified, err := consensus.IsBlockValid(PreviousBlock, block)
 			if verified {
 				err = database.AddBlock(block)
 				if err != nil {
-
+					logger.Println("peer_routes.go", "HandleConn()", err)
 				}
 				PreviousBlock = block
 			} else {
