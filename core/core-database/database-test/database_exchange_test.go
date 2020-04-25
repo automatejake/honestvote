@@ -62,8 +62,7 @@ func TestUpdateMongo(t *testing.T) {
 	err := database.UpdateMongo(database.MongoDB, database.Block{})
 
 	if err != nil {
-		t.Error("There shouldn't be an error when inserting a new block into the database: ", err)
+		t.Error("There was an error when inserting a new block into the database: ", err)
 	}
 
-	t.Log("There was no error when updating mongoDB.")
 }

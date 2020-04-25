@@ -3,45 +3,26 @@ package crypto
 
 import (
 	"crypto/ecdsa"
-	"crypto/elliptic"
 	"crypto/rand"
-	"crypto/x509"
 	"encoding/hex"
 	"math/big"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-var prefix string = "33"
-
 // GenerateKeyPair generates a private/public key pair,
 // keys are returned as hex-encoded strings
 func GenerateKeyPair() (private_key_hex, public_key_hex string) {
+
 	// generate keys
-	private_key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader) //P256 returns a Curve
+	private_key, err := ecdsa.GenerateKey(p256, rand.Reader) //P256 returns a Curve
 	if err != nil {
-		logger.Println("key_generation.go", "GenerateKeyPair()", err.Error())
-	}
-
-	// marshal private key
-	private_key_bytes, err := x509.MarshalECPrivateKey(private_key)
-	if err != nil {
-		logger.Println("key_generation.go", "GenerateKeyPair()", err.Error())
-	}
-
-	//get the bitLength for priv key then check if it's 256:
-	bitLen := private_key.Curve.Params().BitSize //wont work with pub key : different data type
-	LengthIsValid(bitLen)                        //send bitLen in order to check if len is correct for priv key, returns true
-
-	// marshal public key
-	public_key_bytes, err := x509.MarshalPKIXPublicKey(&private_key.PublicKey)
-	if err != nil {
-		logger.Println("key_generation.go", "GenerateKeyPair()", err.Error())
+		logger.Println("key_generation.go", "GenerateKeyPair()", err)
 	}
 
 	// hex encode and return result
-	private_key_hex = hex.EncodeToString(private_key_bytes)
-	public_key_hex = hex.EncodeToString(public_key_bytes)
+	private_key_hex = hex.EncodeToString(private_key.D.Bytes())
+	public_key_hex = hex.EncodeToString(CompressPoint(private_key.PublicKey))
 
 	return private_key_hex, public_key_hex
 }
@@ -55,7 +36,7 @@ func DecompressPoint(compressed_bytes []byte) *ecdsa.PublicKey {
 	// We use 3 a couple of times
 	three := big.NewInt(3)
 	// and we need the curve params for P256
-	c := elliptic.P256().Params()
+	c := p256.Params()
 	// The equation is y^2 = x^3 - 3x + b
 	// First, x^3, mod P
 	x_cubed := new(big.Int).Exp(x, three, c.P)
@@ -83,10 +64,19 @@ func DecompressPoint(compressed_bytes []byte) *ecdsa.PublicKey {
 	}
 	// Now your y coordinate is in y, for all your ScalarMult needs.
 	publicKey := &ecdsa.PublicKey{
-		Curve: elliptic.P256(),
+		Curve: p256,
 		X:     x, Y: y,
 	}
 	return publicKey
+}
+
+func CompressPoint(pub ecdsa.PublicKey) []byte {
+	var xx = pub.X.Bytes()
+	y2 := new(big.Int).Set(pub.Y)
+	if y2.Mod(y2, two).Cmp(zero) == 0 {
+		return append([]byte{0x02}, xx...)
+	}
+	return append([]byte{0x03}, xx...)
 }
 
 func LengthIsValid(x int) bool { // checks if the len of priv key is 256 as it should be
@@ -96,5 +86,4 @@ func LengthIsValid(x int) bool { // checks if the len of priv key is 256 as it s
 	} else {
 		return false
 	}
-
 }

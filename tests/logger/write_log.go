@@ -13,17 +13,19 @@ var f, _ = os.OpenFile("debug.log",
 
 var logger = log.New(f, "Timestamp: ", log.LstdFlags)
 
-func Println(file_name string, function_name string, message string) {
+func Println(file_name string, function_name string, message interface{}) {
+	message_string := fmt.Sprintf("%v", message)
+
 	switch Mode {
 	case "All":
-		log.Println("\nFilename: " + file_name + "\nFunction name: " + function_name + "\nMessage: " + message + "\n")
-		logger.Println("\nFilename: " + file_name + "\nFunction name: " + function_name + "\nMessage: " + message + "\n\n")
+		log.Println("\nFilename: " + file_name + "\nFunction name: " + function_name + "\nMessage: " + message_string + "\n")
+		logger.Println("\nFilename: " + file_name + "\nFunction name: " + function_name + "\nMessage: " + message_string + "\n\n")
 	case "Debug":
-		fmt.Println("\nFunction name:" + function_name + "\n" + message)
-		logger.Println("\nFunction name:" + function_name + "\n" + message)
+		fmt.Println("\nFunction name:" + function_name + "\n" + message_string)
+		logger.Println("\nFunction name:" + function_name + "\n" + message_string)
 	case "Info":
-		fmt.Println(message)
-		logger.Println(message)
+		fmt.Println(message_string)
+		logger.Println(message_string)
 	}
 
 }

@@ -60,10 +60,6 @@ func FindNodes() []Node {
 
 	var peers []Node
 
-	// Mongo shell format:
-	// {$or: [ { ipaddress: { $ne: "127.0.0.1" } },{ port: { $ne: 7002 } }]}
-	// query := bson.M{"$or": bson.A{bson.M{"ipaddress": bson.M{"$ne": requesting_node.IPAddress}}, bson.M{"port": bson.M{"$ne": requesting_node.Port}}}}
-
 	result, err := collection.Find(context.TODO(), bson.M{})
 	if err != nil {
 		logger.Println("routing_table.go", "FindNode", err.Error())

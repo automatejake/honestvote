@@ -3,10 +3,12 @@ package crypto
 import (
 	"crypto/ecdsa"
 	"crypto/rand"
-	"crypto/x509"
 	"encoding/asn1"
 	"encoding/hex"
+	"errors"
 	"math/big"
+
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 // signature is a structure for storing signature obtained from ecdsa.Sign
@@ -19,17 +21,17 @@ type Signature struct {
 // It is supposed that a hash is calculated for an original message to sign
 // Signature is a hex-encoded JSON
 func Sign(hash []byte, private_key_hex string) (signature_hex string, err error) {
-	// decode private key from hex
-	private_key_bytes, err := hex.DecodeString(private_key_hex)
-	if err != nil {
-		return "", err
+	priv, shouldWork := new(big.Int).SetString(private_key_hex, 16)
+	if !shouldWork {
+		logger.Println("sign_message", "Sign", "Simeon screwed up.  ...but it should work")
+		return "", errors.New("Private key not valid.")
 	}
 
-	// x509 parse private key
-	private_key, err := x509.ParseECPrivateKey(private_key_bytes)
-	if err != nil {
-		return "", err
-	}
+	private_key := new(ecdsa.PrivateKey)
+	private_key.PublicKey.Curve = p256
+	private_key.D = priv
+
+	// private_key.PublicKey.X, private_key.PublicKey.Y = p256.ScalarBaseMult(priv.Bytes())
 
 	// sign
 	r, s, err := ecdsa.Sign(rand.Reader, private_key, hash)
@@ -37,13 +39,13 @@ func Sign(hash []byte, private_key_hex string) (signature_hex string, err error)
 		return "", err
 	}
 
-	// prepare a signature structure to marshal into json
+	// prepare a signature structure to marshal into asn1 der encoding
 	signature := &Signature{
 		R: r,
 		S: s,
 	}
 
-	// marshal to json
+	// marshal to asn1 der encoding
 	signature_asn1, err := asn1.Marshal(*signature)
 	if err != nil {
 		return "", err

@@ -21,13 +21,13 @@ func GetElections() ([]Election, error) {
 
 	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
-		logger.Println("database_web", "GetElection", err.Error())
+		logger.Println("database_web", "GetElection", err)
 	}
 
 	for result.Next(context.TODO()) {
 		err = result.Decode(&block)
 		if err != nil {
-			logger.Println("database_web", "GetElection", err.Error())
+			logger.Println("database_web", "GetElection", err)
 		}
 
 		annoying_mongo_form := block.Transaction.(primitive.D).Map()

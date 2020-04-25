@@ -32,7 +32,7 @@ func BecomePeer(w http.ResponseWriter, r *http.Request) {
 
 	json_peer, err := json.Marshal(p2p.Self)
 	if err != nil {
-		logger.Println("admin_routes.go", "BecomePeer()", err.Error())
+		logger.Println("admin_routes.go", "BecomePeer()", err)
 	}
 
 	var message p2p.Message
@@ -41,12 +41,12 @@ func BecomePeer(w http.ResponseWriter, r *http.Request) {
 
 	json_message, err := json.Marshal(message)
 	if err != nil {
-		logger.Println("admin_routes.go", "BecomePeer()", err.Error())
+		logger.Println("admin_routes.go", "BecomePeer()", err)
 	}
 
 	_, err = p2p.Nodes[0].Write(json_message)
 	if err != nil {
-		logger.Println("admin_routes.go", "BecomePeer()", err.Error())
+		logger.Println("admin_routes.go", "BecomePeer()", err)
 	}
 }
 

@@ -1,22 +1,19 @@
 package validation
 
 import (
-	"crypto/sha256"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func GenerateVoteHeaders(v database.Vote) ([32]byte, error) {
+func GenerateVoteHeaders(v database.Vote) (string, error) {
 	encoded, err := v.Encode()
 	if err != nil {
-		return [32]byte{}, err
+		return "", err
 	}
 
-	hash := sha256.Sum256(encoded)
-	// sum := hash.Sum(encoded)
-
+	hash := crypto.CalculateHash(encoded)
 	return hash, nil
 
 }
@@ -28,17 +25,12 @@ func IsValidVote(v database.Vote) (bool, error) {
 	ending := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	voteHeaders32, err := GenerateVoteHeaders(v)
+	voteHeaders, err := GenerateVoteHeaders(v)
 	if err != nil {
 		return false, err
 	}
 
-	// voteHeaders := make([]byte, 32)
-	// copy(voteHeaders, voteHeaders32[:])
-
-	// fmt.Println(reflect.TypeOf(voteHeaders32[:]))
-
-	valid, err := crypto.VerifyRaw(voteHeaders32[:], v.Sender, v.Signature)
+	valid, err := crypto.Verify([]byte(voteHeaders), v.Sender, v.Signature)
 	if err != nil {
 		return false, err
 	}

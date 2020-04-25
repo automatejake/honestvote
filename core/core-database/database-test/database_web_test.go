@@ -12,7 +12,7 @@ func TestGetElections(t *testing.T) {
 	elections, err := database.GetElections()
 
 	if err != nil {
-		t.Error("There shouldn't be an error when grabbing elections from database. Error: ", err)
+		t.Error("There was an error when grabbing elections from database. Error: ", err)
 		return
 	}
 	if elections == nil {
