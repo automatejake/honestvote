@@ -1,5 +1,7 @@
 package database
 
+import "github.com/jneubaum/honestvote/tests/logger"
+
 func TransactionType(transaction interface{}) string {
 
 	switch transaction.(type) {
@@ -12,6 +14,8 @@ func TransactionType(transaction interface{}) string {
 	default:
 
 	}
+
+	logger.Println("type_casting.go", "TransactionType()", "Transaction is not a vote, registration, or election")
 
 	return ""
 }

@@ -77,6 +77,7 @@ func MarkDishonestNode(n Node) error {
 		n,
 	)
 	if err != nil {
+		logger.Println("validation.go", "MarkDishonestNode()", err)
 		return err
 	}
 

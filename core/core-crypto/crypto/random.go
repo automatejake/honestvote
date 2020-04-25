@@ -21,6 +21,7 @@ func init() {
 func RandomHex(n int) (string, error) {
 	bytes := make([]byte, n)
 	if _, err := math_rand.Read(bytes); err != nil {
+		logger.Println("random.go", "RandomHex()", err)
 		return "", err
 	}
 	return hex.EncodeToString(bytes), nil

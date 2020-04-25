@@ -39,5 +39,9 @@ func UpdateMongo(client *mongo.Client, data Block) error {
 
 	_, err := collection.InsertOne(context.TODO(), data)
 
+	if err != nil {
+		logger.Println("database_exchange.go", "UpdateMongo()", err)
+	}
+
 	return err
 }

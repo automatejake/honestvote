@@ -90,6 +90,7 @@ func FindNode(public_key string) (Node, error) {
 	result := collection.FindOne(context.TODO(), query)
 	err := result.Decode(&node)
 	if err != nil {
+		logger.Println("routing_table.go", "FindNode()", err)
 		return Node{}, err
 	}
 

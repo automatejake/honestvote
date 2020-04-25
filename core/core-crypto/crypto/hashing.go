@@ -3,6 +3,8 @@ package crypto
 import (
 	"crypto/sha256"
 	"encoding/base64"
+
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func CalculateHash(encodedMessage []byte) string {
@@ -21,6 +23,7 @@ func SignBlock(header []byte, privKey string) (string, error) {
 func SignTransaction(hash string, privKey string) (string, error) {
 	signature, err := Sign([]byte(hash), privKey)
 	if err != nil {
+		logger.Println("hashing.go", "SignTransaction()", err)
 		return "", err
 	}
 	return signature, nil
