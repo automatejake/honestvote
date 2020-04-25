@@ -26,10 +26,12 @@ import (
 
 func IsValidRegistrant(registrant *database.AwaitingRegistration) bool {
 	if !isElectionOngoing(registrant.Email) {
+		logger.Println("email_registration.go", "IsValidRegistrant()", "Election is not ongoing")
 		return false
 	}
 
 	if !isValidEmail(registrant.Email) {
+		logger.Println("email_registration.go", "IsValidRegistrant()", "Email is not valid")
 		return false
 	}
 

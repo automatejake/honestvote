@@ -17,6 +17,7 @@ var EmailDomain string = ""
 var AdminPriv, AdminPub string
 var FileName string = "../tests/mock-data/mock_data.sh"
 var ScriptName string = "../scripts/deploy-local-chain.sh"
+var Description string = "This is for that"
 
 func main() {
 	err := os.Chdir("../../build")
@@ -28,5 +29,5 @@ func main() {
 	AdminPriv := os.Getenv("PRIVATE_KEY")
 	AdminPub := os.Getenv("PUBLIC_KEY")
 
-	generatedata.GenerateMockData(AdminPriv, AdminPub, Election, Institution, Start, End, EmailDomain, FileName, ScriptName)
+	generatedata.GenerateMockData(AdminPriv, AdminPub, Election, Institution, Description, Start, End, EmailDomain, FileName, ScriptName)
 }

@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"encoding/asn1"
 	"encoding/hex"
+	"fmt"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 )
@@ -18,6 +19,8 @@ func Verify(hash []byte, public_key_hex string, signature_hex string) (result bo
 	}
 
 	public_key := DecompressPoint(public_key_bytes)
+	fmt.Println("X: ", public_key.X, "\nY: ", public_key.Y)
+	logger.Println("verify_message", "Verify()", public_key)
 
 	signature_bytes, err := hex.DecodeString(string(signature_hex))
 	if err != nil {

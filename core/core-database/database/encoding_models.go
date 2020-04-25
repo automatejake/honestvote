@@ -2,6 +2,8 @@ package database
 
 import (
 	"encoding/asn1"
+
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 type EncodedBlock struct {
@@ -70,6 +72,7 @@ func (r Registration) Encode() ([]byte, error) {
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
+		logger.Println("encoding_models.go", "Encode(Registration)", err)
 		return encoded, err
 	}
 
@@ -88,6 +91,7 @@ func (v Vote) Encode() ([]byte, error) {
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
+		logger.Println("encoding_models.go", "Encode(Vote)", err)
 		return encoded, err
 	}
 
@@ -112,6 +116,7 @@ func (n Node) Encode() ([]byte, error) {
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
+		logger.Println("encoding_models.go", "Encode(Node)", err)
 		return encoded, err
 	}
 	return encoded, nil

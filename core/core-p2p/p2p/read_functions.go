@@ -31,6 +31,7 @@ func DecodeData(data []byte) {
 
 	err := json.Unmarshal(data, &block)
 	if err != nil {
+		logger.Println("read_functions.go", "DecodeData()", err)
 		return
 	}
 
@@ -48,13 +49,13 @@ func ReceiveTransaction(mType string, data []byte) error {
 		vote := &database.Vote{}
 		err := json.Unmarshal(data, vote)
 		if err != nil {
-
+			logger.Println("read_functions.go", "RecieveTransactions()", err)
 		}
 
 		valid, err = validation.IsValidVote(*vote)
 
 		if valid {
-			logger.Println("read_functions.go","RecieveTransaction()","Passed validation")
+			logger.Println("read_functions.go", "RecieveTransaction()", "Passed validation")
 			websocket.BroadcastVote(*vote)
 			AddToBlock(vote, crypto.CalculateHash([]byte(vote.Signature)))
 		} else {
@@ -66,7 +67,7 @@ func ReceiveTransaction(mType string, data []byte) error {
 		election := &database.Election{}
 		err := json.Unmarshal(data, election)
 		if err != nil {
-
+			logger.Println("read_functions.go", "RecieveTransactions()", err)
 		}
 
 		valid, err = validation.IsValidElection(*election)
@@ -81,13 +82,13 @@ func ReceiveTransaction(mType string, data []byte) error {
 		registration := &database.Registration{}
 		err := json.Unmarshal(data, &registration)
 		if err != nil {
-
+			logger.Println("read_functions.go", "RecieveTransactions()", err)
 		}
 
 		valid, err = validation.IsValidRegistration(*registration)
 
 		if valid {
-			logger.Println("","","Sending Registration")
+			logger.Println("", "", "Sending Registration")
 			websocket.SendRegistration(*registration)
 			AddToBlock(registration, crypto.CalculateHash([]byte(registration.Signature)))
 		} else {
@@ -113,6 +114,7 @@ func AddToBlock(transaction interface{}, hash string) {
 
 	err = database.AddBlock(block)
 	if err != nil {
+		logger.Println("read_functions.go", "AddToBlock()", err)
 	} else {
 		PreviousBlock = block
 		ProposeBlock(block)

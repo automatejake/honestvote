@@ -7,6 +7,7 @@ import (
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-validation/validation"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) {
@@ -18,21 +19,25 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	// Make sure that block's index is correct
 	if prevBlock.Index+1 != block.Index {
 		customErr.Message = "Block index is incorrect" + ending
+		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
 		return false, customErr
 	}
 
 	// Make sure that block's previous hash is the last block
 	if prevBlock.Hash != block.PrevHash {
 		customErr.Message = "Block's previous hash is incorrect" + ending
+		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
 		return false, customErr
 	}
 
 	// Make sure the validator is a valid producer
 	validator, err := database.FindNode(block.Validator)
 	if err != nil {
+		logger.Println("verify_block.go", "IsBlockValid()", err)
 		return false, err
 	} else if validator.Role != "producer" {
 		customErr.Message = "Actor proposing this block is not a valid producer." + ending
+		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
 		return false, customErr
 	}
 
@@ -44,7 +49,7 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	case "Election":
 		data, err := json.Marshal(transaction)
 		if err != nil {
-
+			logger.Println("verify_block.go", "IsBlockValid()", err)
 		}
 		var election database.Election
 		err = json.Unmarshal(data, &election)
@@ -52,7 +57,7 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	case "Registration":
 		data, err := json.Marshal(transaction)
 		if err != nil {
-
+			logger.Println("verify_block.go", "IsBlockValid()", err)
 		}
 		var registration database.Registration
 		err = json.Unmarshal(data, &registration)
@@ -60,7 +65,7 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	case "Vote":
 		data, err := json.Marshal(transaction)
 		if err != nil {
-
+			logger.Println("verify_block.go", "IsBlockValid()", err)
 		}
 		var vote database.Vote
 		err = json.Unmarshal(data, &vote)
@@ -68,6 +73,7 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	}
 	if !honestTransaction {
 		customErr.Message = "Block contains an invalid transaction:\n |" + err.Error() + "\nInvalid block is rejected."
+		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
 		return false, customErr
 	}
 
@@ -80,11 +86,13 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	// // Make sure that the block hash is correct
 	header, err := block.Encode()
 	if err != nil {
+		logger.Println("verify_block.go", "IsBlockValid()", err)
 		return false, err
 	}
 	hash := crypto.CalculateHash(header)
 	if hash != block.Hash {
 		customErr.Message = "Block's hash is incorrect" + ending
+		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
 		return false, customErr
 	}
 
@@ -92,9 +100,11 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	valid, err := crypto.Verify([]byte(hash), block.Validator, block.Signature)
 	if err != nil {
 		customErr.Message = "Block's signature is invalid\n |" + err.Error() + "\n" + ending
+		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
 		return false, customErr
 	} else if !valid {
 		customErr.Message = "Block's signature is invalid" + ending
+		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
 		return false, customErr
 	}
 

@@ -2,16 +2,17 @@ package crypto
 
 import (
 	"crypto/sha256"
-	"encoding/base64"
+	"fmt"
+
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func CalculateHash(encodedMessage []byte) string {
 	hash32 := sha256.Sum256(encodedMessage)
 
-	hash := make([]byte, 0, 32)
-	copy(hash32[:], hash[:])
+	fmt.Println("this gonna be a fucking pain: ", hash32)
 
-	return base64.URLEncoding.EncodeToString(hash)
+	return string(hash32[:])
 }
 
 func SignBlock(header []byte, privKey string) (string, error) {
@@ -21,6 +22,7 @@ func SignBlock(header []byte, privKey string) (string, error) {
 func SignTransaction(hash string, privKey string) (string, error) {
 	signature, err := Sign([]byte(hash), privKey)
 	if err != nil {
+		logger.Println("hashing.go", "SignTransaction()", err)
 		return "", err
 	}
 	return signature, nil

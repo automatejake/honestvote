@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 cd ../core/core-administrator/administrator-test
 
 go test -v
@@ -46,6 +45,3 @@ go test -v
 cd ../../core-websocket/websocket-test
 
 go test -v
-=======
-../tests/automated-tests/automated-testing.sh
->>>>>>> 4c0385059d4e99579b2b0176f378b92b18f13c6e

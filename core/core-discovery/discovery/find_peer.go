@@ -89,18 +89,18 @@ func ConnectMessage(peer database.Node) { //is run
 		p2p.Self.Timestamp = ""
 		encoded, err := p2p.Self.Encode()
 		if err != nil {
-
+			logger.Println("find_peer.go", "ConnectMessage()", err)
 		}
 		hash := crypto.CalculateHash(encoded)
 		signature, err := crypto.Sign([]byte(hash), p2p.PrivateKey)
 		if err != nil {
-
+			logger.Println("find_peer.go", "ConnectMessage()", err)
 		}
 		p2p.Self.Signature = signature
 
 		byteSelf, err := json.Marshal(p2p.Self)
 		if err != nil {
-			logger.Println("find_peer.go", "ConnectMessage", err.Error())
+			logger.Println("find_peer.go", "ConnectMessage()", err.Error())
 		}
 
 		write.Message = "connect"

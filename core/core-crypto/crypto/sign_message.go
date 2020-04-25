@@ -36,6 +36,7 @@ func Sign(hash []byte, private_key_hex string) (signature_hex string, err error)
 	// sign
 	r, s, err := ecdsa.Sign(rand.Reader, private_key, hash)
 	if err != nil {
+		logger.Println("sign_message.go", "Sign()", err)
 		return "", err
 	}
 
@@ -48,6 +49,7 @@ func Sign(hash []byte, private_key_hex string) (signature_hex string, err error)
 	// marshal to asn1 der encoding
 	signature_asn1, err := asn1.Marshal(*signature)
 	if err != nil {
+		logger.Println("sign_message.go", "Sign()", err)
 		return "", err
 	}
 
@@ -65,7 +67,7 @@ func StringToBigInt(s string) *big.Int {
 	n := new(big.Int)
 	n, ok := n.SetString(s, 10)
 	if !ok {
-
+		logger.Println("sign_message.go", "StringToBigInt()", "Set string not ok")
 	}
 	return n
 }

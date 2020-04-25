@@ -46,6 +46,7 @@ func GetEndpoint(w http.ResponseWriter, r *http.Request) {
 		Timestamp: timestamp,
 	}
 	if err != nil {
+		logger.Println("producer_handlers.go", "GetEndpoint()", err)
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"

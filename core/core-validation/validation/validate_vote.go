@@ -5,11 +5,13 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
+	"github.com/jneubaum/honestvote/tests/logger"
 )
 
 func GenerateVoteHeaders(v database.Vote) (string, error) {
 	encoded, err := v.Encode()
 	if err != nil {
+		logger.Println("validate_vote.go", "GenerateVoteHeaders()", err)
 		return "", err
 	}
 
@@ -27,15 +29,18 @@ func IsValidVote(v database.Vote) (bool, error) {
 	//Check to see if signature is valid
 	voteHeaders, err := GenerateVoteHeaders(v)
 	if err != nil {
+		logger.Println("validate_vote.go", "IsValidVote()", err)
 		return false, err
 	}
 
 	valid, err := crypto.Verify([]byte(voteHeaders), v.Sender, v.Signature)
 	if err != nil {
+		logger.Println("validate_vote.go", "IsValidVote()", err)
 		return false, err
 	}
 	if !valid {
 		customErr.Message = "Vote transaction contains invalid signature" + ending
+		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		return false, customErr
 	}
 
@@ -44,6 +49,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	if err != nil {
 		customErr.Message = "Vote transactions must specify a valid election" + ending +
 			err.Error()
+		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		return false, customErr
 	}
 
@@ -52,6 +58,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	electionEnd, err := time.Parse(time.RFC1123, election.End)
 	if now.After(electionEnd) {
 		customErr.Message = "Vote transactions must occur for elections that are still ongoing" + ending
+		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		//return false, customErr
 	}
 
@@ -59,6 +66,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 	registration := database.CorrespondingRegistration(v)
 	if registration.Receiver != v.Sender {
 		customErr.Message = "Vote transactions must have a corresponding registration transaction" + ending
+		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		return false, customErr
 	}
 
@@ -72,10 +80,12 @@ func IsValidVote(v database.Vote) (bool, error) {
 	for _, recipient := range v.Receiver {
 		if eligibleCandidates[recipient.Recipient+recipient.PositionId] == 0 {
 			customErr.Message = "Vote transactions must be for valid candidates" + ending
+			logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 			return false, customErr
 		}
 		if eligibleCandidates[recipient.Recipient+recipient.PositionId] > 1 {
 			customErr.Message = "Vote transactions cannot contain multiple selections for a single candidate" + ending
+			logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 			return false, customErr
 		}
 		eligibleCandidates[recipient.Recipient+recipient.PositionId]++
@@ -84,12 +94,14 @@ func IsValidVote(v database.Vote) (bool, error) {
 	//Check to see if Vote type is correctly stored in transaction
 	if v.Type != "Vote" {
 		customErr.Message = "Transaction is incorrect type" + ending
+		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		return false, customErr
 	}
 
 	//Make sure that vote does not occur twice
 	if database.ContainsVote(v.Sender, v.Election) {
 		customErr.Message = "Vote transaction has already been cast for this voter" + ending
+		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		return false, customErr
 	}
 

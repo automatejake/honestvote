@@ -59,6 +59,7 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var vote database.Vote
 	err := decoder.Decode(&vote)
+
 	if err != nil {
 		logger.Println("client_handler.go", "PostVoteHandler", "Error decoding vote - "+err.Error())
 	}
@@ -67,7 +68,9 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Println("client_handler.go", "PostVoteHandler", "Error converting vote to json - "+err.Error())
 	}
-	logger.Println("client_handlers.go", "PostVoteHandler", "Election: "+vote.Election+", Sender: "+vote.Sender+", Signature: "+vote.Signature)
+
+	logger.Println("client_handlers.go", "PostVoteHandler", "Vote is being sent to the other nodes on the chain")
+	logger.Println("client_handlers.go", "PostVoteHandler", vote)
 	p2p.ReceiveTransaction("Vote", v)
 }
 
@@ -106,6 +109,7 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
+		logger.Println("client_handlers.go", "GetElectionsHandler()", err)
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
@@ -126,6 +130,7 @@ func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 		Timestamp: timestamp,
 	}
 	if err != nil {
+		logger.Println("client_handlers.go", "GetElectionHandler()", err)
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
@@ -147,6 +152,7 @@ func GetVotesHandler(w http.ResponseWriter, r *http.Request) {
 		votes = []database.Vote{}
 	}
 	if err != nil {
+		logger.Println("client_handlers.go", "GetVotesHandler()", err)
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
@@ -172,6 +178,7 @@ func GetPermissionsHandler(w http.ResponseWriter, r *http.Request) {
 		permissions = []string{}
 	}
 	if err != nil {
+		logger.Println("client_handlers.go", "GetPermissionsHandler()", err)
 		payload.Status = "Bad Request"
 	} else {
 		payload.Status = "OK"
