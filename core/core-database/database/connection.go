@@ -24,7 +24,7 @@ func MongoConnect(remoteip string) *mongo.Client {
 	err = client.Ping(context.TODO(), nil)
 
 	if err != nil {
-		logger.Println("connection.go", "MongoConnect()", err.Error())
+		logger.Println("connection.go", "MongoConnect()", err)
 	}
 
 	return client

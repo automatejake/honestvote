@@ -17,7 +17,7 @@ func GenerateKeyPair() (private_key_hex, public_key_hex string) {
 	// generate keys
 	private_key, err := ecdsa.GenerateKey(p256, rand.Reader) //P256 returns a Curve
 	if err != nil {
-		logger.Println("key_generation.go", "GenerateKeyPair()", err.Error())
+		logger.Println("key_generation.go", "GenerateKeyPair()", err)
 	}
 
 	// hex encode and return result

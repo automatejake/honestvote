@@ -153,13 +153,8 @@ func main() {
 	jsonRegistration, _ = json.MarshalIndent(registration, "", "\t")
 	jsonVote, _ = json.MarshalIndent(vote, "", "\t")
 
-	// jsonData, _ := json.Marshal(jsonArray)
-
 	filename := "../tests/mock-data/mock_data.sh"
 	scriptname := "../scripts/deploy-local-chain.sh"
-
-	// _ = ioutil.WriteFile(filename, jsonRegistration, 0644)
-	// _ = ioutil.WriteFile(filename, jsonVote, 0644)
 
 	file, err := os.Create(filename)
 	if err != nil {
@@ -172,6 +167,8 @@ func main() {
 		return
 	}
 	defer file.Close()
+
+	_, _ = io.WriteString(file, "go run main.go --tcp 7002 --http 7003 --role producer --collection-prefix a_ --registry true --institution-name \""+election.Institution+"\"\n\n")
 
 	_, _ = io.WriteString(file, "echo \"Election Transaction:\"\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
 		string(jsonElection)+"' http://localhost:7003/election\n\n\n\n")
@@ -191,5 +188,3 @@ func main() {
 	_, _ = io.WriteString(script, "go run main.go --tcp 7006 --http 7007 --role producer --collection-prefix c_ --registry-host 127.0.0.1 --registry-port 7002 --private-key \""+private_key+"\" --public-key \""+public_key+"\" & \\")
 
 }
-
-// os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644

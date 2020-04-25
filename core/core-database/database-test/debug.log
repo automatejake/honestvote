@@ -40,3 +40,30 @@ mongo: no documents in result
 Timestamp: 2020/04/11 18:17:46 
 Function name:ExistsInTable()
 Node already exists
+Timestamp: 2020/04/25 09:40:34 
+Function name:MongoConnect()
+server selection error: server selection timeout, current topology: { Type: Unknown, Servers: [{ Addr: localhost:27017, Type: Unknown, State: Connected, Average RTT: 0, Last error: connection() : dial tcp [::1]:27017: connect: connection refused }, ] }
+Timestamp: 2020/04/25 09:41:04 
+Function name:MongoConnect()
+server selection error: server selection timeout, current topology: { Type: Unknown, Servers: [{ Addr: localhost:27017, Type: Unknown, State: Connected, Average RTT: 0, Last error: connection() : dial tcp [::1]:27017: connect: connection refused }, ] }
+Timestamp: 2020/04/25 09:41:57 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/04/25 09:42:21 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/04/25 09:42:21 
+Function name:ExistsInTable()
+Node already exists
+Timestamp: 2020/04/25 09:42:44 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/04/25 09:42:44 
+Function name:ExistsInTable()
+Node already exists
+Timestamp: 2020/04/25 09:48:40 
+Function name:GetElection
+mongo: no documents in result
+Timestamp: 2020/04/25 09:48:40 
+Function name:ExistsInTable()
+Node already exists

@@ -67,7 +67,7 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Println("client_handler.go", "PostVoteHandler", "Error converting vote to json - "+err.Error())
 	}
-
+	logger.Println("client_handlers.go", "PostVoteHandler", "Election: "+vote.Election+", Sender: "+vote.Sender+", Signature: "+vote.Signature)
 	p2p.ReceiveTransaction("Vote", v)
 }
 

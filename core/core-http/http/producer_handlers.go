@@ -33,7 +33,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if params["verified"] == "false" {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", string(registrant.Sender)+" is not supposed to be registered to vote for "+registrant.ElectionName)
-		registration.SendWarningEmail(registrant.Email, registrant.ElectionName)
+		registration.SendWarningEmail(registrant.ElectionName, registrant.Email, p2p.Email_Address, p2p.Email_Password)
 	}
 
 }

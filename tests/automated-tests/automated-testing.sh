@@ -1,4 +1,11 @@
-cd ..
+# This is the section of code responsible for generating mock data that will be used to populate the database
+cd ../mock-data
+
+
+# This is the section of code responsible for generating unit tests
+
+cd ../../
+
 cd core
 # cd core-administrator/administrator-test
 # go test -v
@@ -30,8 +37,8 @@ go test -v
 # cd ../../core-registry/registry-test
 # go test -v
 
-# cd ../../core-validation/validation-test
-# go test -v
+cd ../../core-validation/validation-test
+go test -v
 
 # cd ../../core-websocket/websocket-test
 # go test -v

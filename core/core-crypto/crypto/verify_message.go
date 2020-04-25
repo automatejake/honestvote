@@ -13,7 +13,7 @@ func Verify(hash []byte, public_key_hex string, signature_hex string) (result bo
 	// decode public key from hex
 	public_key_bytes, err := hex.DecodeString(string(public_key_hex))
 	if err != nil {
-		logger.Println("verify_message.go", "Verify()", err.Error())
+		logger.Println("verify_message.go", "Verify()", err)
 		return false, err
 	}
 
@@ -21,7 +21,7 @@ func Verify(hash []byte, public_key_hex string, signature_hex string) (result bo
 
 	signature_bytes, err := hex.DecodeString(string(signature_hex))
 	if err != nil {
-		logger.Println("verify_message.go", "Verify()", err.Error())
+		logger.Println("verify_message.go", "Verify()", err)
 		return false, err
 	}
 
@@ -29,7 +29,7 @@ func Verify(hash []byte, public_key_hex string, signature_hex string) (result bo
 	signature := new(Signature)
 	_, err = asn1.Unmarshal(signature_bytes, signature)
 	if err != nil {
-		logger.Println("verify_message.go", "Verify()", err.Error())
+		logger.Println("verify_message.go", "Verify()", err)
 		return false, err
 	}
 

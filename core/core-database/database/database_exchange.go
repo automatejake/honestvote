@@ -15,7 +15,7 @@ func AddBlock(block Block) error {
 	_, err := collection.InsertOne(context.TODO(), block)
 
 	if err != nil {
-		logger.Println("database_exchange.go", "UpdateBlockchain()", err.Error())
+		logger.Println("database_exchange.go", "UpdateBlockchain()", err)
 		return err
 	}
 

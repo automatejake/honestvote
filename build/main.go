@@ -146,6 +146,7 @@ func main() {
 	database.MongoDB = database.MongoConnect(DATABASE_HOST) // Connect to data store
 
 	port, _ := strconv.Atoi(TCP_PORT)
+
 	p2p.Self = database.Node{
 		IPAddress:   HOSTNAME,
 		Port:        port,

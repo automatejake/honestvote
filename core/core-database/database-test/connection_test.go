@@ -14,5 +14,5 @@ func TestMongoConnect(t *testing.T) {
 		return
 	}
 
-	t.Log("Connection is active: ", connection)
+	// t.Log("Connection is active: ", connection)
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func GenerateElectionHeader(e database.Election) (string, error) {
+func GenerateElectionHeaders(e database.Election) (string, error) {
 
 	encoded, err := e.Encode()
 	if err != nil {
@@ -26,7 +26,7 @@ func IsValidElection(e database.Election) (bool, error) {
 	end := ", invalid transaction fails"
 
 	//Check to see if signature is valid
-	electionHeaders, err := GenerateElectionHeader(e)
+	electionHeaders, err := GenerateElectionHeaders(e)
 	if err != nil {
 		return false, err
 	}

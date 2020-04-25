@@ -1,1 +1,1 @@
-../tests/automated-testing.sh
+../tests/automated-tests/automated-testing.sh
