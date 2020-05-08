@@ -23,7 +23,7 @@ type Signature struct {
 func Sign(hash []byte, private_key_hex string) (signature_hex string, err error) {
 	priv, shouldWork := new(big.Int).SetString(private_key_hex, 16)
 	if !shouldWork {
-		logger.Println("sign_message", "Sign", "Simeon screwed up.  ...but it should work")
+		logger.Println("sign_message", "Sign", "Signature invalid")
 		return "", errors.New("Private key not valid.")
 	}
 

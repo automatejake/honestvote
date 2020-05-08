@@ -8,11 +8,11 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func GenerateVoteHeaders(v database.Vote) (string, error) {
+func GenerateVoteHeaders(v database.Vote) ([]byte, error) {
 	encoded, err := v.Encode()
 	if err != nil {
 		logger.Println("validate_vote.go", "GenerateVoteHeaders()", err)
-		return "", err
+		return nil, err
 	}
 
 	hash := crypto.CalculateHash(encoded)
@@ -32,8 +32,9 @@ func IsValidVote(v database.Vote) (bool, error) {
 		logger.Println("validate_vote.go", "IsValidVote()", err)
 		return false, err
 	}
+	logger.Println("validate_vote.go", "IsValidVote()", "Generated headers")
 
-	valid, err := crypto.Verify([]byte(voteHeaders), v.Sender, v.Signature)
+	valid, err := crypto.Verify(voteHeaders, v.Sender, v.Signature)
 	if err != nil {
 		logger.Println("validate_vote.go", "IsValidVote()", err)
 		return false, err
@@ -43,6 +44,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		return false, customErr
 	}
+	logger.Println("validate_vote.go", "IsValidVote()", "Signature verified as valid")
 
 	//Check to see if election is a valid election
 	election, err := database.GetElection(v.Election)
@@ -52,6 +54,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		return false, customErr
 	}
+	logger.Println("validate_vote.go", "IsValidVote()", "Vote is for a valid election")
 
 	//Check to see if election is an ongoing election
 	now := time.Now()
@@ -59,16 +62,19 @@ func IsValidVote(v database.Vote) (bool, error) {
 	if now.After(electionEnd) {
 		customErr.Message = "Vote transactions must occur for elections that are still ongoing" + ending
 		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
-		//return false, customErr
+		return false, customErr
 	}
+	logger.Println("validate_vote.go", "IsValidVote()", "Vote is for an ongoing election")
 
 	//Check to see if voter is registered to vote
+	logger.Println("validate_vote.go", "IsValidVote()", v)
 	registration := database.CorrespondingRegistration(v)
 	if registration.Receiver != v.Sender {
 		customErr.Message = "Vote transactions must have a corresponding registration transaction" + ending
 		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		return false, customErr
 	}
+	logger.Println("validate_vote.go", "IsValidVote()", "Vote contains a corresponding registration")
 
 	//Check to see if vote choice is valid (this check is not 100% perfect with a map, but does not poise harm)
 	eligibleCandidates := map[string]int{}
@@ -90,6 +96,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 		}
 		eligibleCandidates[recipient.Recipient+recipient.PositionId]++
 	}
+	logger.Println("validate_vote.go", "IsValidVote()", "Vote is for eligible positions and candidates")
 
 	//Check to see if Vote type is correctly stored in transaction
 	if v.Type != "Vote" {
@@ -104,7 +111,7 @@ func IsValidVote(v database.Vote) (bool, error) {
 		logger.Println("validate_vote.go", "IsValidVote()", customErr.Message)
 		return false, customErr
 	}
-
+	logger.Println("validate_vote.go", "IsValidVote()", "Voter has not voted more than once.")
 	return true, nil
 }
 

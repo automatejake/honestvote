@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -27,7 +28,7 @@ func GenerateKeyPair() (private_key_hex, public_key_hex string) {
 	return private_key_hex, public_key_hex
 }
 
-func DecompressPoint(compressed_bytes []byte) *ecdsa.PublicKey {
+func DecompressPoint(compressed_bytes []byte) (*ecdsa.PublicKey, error) {
 	// Split the sign byte from the rest
 	sign_byte := uint(compressed_bytes[0])
 	x_bytes := compressed_bytes[1:]
@@ -48,26 +49,34 @@ func DecompressPoint(compressed_bytes []byte) *ecdsa.PublicKey {
 	// ... + b mod P
 	y_squared.Add(y_squared, c.B)
 	y_squared.Mod(y_squared, c.P)
+
 	// Now we need to find the square root mod P.
 	// This is where Go's big int library redeems itself.
 	y := new(big.Int).ModSqrt(y_squared, c.P)
+
 	if y == nil {
 		// If this happens then you're dealing with an invalid point.
 		// Panic, return an error, whatever you want here.
+
 	}
 	// Finally, check if you have the correct root by comparing
 	// the low bit with the low bit of the sign byte. If it’s not
 	// the same you want -y mod P instead of y.
 	if y.Bit(0) != sign_byte&1 {
+		fmt.Println("GOT HERE 11a")
 		y.Neg(y)
+		fmt.Println("GOT HERE 11b")
 		y.Mod(y, c.P)
+		fmt.Println("GOT HERE 11c")
 	}
+	fmt.Println("GOT HERE ", 12)
 	// Now your y coordinate is in y, for all your ScalarMult needs.
 	publicKey := &ecdsa.PublicKey{
 		Curve: p256,
 		X:     x, Y: y,
 	}
-	return publicKey
+	fmt.Println("GOT HERE ", 13)
+	return publicKey, nil
 }
 
 func CompressPoint(pub ecdsa.PublicKey) []byte {

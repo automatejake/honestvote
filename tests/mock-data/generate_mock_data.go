@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -22,7 +21,6 @@ var Description string = "This is for that"
 func main() {
 	err := os.Chdir("../../build")
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 	godotenv.Load()

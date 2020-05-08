@@ -2,17 +2,13 @@ package crypto
 
 import (
 	"crypto/sha256"
-	"fmt"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func CalculateHash(encodedMessage []byte) string {
+func CalculateHash(encodedMessage []byte) []byte {
 	hash32 := sha256.Sum256(encodedMessage)
-
-	fmt.Println("this gonna be a fucking pain: ", hash32)
-
-	return string(hash32[:])
+	return hash32[:]
 }
 
 func SignBlock(header []byte, privKey string) (string, error) {

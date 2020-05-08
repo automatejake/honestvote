@@ -8,12 +8,12 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func GenerateElectionHeaders(e database.Election) (string, error) {
+func GenerateElectionHeaders(e database.Election) ([]byte, error) {
 
 	encoded, err := e.Encode()
 	if err != nil {
 		logger.Println("validate_election.go", "GenerateElectionHeaders()", err)
-		return "", err
+		return nil, err
 	}
 
 	hash := crypto.CalculateHash(encoded)
@@ -34,7 +34,7 @@ func IsValidElection(e database.Election) (bool, error) {
 		return false, err
 	}
 
-	valid, err := crypto.Verify([]byte(electionHeaders), e.Sender, e.Signature)
+	valid, err := crypto.Verify(electionHeaders, e.Sender, e.Signature)
 	if err != nil {
 		logger.Println("validate_election.go", "IsValidElection()", err)
 		return false, customErr

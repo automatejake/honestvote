@@ -177,7 +177,6 @@ func GetPermissions(public_key string) ([]string, error) {
 		annoying_mongo_form := block.Transaction.(primitive.D)
 		election := annoying_mongo_form.Map()["electionId"].(string)
 
-		// fmt.Println(annoying_mongo_form)
 		elections = append(elections, election)
 
 	}

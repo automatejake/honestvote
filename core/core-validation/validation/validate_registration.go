@@ -8,11 +8,11 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func GenerateRegistrationHeaders(r database.Registration) (string, error) {
+func GenerateRegistrationHeaders(r database.Registration) ([]byte, error) {
 	encoded, err := r.Encode()
 	if err != nil {
 		logger.Println("validate_registration.go", "GenerateRegistrationHeaders()", err)
-		return "", err
+		return nil, err
 	}
 
 	hash := crypto.CalculateHash(encoded)
@@ -32,7 +32,7 @@ func IsValidRegistration(r database.Registration) (bool, error) {
 		return false, err
 	}
 
-	valid, err := crypto.Verify([]byte(registrationHeaders), r.Sender, r.Signature)
+	valid, err := crypto.Verify(registrationHeaders, r.Sender, r.Signature)
 	if !valid {
 		customErr.Message = "Registration transaction contains invalid signature" + ending
 		logger.Println("validate_registration.go", "IsValidRegistration()", customErr.Message)

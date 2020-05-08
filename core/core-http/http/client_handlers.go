@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"net"
 	"net/http"
 	"strconv"
@@ -83,11 +82,13 @@ func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Println("client_handler.go", "PostElectionHandler", "Error decoding election - "+err.Error())
 	}
 	election.Type = "Election"
+	logger.Println("client_handler.go", "PostElectionHandler", "Recieved election object from client ...")
+	logger.Println("client_handler.go", "PostElectionHandler", election)
+
 	e, err := json.Marshal(election)
 	if err != nil {
 		logger.Println("client_handler.go", "PostElectionHandler", "Error converting election to json - "+err.Error())
 	}
-
 	p2p.ReceiveTransaction("Election", e)
 
 }
@@ -121,8 +122,6 @@ func GetElectionsHandler(w http.ResponseWriter, r *http.Request) {
 func GetElectionHandler(w http.ResponseWriter, r *http.Request) {
 	SetupResponse(&w, r)
 	params := mux.Vars(r)
-
-	fmt.Println(r, "\n\nElection id", params["electionid"], "\n", params)
 
 	election, err := database.GetElection(params["electionid"])
 	timestamp := time.Now().Format(time.RFC1123)

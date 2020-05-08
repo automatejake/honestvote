@@ -1,7 +1,6 @@
 package registration
 
 import (
-	"fmt"
 	"net/smtp"
 	"time"
 
@@ -66,7 +65,6 @@ func SendRegistrationCode(registrant database.AwaitingRegistration, hostname str
 		"Click this link if you requested to register for the upcoming student election: \nhttps://" + hostname + "/verifyCode/code=" + registrant.Code + "&verified=true\n" +
 		"If this is incorrect, please click here:\nhttps://" + hostname + "/verifyCode/code=" + registrant.Code + "&verified=false"
 
-	fmt.Println("\n\n" + msg + "\n\n")
 	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
 	if err != nil {
 		logger.Println("email_registration.go", "SendRegistrationCode", err.Error())
