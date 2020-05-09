@@ -1,5 +1,5 @@
 # This is the section of code responsible for generating mock data that will be used to populate the database
-cd ../mock-data
+go run automated_testing_data.go
 
 
 # This is the section of code responsible for generating unit tests

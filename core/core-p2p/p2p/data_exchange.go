@@ -3,7 +3,6 @@ package p2p
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net"
 	"strconv"
 
@@ -165,7 +164,6 @@ func SendRegistrationTransaction(registrant database.AwaitingRegistration) error
 
 	hash := crypto.CalculateHash(encoded)
 
-	fmt.Println("Privatekey: " + PrivateKey)
 	signature, err := crypto.Sign([]byte(hash), PrivateKey)
 	if err != nil {
 		logger.Println("data_exchange.go", "SendRegistrationTransaction()", err)

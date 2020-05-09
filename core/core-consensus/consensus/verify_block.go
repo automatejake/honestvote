@@ -1,6 +1,7 @@
 package consensus
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"time"
 
@@ -90,7 +91,8 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 		return false, err
 	}
 	hash := crypto.CalculateHash(header)
-	if hash != block.Hash {
+	hashString := hex.EncodeToString(hash)
+	if hashString != block.Hash {
 		customErr.Message = "Block's hash is incorrect" + ending
 		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
 		return false, customErr

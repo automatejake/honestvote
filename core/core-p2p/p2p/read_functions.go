@@ -1,8 +1,8 @@
 package p2p
 
 import (
+	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"net"
 
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
@@ -42,7 +42,7 @@ func DecodeData(data []byte) {
 
 //Get vote from full node and turn it into a block and propose
 func ReceiveTransaction(mType string, data []byte) error {
-
+	logger.Println("read_functions.go", "RecieveTransactions()", "Processing "+mType+" transaction")
 	var valid bool
 	switch mType {
 	case "Vote":
@@ -57,10 +57,9 @@ func ReceiveTransaction(mType string, data []byte) error {
 		if valid {
 			logger.Println("read_functions.go", "RecieveTransaction()", "Passed validation")
 			websocket.BroadcastVote(*vote)
-			AddToBlock(vote, crypto.CalculateHash([]byte(vote.Signature)))
+			AddToBlock(vote, hex.EncodeToString(crypto.CalculateHash([]byte(vote.Signature))))
 		} else {
-
-			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
+			logger.Println("read_functions.go", "RecieveTransaction()", err)
 		}
 
 	case "Election":
@@ -69,13 +68,14 @@ func ReceiveTransaction(mType string, data []byte) error {
 		if err != nil {
 			logger.Println("read_functions.go", "RecieveTransactions()", err)
 		}
+		logger.Println("read_functions.go", "RecieveTransactions()", "Received transaction")
+		logger.Println("read_functions.go", "RecieveTransactions()", election)
 
 		valid, err = validation.IsValidElection(*election)
 		if valid {
-			AddToBlock(election, crypto.CalculateHash([]byte(election.Signature)))
+			AddToBlock(election, hex.EncodeToString(crypto.CalculateHash([]byte(election.Signature))))
 		} else {
-			fmt.Println(err)
-			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
+			logger.Println("read_functions.go", "RecieveTransaction()", err)
 		}
 	case "Registration":
 
@@ -90,10 +90,9 @@ func ReceiveTransaction(mType string, data []byte) error {
 		if valid {
 			logger.Println("", "", "Sending Registration")
 			websocket.SendRegistration(*registration)
-			AddToBlock(registration, crypto.CalculateHash([]byte(registration.Signature)))
+			AddToBlock(registration, hex.EncodeToString(crypto.CalculateHash([]byte(registration.Signature))))
 		} else {
-			fmt.Println(err)
-			logger.Println("read_functions.go", "RecieveTransaction()", err.Error())
+			logger.Println("read_functions.go", "RecieveTransaction()", err)
 		}
 	}
 
@@ -106,7 +105,7 @@ func AddToBlock(transaction interface{}, hash string) {
 		logger.Println("read_function.go", "AddToBlock()", err.Error())
 	}
 
-	block.MerkleRoot = hash
+	// block.MerkleRoot = hash
 
 	//Check if there is a proposed block currently, if so, add to the queue
 

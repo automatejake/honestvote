@@ -2,18 +2,13 @@ package crypto
 
 import (
 	"crypto/sha256"
-	"encoding/base64"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func CalculateHash(encodedMessage []byte) string {
+func CalculateHash(encodedMessage []byte) []byte {
 	hash32 := sha256.Sum256(encodedMessage)
-
-	hash := make([]byte, 0, 32)
-	copy(hash32[:], hash[:])
-
-	return base64.URLEncoding.EncodeToString(hash)
+	return hash32[:]
 }
 
 func SignBlock(header []byte, privKey string) (string, error) {

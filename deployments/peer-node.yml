@@ -5,6 +5,12 @@ version: '2'
 services:
    peer:
      image: jneubaum/honestvote-peer-node:latest 
+     environment:
+       - EMAIL_ADDRESS=""
+       - EMAIL_PASSWORD=""
+       - PRIVATE_KEY=""
+       - PUBLIC_KEY=""
+       - LOGGING=All
      ports:
        - 7002:7002
        - 7003:7003
@@ -16,6 +22,8 @@ services:
        - mongo
    mongo:
      image: mongo:latest
+     volumes:
+       - /var/lib/docker/volumes/mongo_data
      ports:
        - 27017:27017
      logging:

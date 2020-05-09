@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -28,9 +27,8 @@ func BroadcastVote(vote database.Vote) {
 		Payload: vote,
 	}
 
-	fmt.Printf("%+v\n", vote)
-
 	logger.Println("websocket_routes.go", "BroadcastVote()", "Sending Vote...")
+	logger.Println("websocket_routes.go", "BroadcastVote()", vote)
 	jsonVote, err := json.Marshal(payload)
 	if err != nil {
 		logger.Println("broadcast.go", "WebsocketsHandler", err.Error())

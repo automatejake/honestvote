@@ -1,6 +1,7 @@
 package consensus
 
 import (
+	"encoding/hex"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
@@ -14,7 +15,7 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 	newBlock.Index = prevBlock.Index + 1
 	newBlock.Timestamp = time.Now().Format(time.RFC1123)
 	newBlock.Transaction = transaction
-	// newBlock.MerkleRoot = CalculateMerkleRoot(transaction)
+	newBlock.MerkleRoot = CalculateMerkleRoot(transaction)
 	newBlock.Validator = pubKey
 	newBlock.PrevHash = prevBlock.Hash
 
@@ -23,7 +24,9 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 		logger.Println("create_block.go", "GenerateBlock()", err)
 		return database.Block{}, err
 	}
-	newBlock.Hash = crypto.CalculateHash(header)
+	logger.Println("create_block.go", "GenerateBlock()", string(crypto.CalculateHash(header)))
+	hash := crypto.CalculateHash(header)
+	newBlock.Hash = hex.EncodeToString(hash)
 
 	signature, err := crypto.Sign([]byte(newBlock.Hash), privKey)
 	if err != nil {
@@ -48,5 +51,6 @@ func CalculateMerkleRoot(transaction interface{}) string {
 	}
 
 	merkleroot := crypto.CalculateHash([]byte(hash))
-	return merkleroot
+	merkleString := hex.EncodeToString(merkleroot)
+	return merkleString
 }
