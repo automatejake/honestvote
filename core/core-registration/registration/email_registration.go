@@ -74,21 +74,3 @@ func SendRegistrationCode(registrant database.AwaitingRegistration, hostname str
 	}
 
 }
-
-func SendWarningEmail(election, email_recipient, email_address, email_password string) {
-	from := email_address  //should be environmental variable that is updated by administrator
-	pass := email_password //should be environmental variable that is updated by administrator
-	to := email_recipient
-
-	msg := "From: " + from + "\n" +
-		"To: " + to + "\n" +
-		"Subject:  " + "HonestVote Registration Warning" + "\n\n" +
-		"You indicated that someone attempted to register falsely with your school email.  Please register to vote as soon as possible."
-
-	err := smtp.SendMail("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), from, []string{to}, []byte(msg))
-	if err != nil {
-		logger.Println("email_registration.go", "SendRegistrationCode", err.Error())
-		return
-	}
-
-}

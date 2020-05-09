@@ -17,6 +17,15 @@ func SaveRegistrationCode(registrant AwaitingRegistration) {
 	logger.Println("email_registration.go", "SaveRegistrationCode()", "inserted document successfully")
 }
 
+func RemoveRegistrationCode(registrant AwaitingRegistration) {
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
+	_, err := collection.DeleteOne(context.TODO(), registrant)
+	if err != nil {
+		logger.Println("email_registration.go", "RemoveRegistrationCode()", err.Error())
+	}
+	logger.Println("email_registration.go", "RemoveRegistrationCode()", "removed document successfully")
+}
+
 func IsValidRegistrationCode(code string) (AwaitingRegistration, error) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	query := bson.M{"code": code}
