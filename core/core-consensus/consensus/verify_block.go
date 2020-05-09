@@ -98,17 +98,19 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 		return false, customErr
 	}
 
-	// // Make sure that the block signature is correct
+	return true, nil
+}
+
+func CheckSignature(block database.Block) bool {
+	header, err := block.Encode()
+	hash := crypto.CalculateHash(header)
+	// Make sure that the block signature is correct
 	valid, err := crypto.Verify([]byte(hash), block.Validator, block.Signature)
 	if err != nil {
-		customErr.Message = "Block's signature is invalid\n |" + err.Error() + "\n" + ending
-		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
-		return false, customErr
+		return false
 	} else if !valid {
-		customErr.Message = "Block's signature is invalid" + ending
-		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
-		return false, customErr
+		return false
 	}
 
-	return true, nil
+	return true
 }

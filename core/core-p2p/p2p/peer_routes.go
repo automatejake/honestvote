@@ -77,10 +77,18 @@ func HandleConn(conn net.Conn) {
 			json.Unmarshal(message.Data, &node)
 		case "verify block":
 			var block database.Block
+
 			err := json.Unmarshal(message.Data, &block)
 			if err != nil {
 				logger.Println("peer_routes.go", "HandleConn()", err)
 			}
+
+			sigValid := consensus.CheckSignature(block)
+			if !sigValid {
+				logger.Println("peer_routes.go", "HandleConn()", "The signature is invalid and someone is impersonating the sender")
+				return
+			}
+
 			verified, err := consensus.IsBlockValid(PreviousBlock, block)
 			if verified {
 				err = database.AddBlock(block)
