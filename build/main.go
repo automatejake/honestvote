@@ -36,6 +36,14 @@ var HOSTNAME string = "127.0.0.1"
 var EMAIL_ADDRESS string
 var EMAIL_PASSWORD string
 
+// white list election parameters
+var WHITELIST_DATABASE_DRIVER string
+var WHITELIST_DATABASE_USER string
+var WHITELIST_DATABASE_HOST string
+var WHITELIST_DATABASE_PORT string
+var WHITELIST_DATABASE_NAME string
+var ELIGIBLE_VOTER_FIELD string
+
 //this file will be responsible for deploying the app
 
 func main() {
