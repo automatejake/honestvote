@@ -21,7 +21,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if params["verified"] == "true" {
+	if params["verified"] == "true" && registration.OnWhitelist(registrant.Email, p2p.Whitelist) {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", string(registrant.Sender)+" is registered to vote for "+registrant.ElectionName)
 		if registration.VerifyStudent(registrant) {
 			err := p2p.SendRegistrationTransaction(registrant)
@@ -34,6 +34,9 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	} else if params["verified"] == "false" {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", string(registrant.Sender)+" is not supposed to be registered to vote for "+registrant.ElectionName)
 		database.RemoveRegistrationCode(registrant)
+		w.Write([]byte("You indicated that you did not register to vote.  It may be possible that a malicious actor is attempting to register with your identity.  It is recommended to register as soon as possible."))
+	} else {
+
 	}
 
 }

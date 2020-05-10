@@ -46,6 +46,7 @@ type WhiteListElectionSettings struct {
 	DatabaseHost       string `json:"databaseHost" bson:"databaseHost"`
 	DatabasePort       string `json:"databasePort" bson:"databasePort"`
 	DatabaseName       string `json:"databaseName" bson:"databaseName"`
+	TableName          string `json:"tableName" bson:"tableName"`
 	EligibleVoterField string `json:"eligibleVoterField" bson:"eligibleVoterField"`
 }
 

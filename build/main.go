@@ -42,6 +42,7 @@ var WHITELIST_DATABASE_USER string
 var WHITELIST_DATABASE_HOST string
 var WHITELIST_DATABASE_PORT string
 var WHITELIST_DATABASE_NAME string
+var WHITELIST_TABLE_NAME string
 var ELIGIBLE_VOTER_FIELD string
 
 //this file will be responsible for deploying the app
@@ -101,6 +102,27 @@ func main() {
 	if os.Getenv("EMAIL_PASSWORD") != "" {
 		EMAIL_PASSWORD = os.Getenv("EMAIL_PASSWORD")
 	}
+	if os.Getenv("WHITELIST_DATABASE_DRIVER") != "" {
+		WHITELIST_DATABASE_DRIVER = os.Getenv("WHITELIST_DATABASE_DRIVER")
+	}
+	if os.Getenv("WHITELIST_DATABASE_USER") != "" {
+		WHITELIST_DATABASE_USER = os.Getenv("WHITELIST_DATABASE_USER")
+	}
+	if os.Getenv("WHITELIST_DATABASE_HOST") != "" {
+		WHITELIST_DATABASE_HOST = os.Getenv("WHITELIST_DATABASE_HOST")
+	}
+	if os.Getenv("WHITELIST_DATABASE_PORT") != "" {
+		WHITELIST_DATABASE_PORT = os.Getenv("WHITELIST_DATABASE_PORT")
+	}
+	if os.Getenv("WHITELIST_DATABASE_NAME") != "" {
+		WHITELIST_DATABASE_NAME = os.Getenv("WHITELIST_DATABASE_NAME")
+	}
+	if os.Getenv("WHITELIST_TABLE_NAME") != "" {
+		WHITELIST_TABLE_NAME = os.Getenv("WHITELIST_TABLE_NAME")
+	}
+	if os.Getenv("ELIGIBLE_VOTER_FIELD") != "" {
+		ELIGIBLE_VOTER_FIELD = os.Getenv("ELIGIBLE_VOTER_FIELD")
+	}
 
 	//this domain is the default host to resolve traffic
 	if REGISTRY_IP == "" {
@@ -145,6 +167,18 @@ func main() {
 			EMAIL_ADDRESS = os.Args[index+1]
 		case "--email-password": //sets the institutions name
 			EMAIL_PASSWORD = os.Args[index+1]
+		case "whitelist-database-driver":
+			WHITELIST_DATABASE_DRIVER = os.Args[index+1]
+		case "whitelist-database-user":
+			WHITELIST_DATABASE_USER = os.Args[index+1]
+		case "whitelist-database-host":
+			WHITELIST_DATABASE_HOST = os.Args[index+1]
+		case "whitelist-database-port":
+			WHITELIST_DATABASE_PORT = os.Args[index+1]
+		case "whitelist-database-name":
+			WHITELIST_DATABASE_NAME = os.Args[index+1]
+		case "eligible-voter-field":
+			ELIGIBLE_VOTER_FIELD = os.Args[index+1]
 		}
 	}
 
@@ -161,6 +195,16 @@ func main() {
 		Role:        ROLE,
 		PublicKey:   PUBLIC_KEY,
 		Institution: INSTITUTION_NAME,
+	}
+
+	p2p.Whitelist = database.WhiteListElectionSettings{
+		DatabaseDriver:     WHITELIST_DATABASE_DRIVER,
+		DatabaseUser:       WHITELIST_DATABASE_USER,
+		DatabaseHost:       WHITELIST_DATABASE_HOST,
+		DatabasePort:       WHITELIST_DATABASE_PORT,
+		DatabaseName:       WHITELIST_DATABASE_NAME,
+		TableName:          WHITELIST_TABLE_NAME,
+		EligibleVoterField: ELIGIBLE_VOTER_FIELD,
 	}
 
 	p2p.PrivateKey = PRIVATE_KEY

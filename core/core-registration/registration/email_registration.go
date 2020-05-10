@@ -23,14 +23,19 @@ import (
 *  Send registration transaction
  */
 
-func IsValidRegistrant(registrant *database.AwaitingRegistration) bool {
+func IsValidEmailRegistrant(registrant *database.AwaitingRegistration) bool {
 	if !isElectionOngoing(registrant.Email) {
-		logger.Println("email_registration.go", "IsValidRegistrant()", "Election is not ongoing")
+		logger.Println("email_registration.go", "IsValidEmailRegistrant()", "Election is not ongoing")
 		return false
 	}
 
 	if !isValidEmail(registrant.Email) {
-		logger.Println("email_registration.go", "IsValidRegistrant()", "Email is not valid")
+		logger.Println("email_registration.go", "IsValidEmailRegistrant()", "Email is not valid")
+		return false
+	}
+
+	if hasRegisteredWithEmail(registrant.Email) {
+		logger.Println("email_registration.go", "IsValidEmailRegistrant()", "Voter has already registered to vote")
 		return false
 	}
 
@@ -46,6 +51,10 @@ func isElectionOngoing(email string) bool {
 //Make sure email checks regex format and has not already been registered
 func isValidEmail(email string) bool {
 	return true
+}
+
+func hasRegisteredWithEmail(email string) bool {
+	return false
 }
 
 // Create registration code, save to database, send email with code and link
