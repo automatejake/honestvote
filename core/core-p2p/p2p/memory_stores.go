@@ -23,6 +23,7 @@ var ProposedBlock database.Block
 
 var Self database.Node
 var Whitelist database.WhiteListElectionSettings
+var REGISTRATION_TYPE string
 
 //Block queue starts to fill if ProposedBlock is not nil
 var BlockQueue []database.Block

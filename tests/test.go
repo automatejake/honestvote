@@ -20,7 +20,7 @@ var databaseName string
 var eligibleVoterField string
 
 func main() {
-	db, err := sql.Open("mysql", "root:test@tcp(registry.honestvote.io:6603)/jacob_is_cool")
+	db, err := sql.Open("mysql", "root:test@tcp(registry.honestvote.io:6603)/testing")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -29,7 +29,7 @@ func main() {
 	// perform a db.Query insert
 	// insert, err := db.Query("CREATE TABLE test ( id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(20) )")
 	// insert, err := db.Query("INSERT INTO test VALUES (4, 'TEST' )")
-	results, err := db.Query("SELECT name from test where name = 'Tes'")
+	results, err := db.Query("SELECT name from students where name = 'jacob@bizylife.com'")
 	for results.Next() {
 		var test string
 		err = results.Scan(&test)

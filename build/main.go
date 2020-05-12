@@ -35,10 +35,12 @@ var LOGGING_MODE string = "All" // Levels of Debugging All | Debug | Info
 var HOSTNAME string = "127.0.0.1"
 var EMAIL_ADDRESS string
 var EMAIL_PASSWORD string
+var REGISTRATION_TYPE string // DEFAULT_WHITELIST | EXTERNAL_WHITELIST | ALL
 
-// white list election parameters
+// external white list election parameters
 var WHITELIST_DATABASE_DRIVER string
 var WHITELIST_DATABASE_USER string
+var WHITELIST_DATABASE_PASSWORD string
 var WHITELIST_DATABASE_HOST string
 var WHITELIST_DATABASE_PORT string
 var WHITELIST_DATABASE_NAME string
@@ -102,11 +104,17 @@ func main() {
 	if os.Getenv("EMAIL_PASSWORD") != "" {
 		EMAIL_PASSWORD = os.Getenv("EMAIL_PASSWORD")
 	}
+	if os.Getenv("REGISTRATION_TYPE") != "" {
+		REGISTRATION_TYPE = os.Getenv("REGISTRATION_TYPE")
+	}
 	if os.Getenv("WHITELIST_DATABASE_DRIVER") != "" {
 		WHITELIST_DATABASE_DRIVER = os.Getenv("WHITELIST_DATABASE_DRIVER")
 	}
 	if os.Getenv("WHITELIST_DATABASE_USER") != "" {
 		WHITELIST_DATABASE_USER = os.Getenv("WHITELIST_DATABASE_USER")
+	}
+	if os.Getenv("WHITELIST_DATABASE_PASSWORD") != "" {
+		WHITELIST_DATABASE_PASSWORD = os.Getenv("WHITELIST_DATABASE_PASSWORD")
 	}
 	if os.Getenv("WHITELIST_DATABASE_HOST") != "" {
 		WHITELIST_DATABASE_HOST = os.Getenv("WHITELIST_DATABASE_HOST")
@@ -167,17 +175,21 @@ func main() {
 			EMAIL_ADDRESS = os.Args[index+1]
 		case "--email-password": //sets the institutions name
 			EMAIL_PASSWORD = os.Args[index+1]
-		case "whitelist-database-driver":
+		case "--registration-type":
+			REGISTRATION_TYPE = os.Args[index+1]
+		case "--whitelist-database-driver":
 			WHITELIST_DATABASE_DRIVER = os.Args[index+1]
-		case "whitelist-database-user":
+		case "--whitelist-database-user":
 			WHITELIST_DATABASE_USER = os.Args[index+1]
-		case "whitelist-database-host":
+		case "--whitelist-database-password":
+			WHITELIST_DATABASE_PASSWORD = os.Args[index+1]
+		case "--whitelist-database-host":
 			WHITELIST_DATABASE_HOST = os.Args[index+1]
-		case "whitelist-database-port":
+		case "--whitelist-database-port":
 			WHITELIST_DATABASE_PORT = os.Args[index+1]
-		case "whitelist-database-name":
+		case "--whitelist-database-name":
 			WHITELIST_DATABASE_NAME = os.Args[index+1]
-		case "eligible-voter-field":
+		case "--eligible-voter-field":
 			ELIGIBLE_VOTER_FIELD = os.Args[index+1]
 		}
 	}
@@ -197,16 +209,17 @@ func main() {
 		Institution: INSTITUTION_NAME,
 	}
 
+	p2p.REGISTRATION_TYPE = REGISTRATION_TYPE
 	p2p.Whitelist = database.WhiteListElectionSettings{
 		DatabaseDriver:     WHITELIST_DATABASE_DRIVER,
 		DatabaseUser:       WHITELIST_DATABASE_USER,
+		DatabasePassword:   WHITELIST_DATABASE_PASSWORD,
 		DatabaseHost:       WHITELIST_DATABASE_HOST,
 		DatabasePort:       WHITELIST_DATABASE_PORT,
 		DatabaseName:       WHITELIST_DATABASE_NAME,
 		TableName:          WHITELIST_TABLE_NAME,
 		EligibleVoterField: ELIGIBLE_VOTER_FIELD,
 	}
-
 	p2p.PrivateKey = PRIVATE_KEY
 	p2p.PublicKey = PUBLIC_KEY
 	p2p.Email_Address = EMAIL_ADDRESS

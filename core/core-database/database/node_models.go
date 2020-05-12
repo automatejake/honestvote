@@ -43,6 +43,7 @@ type AdminSettings struct {
 type WhiteListElectionSettings struct {
 	DatabaseDriver     string `json:"databaseDriver" bson:"databaseDriver"`
 	DatabaseUser       string `json:"databaseUser" bson:"databaseUser"`
+	DatabasePassword   string `json:"databasePassword" bson:"databasePassword"`
 	DatabaseHost       string `json:"databaseHost" bson:"databaseHost"`
 	DatabasePort       string `json:"databasePort" bson:"databasePort"`
 	DatabaseName       string `json:"databaseName" bson:"databaseName"`

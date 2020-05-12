@@ -21,7 +21,17 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if params["verified"] == "true" && registration.OnWhitelist(registrant.Email, p2p.Whitelist) {
+	switch p2p.REGISTRATION_TYPE {
+	case "EXTERNAL_WHITELIST":
+		if !registration.OnWhitelist(registrant.Email, p2p.Whitelist) {
+			w.Write([]byte("You are not permitted to participate in this election.  Please talk to your election administrator if you think that this is a mistake."))
+			return
+		}
+	case "DEFAULT_WHITELIST":
+
+	}
+
+	if params["verified"] == "true" {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", string(registrant.Sender)+" is registered to vote for "+registrant.ElectionName)
 		if registration.VerifyStudent(registrant) {
 			err := p2p.SendRegistrationTransaction(registrant)
