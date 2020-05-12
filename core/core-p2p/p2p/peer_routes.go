@@ -66,7 +66,7 @@ func HandleConn(conn net.Conn) {
 			if err != nil {
 				logger.Println("peer_routes.go", "HandleConn()", err)
 			}
-			if registration.IsValidRegistrant(&registrant) {
+			if registration.IsValidEmailRegistrant(&registrant) {
 				registration.SendRegistrationCode(registrant, Self.IPAddress, HTTP_Port, Email_Address, Email_Password)
 			}
 

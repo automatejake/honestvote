@@ -5,7 +5,6 @@ import (
 	"crypto/ecdsa"
 	"crypto/rand"
 	"encoding/hex"
-	"fmt"
 	"math/big"
 
 	"github.com/jneubaum/honestvote/tests/logger"
@@ -63,19 +62,14 @@ func DecompressPoint(compressed_bytes []byte) (*ecdsa.PublicKey, error) {
 	// the low bit with the low bit of the sign byte. If it’s not
 	// the same you want -y mod P instead of y.
 	if y.Bit(0) != sign_byte&1 {
-		fmt.Println("GOT HERE 11a")
 		y.Neg(y)
-		fmt.Println("GOT HERE 11b")
 		y.Mod(y, c.P)
-		fmt.Println("GOT HERE 11c")
 	}
-	fmt.Println("GOT HERE ", 12)
 	// Now your y coordinate is in y, for all your ScalarMult needs.
 	publicKey := &ecdsa.PublicKey{
 		Curve: p256,
 		X:     x, Y: y,
 	}
-	fmt.Println("GOT HERE ", 13)
 	return publicKey, nil
 }
 

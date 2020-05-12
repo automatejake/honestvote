@@ -55,7 +55,7 @@ curl --header "Content-Type: application/json" --request POST --data '{
 echo "Registration Transaction:"
 
 curl --header "Content-Type: application/json" --request POST --data '{
-	"emailAddress": "jacob@neubaum.com",
+	"emailAddress": "jacob@bizylife.com",
 	"firstName": "Jacob",
 	"lastName": "Neubaum",
 	"dateOfBirth": "3/9/1999",

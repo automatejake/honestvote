@@ -24,7 +24,6 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 		logger.Println("create_block.go", "GenerateBlock()", err)
 		return database.Block{}, err
 	}
-	logger.Println("create_block.go", "GenerateBlock()", string(crypto.CalculateHash(header)))
 	hash := crypto.CalculateHash(header)
 	newBlock.Hash = hex.EncodeToString(hash)
 

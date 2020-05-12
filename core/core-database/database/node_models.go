@@ -35,6 +35,22 @@ type Registration struct {
 	Signature   string `json:"signature" bson:"signature"`
 }
 
+type AdminSettings struct {
+	NodeSettings      Node                      `json:"nodeSettings" bson:"nodeSettings"`
+	WhiteListElection WhiteListElectionSettings `json:"whiteListElectionSettings" bson:"whiteListElectionSettings"`
+}
+
+type WhiteListElectionSettings struct {
+	DatabaseDriver     string `json:"databaseDriver" bson:"databaseDriver"`
+	DatabaseUser       string `json:"databaseUser" bson:"databaseUser"`
+	DatabasePassword   string `json:"databasePassword" bson:"databasePassword"`
+	DatabaseHost       string `json:"databaseHost" bson:"databaseHost"`
+	DatabasePort       string `json:"databasePort" bson:"databasePort"`
+	DatabaseName       string `json:"databaseName" bson:"databaseName"`
+	TableName          string `json:"tableName" bson:"tableName"`
+	EligibleVoterField string `json:"eligibleVoterField" bson:"eligibleVoterField"`
+}
+
 type AwaitingRegistration struct {
 	Email         string `json:"emailAddress"`
 	FirstName     string `json:"firstName"`
