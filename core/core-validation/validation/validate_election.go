@@ -110,6 +110,14 @@ func IsValidElection(e database.Election) (bool, error) {
 		}
 	}
 
+	//Check to see if election signature doesn't exist in the database
+	newSig := database.CheckElectionSignature(e.Signature)
+	if !newSig {
+		customErr.Message = "Election signature already exists in the database, this is copy of a previous election."
+		logger.Println("validate_election.go", "IsValidElection()", customErr.Message)
+		return false, customErr
+	}
+
 	//if all passes, then transaction is valid
 
 	return true, nil

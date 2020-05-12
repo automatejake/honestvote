@@ -67,6 +67,24 @@ func ContainsVote(sender string, election string) bool {
 	}
 	return true
 }
+
+func CheckElectionSignature(sig string) bool {
+	var block Block
+
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
+
+	query := bson.M{"transaction.type": "Election", "transaction.signature": sig}
+
+	result := collection.FindOne(context.TODO(), query)
+	err := result.Decode(&block)
+
+	if err == nil {
+		return false
+	}
+
+	return true
+}
+
 func MarkDishonestNode(n Node) error {
 	n.Role = "bad actor"
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
