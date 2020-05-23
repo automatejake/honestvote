@@ -2,6 +2,7 @@ package discovery
 
 import (
 	"encoding/json"
+	"fmt"
 	"net"
 	"strconv"
 	"sync"
@@ -53,6 +54,11 @@ func FetchLatestPeers(registry_ip string, registry_port string, tcp_port string)
 		err = json.Unmarshal(peers_json[0:n], &peers)
 
 		for _, peer := range peers {
+			if peer.Role == "producer" {
+				fmt.Println(p2p.ConsensusNodes)
+				p2p.ConsensusNodes++
+			}
+
 			if !database.DoesNodeExist(peer) {
 				database.AddNode(peer)
 			}

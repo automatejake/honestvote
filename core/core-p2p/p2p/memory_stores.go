@@ -25,11 +25,13 @@ var Self database.Node
 var Whitelist database.WhiteListElectionSettings
 var REGISTRATION_TYPE string
 
-//Block queue starts to fill if ProposedBlock is not nil
-var BlockQueue []database.Block
+// Transactions quene holds transactions that are not yet ready to broadcast to the chain
+var TransactionQuene interface{}
 
-//Nested to pair answer with public_key/signature
-var SignatureMap map[string]map[string]bool
+// These are used to determine who is responsible for generating a block at any given time.  Found in broadcaster.go
+var GenesisBlockTime int64 = 0
+var Step int64 = 1
+var ConsensusNodes int64 = 0
 
 type Message struct {
 	Message string `json:"message"`

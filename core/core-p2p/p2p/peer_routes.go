@@ -59,7 +59,7 @@ func HandleConn(conn net.Conn) {
 			GrabDocuments(database.MongoDB, conn, string(message.Data))
 		case "transaction":
 
-			// ReceiveTransaction(message.Type, message.Data)
+		// ReceiveTransaction(message.Type, message.Data)
 		case "register":
 			var registrant database.AwaitingRegistration
 			err := json.Unmarshal(message.Data, &registrant)

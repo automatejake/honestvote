@@ -2,8 +2,8 @@ go run main.go --tcp 7002 --http 7003 --role producer --collection-prefix a_ --r
 
 sleep 5
 
-go run main.go --tcp 7004 --http 7005 --role producer --collection-prefix b_ --registry-host 127.0.0.1 --registry-port 7002 --private-key "02d534be559432dc14bd59923a7cd30ac0365676272c4e24a481cc01d2a521e9ba" --public-key "e6effdcc6bb47ed6bdf462afa757433970a32794a5717bae1931b86f87558a20" & \
+go run main.go --tcp 7004 --http 7005 --role producer --collection-prefix b_ --registry-host 127.0.0.1 --registry-port 7002 --private-key "03fd71c32c0dec9d8eb9c8b2a97d796f2640259035e991c3d3336fbfd9f707da4c" --public-key "65397db76da6d419376a97540970e430c4e47e51170a09a5dfdac332c4b5afed" --registry false & \
 
 sleep 10
 
-go run main.go --tcp 7006 --http 7007 --role producer --collection-prefix c_ --registry-host 127.0.0.1 --registry-port 7002 --private-key "03f546690e5c2cdf1b4cb3168d558564461ed59ead3259bd01cc251f37e70a2725" --public-key "c5b0aff1adcb84b54e3892471c505eef2fab95de5469054f499224e9884440d4" & \
+go run main.go --tcp 7006 --http 7007 --role producer --collection-prefix c_ --registry-host 127.0.0.1 --registry-port 7002 --private-key "025ef2b1fe3808d3860584bbcc6c223a4af6aa61c50df97a0cccd675bebddb4406" --public-key "3991c6bf62f6eec84bf0c13ee864bdcfbcd25a559b9f88733f21c6fb1dc4af17" --registry false & \

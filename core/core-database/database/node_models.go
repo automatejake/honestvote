@@ -103,11 +103,12 @@ type Candidate struct {
 }
 
 type Node struct {
-	Institution string `json:"institution" bson:"institution"`
-	IPAddress   string `json:"ipaddress" bson:"ipaddress"`
-	Port        int    `json:"port" bson:"port"`
-	Role        string `json:"role" bson:"role"` // peer | full | registry
-	PublicKey   string `json:"publickey" bson:"publickey"`
-	Timestamp   string `json:"timestamp" bson:"timestamp"`
-	Signature   string `json:"signature" bson:"signature"`
+	Institution  string `json:"institution" bson:"institution"`
+	IPAddress    string `json:"ipaddress" bson:"ipaddress"`
+	Port         int    `json:"port" bson:"port"`
+	Role         string `json:"role" bson:"role"` // peer | full | registry
+	ConsensusPos int    `json:"consensuspos" bson:"consensuspos"`
+	PublicKey    string `json:"publickey" bson:"publickey"`
+	Timestamp    string `json:"timestamp" bson:"timestamp"`
+	Signature    string `json:"signature" bson:"signature"`
 }

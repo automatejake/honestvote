@@ -13,7 +13,6 @@ import (
 	"github.com/jneubaum/honestvote/core/core-discovery/discovery"
 	"github.com/jneubaum/honestvote/core/core-http/http"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
-	"github.com/jneubaum/honestvote/core/core-registry/registry"
 	"github.com/joho/godotenv"
 )
 
@@ -194,8 +193,6 @@ func main() {
 		}
 	}
 
-	p2p.SignatureMap = make(map[string]map[string]bool)
-
 	database.CollectionPrefix = COLLECTION_PREFIX
 	database.MongoDB = database.MongoConnect(DATABASE_HOST) // Connect to data store
 
@@ -225,23 +222,24 @@ func main() {
 	p2p.Email_Address = EMAIL_ADDRESS
 	p2p.Email_Password = EMAIL_PASSWORD
 
-	if !database.DoesNodeExist(p2p.Self) {
+	if !database.DoesNodeExist(p2p.Self) && REGISTRY {
 		database.AddNode(p2p.Self)
 	}
 
-	// udp PORT that sends connected producer to incoming nodes
-	if ROLE == "registry" {
-		registry.ListenConnections(UDP_PORT)
+	if REGISTRY {
+		p2p.ConsensusNodes = 1
+	} else {
+		discovery.FetchLatestPeers(REGISTRY_IP, REGISTRY_PORT, TCP_PORT)
 	}
+
+	// udp PORT that sends connected producer to incoming nodes
+	// if ROLE == "registry" {
+	// 	registry.ListenConnections(UDP_PORT)
+	// }
 
 	logger.Println("main.go", "main", "Collection Prefix: "+COLLECTION_PREFIX)
 
 	go http.CreateServer(HTTP_PORT, ROLE)
-
-	if !REGISTRY {
-		fmt.Println("not registry service")
-		go discovery.FetchLatestPeers(REGISTRY_IP, REGISTRY_PORT, TCP_PORT)
-	}
 
 	// accept incoming connections and handle p2p
 	p2p.HTTP_Port = HTTP_PORT

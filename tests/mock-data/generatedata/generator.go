@@ -162,9 +162,9 @@ func GenerateMockData(admin_private_key, admin_public_key, election_name, instit
 	_, _ = io.WriteString(script, "sleep 5\n\n")
 
 	public_key, private_key = crypto.GenerateKeyPair()
-	_, _ = io.WriteString(script, "go run main.go --tcp 7004 --http 7005 --role producer --collection-prefix b_ --registry-host 127.0.0.1 --registry-port 7002 --private-key \""+private_key+"\" --public-key \""+public_key+"\" & \\\n\n")
+	_, _ = io.WriteString(script, "go run main.go --tcp 7004 --http 7005 --role producer --collection-prefix b_ --registry-host 127.0.0.1 --registry-port 7002 --private-key \""+private_key+"\" --public-key \""+public_key+"\" --registry false & \\\n\n")
 	_, _ = io.WriteString(script, "sleep 10\n\n")
 	public_key, private_key = crypto.GenerateKeyPair()
-	_, _ = io.WriteString(script, "go run main.go --tcp 7006 --http 7007 --role producer --collection-prefix c_ --registry-host 127.0.0.1 --registry-port 7002 --private-key \""+private_key+"\" --public-key \""+public_key+"\" & \\")
+	_, _ = io.WriteString(script, "go run main.go --tcp 7006 --http 7007 --role producer --collection-prefix c_ --registry-host 127.0.0.1 --registry-port 7002 --private-key \""+private_key+"\" --public-key \""+public_key+"\" --registry false & \\")
 
 }
