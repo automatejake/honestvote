@@ -19,5 +19,15 @@ func TestNewMerkleRoot(t *testing.T) {
 
 	tree := crypto.NewMerkleRoot(byteArray)
 
-	t.Log(*tree.RootNode)
+	yes := crypto.TraverseTransaction(byteArray[3], tree)
+
+	if yes {
+		t.Log("The transaction is verified.")
+	} else {
+		t.Log("The transaction is not verified.")
+	}
+}
+
+func TestVerifyTransaction(t *testing.T) {
+
 }

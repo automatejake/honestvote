@@ -18,7 +18,7 @@ func NewMerkleNode(left *MerkleNode, right *MerkleNode, data []byte) *MerkleNode
 	node := MerkleNode{}
 
 	if left == nil && right == nil {
-		node.Hash = CalculateHash(data)
+		node.Hash = data
 	} else {
 		prevHashes := append(left.Hash, right.Hash...)
 		node.Hash = CalculateHash(prevHashes)
@@ -58,22 +58,60 @@ func NewMerkleRoot(data [][]byte) *MerkleTree {
 	return &tree
 }
 
-func VerifyTransaction(transaction []byte, root *MerkleTree) bool {
-	if TraverseTransaction(transaction, root.RootNode) {
-		return true
-	}
-
-	return false
+func TraverseTransaction(transaction []byte, root *MerkleTree) bool {
+	return IsIntroverse(transaction, root.RootNode)
 }
 
-func TraverseTransaction(transaction []byte, node *MerkleNode) bool {
+// func IsIntroverse(transaction []byte, node *MerkleNode) bool {
+// 	if node.Left == nil && node.Right == nil {
+// 		return bytes.Equal(node.Hash, transaction)
+// 	}
+
+// 	var l = false
+// 	var r = false
+
+// 	if node.Left != nil {
+// 		l = IsIntreverse(transaction, node.Left)
+// 	}
+
+// 	if node.Right != nil {
+// 		r = IsIntreverse(transaction, node.Right)
+// 	}
+
+// 	return r || l
+// }
+
+func IsIntroverse(transaction []byte, node *MerkleNode) bool {
+	var arr []MerkleNode
+
 	if node.Left != nil {
-		return TraverseTransaction(transaction, node.Left)
+		arr = append(arr, *node.Left)
 	}
 
 	if node.Right != nil {
-		return TraverseTransaction(transaction, node.Right)
+		arr = append(arr, *node.Right)
 	}
 
-	return bytes.Equal(node.Hash, transaction)
+	for len(arr) > 0 {
+		var arr2 []MerkleNode
+
+		arr2 = arr
+		arr = nil
+
+		for _, node := range arr2 {
+			if bytes.Equal(node.Hash, transaction) {
+				return true
+			}
+
+			if node.Left != nil {
+				arr = append(arr, *node.Left)
+			}
+
+			if node.Right != nil {
+				arr = append(arr, *node.Right)
+			}
+		}
+	}
+
+	return false
 }
