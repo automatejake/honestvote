@@ -12,7 +12,7 @@ type Block struct {
 	Index       int         `json:"index" bson:"index"`
 	Timestamp   string      `json:"timestamp" bson:"timestamp"`
 	Transaction interface{} `json:"transaction" bson:"transaction"` // not  included in the hash
-	MerkleRoot  string      `json:"merkleRoot" bson:"merkleRoot"`
+	MerkleRoot  MerkleTree  `json:"merkleRoot" bson:"merkleRoot"`
 	Validator   string      `json:"validator" bson:"validator"`
 	Signature   string      `json:"signature" bson:"signature"`
 	PrevHash    string      `json:"prevhash" bson:"prevhash"`
@@ -111,4 +111,14 @@ type Node struct {
 	PublicKey    string `json:"publickey" bson:"publickey"`
 	Timestamp    string `json:"timestamp" bson:"timestamp"`
 	Signature    string `json:"signature" bson:"signature"`
+}
+
+type MerkleTree struct {
+	RootNode *MerkleNode
+}
+
+type MerkleNode struct {
+	Left  *MerkleNode
+	Right *MerkleNode
+	Hash  string
 }

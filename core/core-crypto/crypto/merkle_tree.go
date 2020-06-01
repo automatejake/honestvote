@@ -1,27 +1,21 @@
 package crypto
 
 import (
-	"bytes"
+	"encoding/hex"
+
+	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-type MerkleTree struct {
-	RootNode *MerkleNode
-}
-
-type MerkleNode struct {
-	Left  *MerkleNode
-	Right *MerkleNode
-	Hash  []byte
-}
-
-func NewMerkleNode(left *MerkleNode, right *MerkleNode, data []byte) *MerkleNode {
-	node := MerkleNode{}
+//NewMerkleNode Takes in bytes and encodes bytes to hex
+func NewMerkleNode(left *database.MerkleNode, right *database.MerkleNode, data string) *database.MerkleNode {
+	node := database.MerkleNode{}
 
 	if left == nil && right == nil {
 		node.Hash = data
 	} else {
-		prevHashes := append(left.Hash, right.Hash...)
-		node.Hash = CalculateHash(prevHashes)
+		prevHashes := []byte(left.Hash + right.Hash)
+		newHash := CalculateHash(prevHashes)
+		node.Hash = hex.EncodeToString(newHash)
 	}
 
 	node.Left = left
@@ -30,8 +24,9 @@ func NewMerkleNode(left *MerkleNode, right *MerkleNode, data []byte) *MerkleNode
 	return &node
 }
 
-func NewMerkleRoot(data [][]byte) *MerkleTree {
-	var nodes []MerkleNode
+//NewMerkleRoot Creates a merkle tree with the given bytes
+func NewMerkleRoot(data []string) *database.MerkleTree {
+	var nodes []database.MerkleNode
 
 	if len(data)%2 != 0 {
 		data = append(data, data[len(data)-1])
@@ -43,46 +38,24 @@ func NewMerkleRoot(data [][]byte) *MerkleTree {
 	}
 
 	for len(nodes) != 1 {
-		var level []MerkleNode
+		var level []database.MerkleNode
 
 		for j := 0; j < len(nodes)-1; j += 2 {
-			node := NewMerkleNode(&nodes[j], &nodes[j+1], nil)
+			node := NewMerkleNode(&nodes[j], &nodes[j+1], "")
 			level = append(level, *node)
 		}
 
 		nodes = level
 	}
 
-	tree := MerkleTree{&nodes[0]}
+	tree := database.MerkleTree{&nodes[0]}
 
 	return &tree
 }
 
-func TraverseTransaction(transaction []byte, root *MerkleTree) bool {
-	return IsIntroverse(transaction, root.RootNode)
-}
-
-// func IsIntroverse(transaction []byte, node *MerkleNode) bool {
-// 	if node.Left == nil && node.Right == nil {
-// 		return bytes.Equal(node.Hash, transaction)
-// 	}
-
-// 	var l = false
-// 	var r = false
-
-// 	if node.Left != nil {
-// 		l = IsIntreverse(transaction, node.Left)
-// 	}
-
-// 	if node.Right != nil {
-// 		r = IsIntreverse(transaction, node.Right)
-// 	}
-
-// 	return r || l
-// }
-
-func IsIntroverse(transaction []byte, node *MerkleNode) bool {
-	var arr []MerkleNode
+//IsIntroverse Verifies a transaction in the merkle tree
+func IsIntroverse(transaction string, node *database.MerkleNode) bool {
+	var arr []database.MerkleNode
 
 	if node.Left != nil {
 		arr = append(arr, *node.Left)
@@ -93,13 +66,13 @@ func IsIntroverse(transaction []byte, node *MerkleNode) bool {
 	}
 
 	for len(arr) > 0 {
-		var arr2 []MerkleNode
+		var arr2 []database.MerkleNode
 
 		arr2 = arr
 		arr = nil
 
 		for _, node := range arr2 {
-			if bytes.Equal(node.Hash, transaction) {
+			if node.Hash == transaction {
 				return true
 			}
 

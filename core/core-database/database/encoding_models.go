@@ -18,7 +18,7 @@ func (b Block) Encode() ([]byte, error) {
 	object := EncodedBlock{
 		Index:      b.Index,
 		Timestamp:  b.Timestamp,
-		MerkleRoot: b.MerkleRoot,
+		MerkleRoot: b.MerkleRoot.RootNode.Hash,
 		PrevHash:   b.PrevHash,
 		Hash:       b.Hash,
 	}

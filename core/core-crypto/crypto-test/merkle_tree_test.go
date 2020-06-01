@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"strconv"
 	"testing"
 
@@ -8,18 +9,18 @@ import (
 )
 
 func TestNewMerkleRoot(t *testing.T) {
-	byteArray := make([][]byte, 0)
+	stringArray := make([]string, 0)
 
 	for i := 0; i < 10; i++ {
 		hash := crypto.CalculateHash([]byte("hey" + strconv.Itoa(i)))
-		byteArray = append(byteArray, hash)
+		stringArray = append(stringArray, hex.EncodeToString(hash))
 	}
 
-	t.Log(byteArray)
+	t.Log(stringArray)
 
-	tree := crypto.NewMerkleRoot(byteArray)
+	tree := crypto.NewMerkleRoot(stringArray)
 
-	yes := crypto.TraverseTransaction(byteArray[3], tree)
+	yes := crypto.IsIntroverse(stringArray[3], tree.RootNode)
 
 	if yes {
 		t.Log("The transaction is verified.")
