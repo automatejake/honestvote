@@ -5,8 +5,6 @@ import (
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 /*

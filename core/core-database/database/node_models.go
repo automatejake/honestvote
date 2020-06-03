@@ -11,8 +11,8 @@ var EmailRegistrants string = "email_registrants"
 type Block struct {
 	Index       int         `json:"index" bson:"index"`
 	Timestamp   string      `json:"timestamp" bson:"timestamp"`
-	Transaction interface{} `json:"transaction" bson:"transaction"` // not  included in the hash
-	MerkleRoot  MerkleTree  `json:"merkleRoot" bson:"merkleRoot"`
+	Transaction interface{} `json:"transaction" bson:"transaction"` // DO WE WANT TO HOLD A REFERENCE OF ALL TRASNACTION HASH
+	MerkleRoot  *MerkleTree `json:"merkleRoot" bson:"merkleRoot"`
 	Validator   string      `json:"validator" bson:"validator"`
 	Signature   string      `json:"signature" bson:"signature"`
 	PrevHash    string      `json:"prevhash" bson:"prevhash"`

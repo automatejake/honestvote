@@ -25,6 +25,8 @@ type DecodeTransaction struct {
 }
 
 func AddToBlock(transaction interface{}, hash string) {
+	//marshalTransaction, err := json.Marshal(transaction)
+	//hexTransaction := hex.EncodeToString(marshalTransaction)
 	block, err := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey, PrivateKey)
 	if err != nil {
 		logger.Println("read_function.go", "AddToBlock()", err.Error())
