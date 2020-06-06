@@ -52,17 +52,17 @@ type WhiteListElectionSettings struct {
 }
 
 type AwaitingRegistration struct {
-	Email         string `json:"emailAddress"`
-	FirstName     string `json:"firstName"`
-	LastName      string `json:"lastName"`
-	DateOfBirth   string `json:"dateOfBirth"`
-	ElectionName  string `json:"electionName"`
-	ElectionAdmin string `json:"electionAdmin"`
-	Sender        string `json:"publicKey"`
-	SenderSig     string `json:"senderSig"`
-	Code          string `json:"code"`
-	Timestamp     string `json:"timestamp"`
-}
+	Email         string `json:"emailAddress" bson: "emailAddress"`
+	FirstName     string `json:"firstName" bson: "firstName"`
+	LastName      string `json:"lastName" bson: "lastName"`
+	DateOfBirth   string `json:"dateOfBirth" bson: "DateOfBirth"`
+	ElectionName  string `json:"electionName" bson: "ElectionName"`
+	ElectionAdmin string `json:"electionAdmin" bson: "ElectionAdmin"`
+	Sender        string `json:"publicKey" bson: "Sender"`
+	SenderSig     string `json:"senderSig" bson: "SenderSig"`
+	Code          string `json:"code" bson: "code"`
+	Timestamp     string `json:"timestamp" bson: "Timestamp"`
+	Verified     string `json:"verified" bson: "verified"`}
 
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
