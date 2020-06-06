@@ -15,7 +15,7 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 	newBlock.Index = prevBlock.Index + 1
 	newBlock.Timestamp = time.Now().Format(time.RFC1123)
 	newBlock.Transaction = transaction
-	newBlock.MerkleRoot = CalculateMerkleRoot(transaction)
+	//newBlock.MerkleRoot = crypto.NewMerkleRoot(transaction)
 	newBlock.Validator = pubKey
 	newBlock.PrevHash = prevBlock.Hash
 
@@ -36,20 +36,4 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 	}
 
 	return newBlock, nil
-}
-
-func CalculateMerkleRoot(transaction interface{}) string {
-	var hash string
-	switch database.TransactionType(transaction) {
-	case "Registration":
-		hash = transaction.(database.Registration).Signature
-	case "Vote":
-		hash = transaction.(database.Vote).Signature
-	case "Election":
-		hash = transaction.(database.Election).Signature
-	}
-
-	merkleroot := crypto.CalculateHash([]byte(hash))
-	merkleString := hex.EncodeToString(merkleroot)
-	return merkleString
 }

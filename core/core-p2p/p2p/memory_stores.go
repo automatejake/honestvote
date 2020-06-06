@@ -26,7 +26,7 @@ var Whitelist database.WhiteListElectionSettings
 var REGISTRATION_TYPE string
 
 // Transactions quene holds transactions that are not yet ready to broadcast to the chain
-var TransactionQuene interface{}
+var TransactionQueue []interface{}
 
 // These are used to determine who is responsible for generating a block at any given time.  Found in broadcaster.go
 var GenesisBlockTime int64 = 0
