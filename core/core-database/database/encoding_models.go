@@ -22,7 +22,7 @@ func (b Block) Encode() ([]byte, error) {
 		PrevHash:   b.PrevHash,
 		Hash:       b.Hash,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "utf8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
 		return encoded, err
 	}
@@ -50,7 +50,7 @@ func (e Election) Encode() ([]byte, error) {
 		EmailDomain:  e.EmailDomain,
 		Positions:    e.Positions,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "utf8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
 		return encoded, err
 	}
@@ -70,7 +70,7 @@ func (r Registration) Encode() ([]byte, error) {
 		Receiver:    r.Receiver,
 		RecieverSig: r.RecieverSig,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "utf8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
 		logger.Println("encoding_models.go", "Encode(Registration)", err)
 		return encoded, err
@@ -89,7 +89,7 @@ func (v Vote) Encode() ([]byte, error) {
 		Election: v.Election,
 		Receiver: v.Receiver,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "utf8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
 		logger.Println("encoding_models.go", "Encode(Vote)", err)
 		return encoded, err
@@ -114,7 +114,7 @@ func (n Node) Encode() ([]byte, error) {
 		Timestamp:   n.Timestamp,
 		Role:        n.Role,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "utf8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
 		logger.Println("encoding_models.go", "Encode(Node)", err)
 		return encoded, err
