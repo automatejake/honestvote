@@ -6,4 +6,5 @@ go run main.go --tcp 7004 --http 7005 --role producer --collection-prefix b_ --r
 
 sleep 10
 
+
 go run main.go --tcp 7006 --http 7007 --role producer --collection-prefix c_ --registry-host 127.0.0.1 --registry-port 7002 --private-key "034d0264bb8c09c0eed070ee3b85fc35cd11d2e22eb3b15c4bddea33fa27058b42" --public-key "5a3610bfc758fb8d5653023cce6a2b06a15d89d95806b993c4caaa112947a5d8" --registry false & \
