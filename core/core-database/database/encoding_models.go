@@ -16,11 +16,11 @@ type EncodedBlock struct {
 
 func (b Block) Encode() ([]byte, error) {
 	object := EncodedBlock{
-		Index:      b.Index,
-		Timestamp:  b.Timestamp,
-		MerkleRoot: b.MerkleRoot.RootNode.Hash,
-		PrevHash:   b.PrevHash,
-		Hash:       b.Hash,
+		Index:     b.Index,
+		Timestamp: b.Timestamp,
+		// MerkleRoot: b.MerkleRoot.RootNode.Hash,
+		PrevHash: b.PrevHash,
+		Hash:     b.Hash,
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
@@ -32,7 +32,6 @@ func (b Block) Encode() ([]byte, error) {
 
 type EncodedElection struct {
 	ElectionName string     `json:"electionName"` //Data Start
-	Institution  string     `json:"institutionName"`
 	Description  string     `json:"description"`
 	Start        string     `json:"startDate"`
 	End          string     `json:"endDate"`
@@ -43,7 +42,6 @@ type EncodedElection struct {
 func (e Election) Encode() ([]byte, error) {
 	object := EncodedElection{
 		ElectionName: e.ElectionName,
-		Institution:  e.Institution,
 		Description:  e.Description,
 		Start:        e.Start,
 		End:          e.End,
@@ -91,7 +89,7 @@ func (v Vote) Encode() ([]byte, error) {
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
-		logger.Println("encoding_models.go", "Encode(Vote)", err)
+		logger.Println("encoding_models.go", "EncodeVote()", err)
 		return encoded, err
 	}
 

@@ -98,8 +98,8 @@ type Position struct {
 }
 
 type Candidate struct {
-	Name      string `json:"name" bson:"name"`
 	Recipient string `json:"key" bson:"key"`
+	Name      string `json:"name" bson:"name"`
 }
 
 type Node struct {
