@@ -31,7 +31,6 @@ func (b Block) Encode() ([]byte, error) {
 
 type EncodedElection struct {
 	ElectionName string     `json:"electionName"` //Data Start
-	Institution  string     `json:"institutionName"`
 	Description  string     `json:"description"`
 	Start        string     `json:"startDate"`
 	End          string     `json:"endDate"`
@@ -42,14 +41,13 @@ type EncodedElection struct {
 func (e Election) Encode() ([]byte, error) {
 	object := EncodedElection{
 		ElectionName: e.ElectionName,
-		Institution:  e.Institution,
 		Description:  e.Description,
 		Start:        e.Start,
 		End:          e.End,
 		EmailDomain:  e.EmailDomain,
 		Positions:    e.Positions,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "UTF8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
 		return encoded, err
 	}
@@ -69,7 +67,7 @@ func (r Registration) Encode() ([]byte, error) {
 		Receiver:    r.Receiver,
 		RecieverSig: r.RecieverSig,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "UTF8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
 		logger.Println("encoding_models.go", "Encode(Registration)", err)
 		return encoded, err
@@ -88,9 +86,9 @@ func (v Vote) Encode() ([]byte, error) {
 		Election: v.Election,
 		Receiver: v.Receiver,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "UTF8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
-		logger.Println("encoding_models.go", "Encode(Vote)", err)
+		logger.Println("encoding_models.go", "EncodeVote()", err)
 		return encoded, err
 	}
 
@@ -113,7 +111,7 @@ func (n Node) Encode() ([]byte, error) {
 		Timestamp:   n.Timestamp,
 		Role:        n.Role,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "UTF8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
 		logger.Println("encoding_models.go", "Encode(Node)", err)
 		return encoded, err

@@ -40,6 +40,7 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				w.Write([]byte("You have registered successfully!  Go back to the app to vote."))
 			}
+
 		}
 	} else if params["verified"] == "false" {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", string(registrant.Sender)+" is not supposed to be registered to vote for "+registrant.ElectionName)

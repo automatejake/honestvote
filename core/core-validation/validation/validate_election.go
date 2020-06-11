@@ -15,6 +15,7 @@ func GenerateElectionHeaders(e database.Election) ([]byte, error) {
 		logger.Println("validate_election.go", "GenerateElectionHeaders()", err)
 		return nil, err
 	}
+	logger.Println("validate_election.go", "GenerateElectionHeaders", encoded)
 
 	hash := crypto.CalculateHash(encoded)
 

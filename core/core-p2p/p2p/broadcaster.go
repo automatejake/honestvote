@@ -44,10 +44,10 @@ func BroadcastScheduler() {
 					election := &database.Election{}
 					err := json.Unmarshal(transaction_json, election)
 					if err != nil {
-						logger.Println("construct_blocks.go", "RecieveTransactions()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
-					logger.Println("construct_blocks.go", "RecieveTransactions()", "Received transaction")
-					logger.Println("construct_blocks.go", "RecieveTransactions()", election)
+					logger.Println("broadcaster.go", "BroadcastScheduler()", "Received transaction")
+					logger.Println("broadcaster.go", "BroadcastScheduler()", election)
 
 					valid, err := validation.IsValidElection(*election)
 					if valid {
@@ -55,13 +55,13 @@ func BroadcastScheduler() {
 						election.BlockIndex = PreviousBlock.Index + 1
 						AddTransactionToList(election, transaction_type.Type)
 					} else {
-						logger.Println("construct_blocks.go", "RecieveTransaction()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 				case "Registration":
 					registration := &database.Registration{}
 					err := json.Unmarshal(transaction_json, &registration)
 					if err != nil {
-						logger.Println("construct_blocks.go", "RecieveTransactions()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 
 					valid, err := validation.IsValidRegistration(*registration)
@@ -74,26 +74,26 @@ func BroadcastScheduler() {
 						registration.BlockIndex = PreviousBlock.Index + 1
 						AddTransactionToList(registration, transaction_type.Type)
 					} else {
-						logger.Println("construct_blocks.go", "RecieveTransaction()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 				case "Vote":
 					vote := &database.Vote{}
 					err := json.Unmarshal(transaction_json, vote)
 					if err != nil {
-						logger.Println("construct_blocks.go", "RecieveTransactions()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 
 					valid, err := validation.IsValidVote(*vote)
 
 					if valid {
-						logger.Println("construct_blocks.go", "RecieveTransaction()", "Passed validation")
+						logger.Println("broadcaster.go", "BroadcastScheduler()", "Passed validation")
 						websocket.BroadcastVote(*vote)
 
 						//Add transaction to list of transactions in block and save block index to make validating faster
 						vote.BlockIndex = PreviousBlock.Index + 1
 						AddTransactionToList(vote, transaction_type.Type)
 					} else {
-						logger.Println("construct_blocks.go", "RecieveTransaction()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 				}
 
