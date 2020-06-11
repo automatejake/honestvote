@@ -31,22 +31,24 @@ func (b Block) Encode() ([]byte, error) {
 }
 
 type EncodedElection struct {
-	ElectionName string     `json:"electionName"` //Data Start
-	Description  string     `json:"description"`
-	Start        string     `json:"startDate"`
-	End          string     `json:"endDate"`
-	EmailDomain  string     `json:"emailDomain"`
-	Positions    []Position `json:"positions"` //Data End
+	ElectionName    string          `json:"electionName"` //Data Start
+	Description     string          `json:"description"`
+	Start           string          `json:"startDate"`
+	End             string          `json:"endDate"`
+	EmailDomain     string          `json:"emailDomain"`
+	Positions       []Position      `json:"positions"`
+	ElectionOptions ElectionOptions `json:"electionOptions"` //Data End
 }
 
 func (e Election) Encode() ([]byte, error) {
 	object := EncodedElection{
-		ElectionName: e.ElectionName,
-		Description:  e.Description,
-		Start:        e.Start,
-		End:          e.End,
-		EmailDomain:  e.EmailDomain,
-		Positions:    e.Positions,
+		ElectionName:    e.ElectionName,
+		Description:     e.Description,
+		Start:           e.Start,
+		End:             e.End,
+		EmailDomain:     e.EmailDomain,
+		Positions:       e.Positions,
+		ElectionOptions: e.ElectionOptions,
 	}
 	encoded, err := asn1.Marshal(object)
 	if err != nil {
