@@ -66,12 +66,12 @@ func IsIntroverse(transaction string, node *database.MerkleNode) bool {
 	}
 
 	for len(arr) > 0 {
-		var arr2 []database.MerkleNode
+		var tempArr []database.MerkleNode
 
-		arr2 = arr
+		tempArr = arr
 		arr = nil
 
-		for _, node := range arr2 {
+		for _, node := range tempArr {
 			if node.Hash == transaction {
 				return true
 			}

@@ -1,11 +1,9 @@
 package p2p
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"time"
 
-	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-validation/validation"
 	"github.com/jneubaum/honestvote/core/core-websocket/websocket"
@@ -53,7 +51,9 @@ func BroadcastScheduler() {
 
 					valid, err := validation.IsValidElection(*election)
 					if valid {
-						AddToBlock(election, hex.EncodeToString(crypto.CalculateHash([]byte(election.Signature))))
+						//Add transaction to list of transactions in block and save block index to make validating later faster
+						election.BlockIndex = PreviousBlock.Index + 1
+						AddTransactionToList(election, transaction_type.Type)
 					} else {
 						logger.Println("construct_blocks.go", "RecieveTransaction()", err)
 					}
@@ -69,7 +69,10 @@ func BroadcastScheduler() {
 					if valid {
 						logger.Println("", "", "Sending Registration")
 						websocket.SendRegistration(*registration)
-						AddToBlock(registration, hex.EncodeToString(crypto.CalculateHash([]byte(registration.Signature))))
+
+						//Add transaction to list of transactions in block and save block index to make validating faster
+						registration.BlockIndex = PreviousBlock.Index + 1
+						AddTransactionToList(registration, transaction_type.Type)
 					} else {
 						logger.Println("construct_blocks.go", "RecieveTransaction()", err)
 					}
@@ -85,13 +88,18 @@ func BroadcastScheduler() {
 					if valid {
 						logger.Println("construct_blocks.go", "RecieveTransaction()", "Passed validation")
 						websocket.BroadcastVote(*vote)
-						AddToBlock(vote, hex.EncodeToString(crypto.CalculateHash([]byte(vote.Signature))))
+
+						//Add transaction to list of transactions in block and save block index to make validating faster
+						vote.BlockIndex = PreviousBlock.Index + 1
+						AddTransactionToList(vote, transaction_type.Type)
 					} else {
 						logger.Println("construct_blocks.go", "RecieveTransaction()", err)
 					}
 				}
 
 			}
+
+			CreateBlock()
 
 		}
 

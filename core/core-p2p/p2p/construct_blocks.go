@@ -1,7 +1,10 @@
 package p2p
 
 import (
+	"fmt"
+
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
@@ -24,17 +27,35 @@ type DecodeTransaction struct {
 	Type string `json:"type" bson:"type"`
 }
 
-func AddToBlock(transaction interface{}, hash string) {
-	//marshalTransaction, err := json.Marshal(transaction)
-	//hexTransaction := hex.EncodeToString(marshalTransaction)
-	block, err := consensus.GenerateBlock(PreviousBlock, transaction, PublicKey, PrivateKey)
+//Add transaction to list as hex hash and add interface to database collection for corresponding transaction collection
+func AddTransactionToList(transaction interface{}, tranType string) {
+	hexTransaction := crypto.HashTransaction(transaction)
+	TransactionsInBlock = append(TransactionsInBlock, hexTransaction)
+
+	fmt.Println("Adding Transaction")
+
+	switch tranType {
+	case "Election":
+		database.AddTransaction(transaction, "elections")
+		ProposeTransaction(transaction, "elections")
+	case "Registration":
+		database.AddTransaction(transaction, "registrations")
+		ProposeTransaction(transaction, "registrations")
+	case "Vote":
+		database.AddTransaction(transaction, "votes")
+		ProposeTransaction(transaction, "votes")
+	}
+}
+
+func CreateBlock() {
+	block, err := consensus.GenerateBlock(PreviousBlock, TransactionsInBlock, PublicKey, PrivateKey)
+
 	if err != nil {
 		logger.Println("read_function.go", "AddToBlock()", err.Error())
 	}
 
-	// block.MerkleRoot = hash
-
-	//Check if there is a proposed block currently, if so, add to the queue
+	//Clear the list of transactions in a block for the next set
+	TransactionsInBlock = nil
 
 	logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
 
