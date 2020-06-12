@@ -23,7 +23,9 @@ func BroadcastScheduler() {
 		time := time.Now().UnixNano() / 1000000 //time in milliseconds_
 		leader := ((time - GenesisBlockTime) / Step) % ConsensusNodes
 
-		if TransactionQueue != nil && leader == 0 {
+		if len(TransactionQueue) > 0 && leader == 0 {
+			logger.Println("broadcaster.go", "BroadcastScheduler()", "Going through transactions")
+
 			// create a block from validated transactions in transaction quene
 			for i := 0; i < len(TransactionQueue); i++ {
 				transaction := Dequeue()
@@ -53,7 +55,7 @@ func BroadcastScheduler() {
 					if valid {
 						//Add transaction to list of transactions in block and save block index to make validating later faster
 						election.BlockIndex = PreviousBlock.Index + 1
-						AddTransactionToList(election, transaction_type.Type)
+						AddTransactionToList(*election, transaction_type.Type)
 					} else {
 						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
@@ -72,7 +74,7 @@ func BroadcastScheduler() {
 
 						//Add transaction to list of transactions in block and save block index to make validating faster
 						registration.BlockIndex = PreviousBlock.Index + 1
-						AddTransactionToList(registration, transaction_type.Type)
+						AddTransactionToList(*registration, transaction_type.Type)
 					} else {
 						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
@@ -91,7 +93,7 @@ func BroadcastScheduler() {
 
 						//Add transaction to list of transactions in block and save block index to make validating faster
 						vote.BlockIndex = PreviousBlock.Index + 1
-						AddTransactionToList(vote, transaction_type.Type)
+						AddTransactionToList(*vote, transaction_type.Type)
 					} else {
 						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}

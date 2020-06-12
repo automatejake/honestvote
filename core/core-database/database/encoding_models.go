@@ -21,7 +21,7 @@ func (b Block) Encode() ([]byte, error) {
 		MerkleRoot: b.MerkleRoot.RootNode.Hash,
 		PrevHash:   b.PrevHash,
 	}
-	encoded, err := asn1.MarshalWithParams(object, "UTF8")
+	encoded, err := asn1.Marshal(object)
 	if err != nil {
 		return encoded, err
 	}

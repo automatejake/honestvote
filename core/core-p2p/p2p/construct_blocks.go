@@ -13,6 +13,7 @@ func Dequeue() interface{} {
 	if len(TransactionQueue) > 0 {
 		earliestTransaction := TransactionQueue[0]
 		TransactionQueue = TransactionQueue[1:]
+		logger.Println("construct_blocks.go", "Dequeue()", TransactionQueue)
 		return earliestTransaction
 	} else {
 		return nil
@@ -20,6 +21,7 @@ func Dequeue() interface{} {
 }
 
 func Enqueue(transaction interface{}) {
+	logger.Println("construct_blocks.go", "Enqueue()", "Enqueue transaction")
 	TransactionQueue = append(TransactionQueue, transaction)
 }
 
@@ -30,9 +32,8 @@ type DecodeTransaction struct {
 //Add transaction to list as hex hash and add interface to database collection for corresponding transaction collection
 func AddTransactionToList(transaction interface{}, tranType string) {
 	hexTransaction := crypto.HashTransaction(transaction)
+	fmt.Println("Hex Transaction: ", hexTransaction)
 	TransactionsInBlock = append(TransactionsInBlock, hexTransaction)
-
-	fmt.Println("Adding Transaction")
 
 	switch tranType {
 	case "Election":

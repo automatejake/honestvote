@@ -27,12 +27,13 @@ func SignTransaction(hash string, privKey string) (string, error) {
 }
 
 func HashTransaction(transaction interface{}) string {
-	encoded, err := asn1.MarshalWithParams(transaction, "UTF8")
+	encoded, err := asn1.Marshal(transaction)
 	if err != nil {
-		logger.Println("encoding_models.go", "Encode(Vote)", err)
+		logger.Println("hashing.go", "HashTransaction()", err)
 	}
 
-	hexTransaction := hex.EncodeToString(encoded)
+	calcHash := CalculateHash(encoded)
+	hexTransaction := hex.EncodeToString(calcHash)
 
 	return hexTransaction
 }
