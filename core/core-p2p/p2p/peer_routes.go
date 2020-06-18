@@ -53,13 +53,7 @@ func HandleConn(conn net.Conn) {
 					logger.Println("peer_routes.go", "RegisterNode", err.Error())
 				}
 			}
-		case "receive data":
-			DecodeData(message.Data)
-		case "grab data":
-			GrabDocuments(database.MongoDB, conn, string(message.Data))
-		case "transaction":
-
-		// ReceiveTransaction(message.Type, message.Data)
+			// ReceiveTransaction(message.Type, message.Data)
 		case "register":
 			var registrant database.AwaitingRegistration
 			err := json.Unmarshal(message.Data, &registrant)
@@ -75,6 +69,33 @@ func HandleConn(conn net.Conn) {
 		case "become peer":
 			var node database.Node
 			json.Unmarshal(message.Data, &node)
+		case "grab data":
+			GrabDocuments(database.MongoDB, conn, string(message.Data))
+		case "receive block":
+			DecodeBlockData(message.Data)
+		case "receive transaction":
+			DecodeTransactionData(message.Data, message.Type)
+		case "send transaction":
+			switch message.Type {
+			case "elections":
+				var election database.Election
+				err := json.Unmarshal(message.Data, &election)
+				if err == nil {
+					database.AddTransaction(election, message.Type)
+				}
+			case "registrations":
+				var registration database.Registration
+				err := json.Unmarshal(message.Data, &registration)
+				if err == nil {
+					database.AddTransaction(registration, message.Type)
+				}
+			case "votes":
+				var vote database.Vote
+				err := json.Unmarshal(message.Data, &vote)
+				if err == nil {
+					database.AddTransaction(vote, message.Type)
+				}
+			}
 		case "verify block":
 			var block database.Block
 

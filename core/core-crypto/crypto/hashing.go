@@ -2,6 +2,8 @@ package crypto
 
 import (
 	"crypto/sha256"
+	"encoding/asn1"
+	"encoding/hex"
 
 	"github.com/jneubaum/honestvote/tests/logger"
 )
@@ -22,4 +24,16 @@ func SignTransaction(hash string, privKey string) (string, error) {
 		return "", err
 	}
 	return signature, nil
+}
+
+func HashTransaction(transaction interface{}) string {
+	encoded, err := asn1.Marshal(transaction)
+	if err != nil {
+		logger.Println("hashing.go", "HashTransaction()", err)
+	}
+
+	calcHash := CalculateHash(encoded)
+	hexTransaction := hex.EncodeToString(calcHash)
+
+	return hexTransaction
 }

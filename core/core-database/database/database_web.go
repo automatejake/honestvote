@@ -6,18 +6,15 @@ import (
 	"strconv"
 
 	"github.com/jneubaum/honestvote/tests/logger"
-	"github.com/mitchellh/mapstructure"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GetElections() ([]Election, error) {
-	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
-	var block Block
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "elections")
 	var elections []Election
 	var election Election
 
-	query := bson.M{"transaction.type": "Election"}
+	query := bson.M{}
 
 	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
@@ -25,20 +22,12 @@ func GetElections() ([]Election, error) {
 	}
 
 	for result.Next(context.TODO()) {
-		err = result.Decode(&block)
+		err = result.Decode(&election)
 		if err != nil {
 			logger.Println("database_web", "GetElection", err)
 		}
 
-		annoying_mongo_form := block.Transaction.(primitive.D).Map()
-		mapstructure.Decode(annoying_mongo_form, &election)
-
-		election.Start = annoying_mongo_form["startDate"].(string)
-		election.End = annoying_mongo_form["endDate"].(string)
-		election.Institution = annoying_mongo_form["institutionName"].(string)
-
 		elections = append(elections, election)
-
 	}
 
 	result.Close(context.TODO())
@@ -46,74 +35,29 @@ func GetElections() ([]Election, error) {
 }
 
 func GetElection(election_signature string) (Election, error) {
-	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
-	var block Block
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "elections")
 	var election Election
 
-	query := bson.M{"transaction.type": "Election", "transaction.signature": election_signature}
+	query := bson.M{"signature": election_signature}
 
 	result := collection.FindOne(context.TODO(), query)
 
-	err := result.Decode(&block)
+	err := result.Decode(&election)
 	if err != nil {
 		logger.Println("database_web", "GetElection", err.Error())
 		return election, err
-	}
-
-	annoying_mongo_form := block.Transaction.(primitive.D).Map()
-	mapstructure.Decode(annoying_mongo_form, &election)
-
-	election.Start = annoying_mongo_form["startDate"].(string)
-	election.End = annoying_mongo_form["endDate"].(string)
-	election.Institution = annoying_mongo_form["institutionName"].(string)
-
-	election.Positions = nil
-
-	if tran, ok := block.Transaction.(primitive.D); ok {
-		tranMap := tran.Map()
-
-		if pos, ok := tranMap["positions"].(primitive.A); ok {
-			for _, position := range pos {
-				var tempPos Position
-
-				if posInfo, ok := position.(primitive.D); ok {
-					posMap := posInfo.Map()
-
-					tempPos.Name = posMap["displayName"].(string)
-					tempPos.PositionId = posMap["id"].(string)
-
-					if cand, ok := posMap["candidates"].(primitive.A); ok {
-						for _, candidate := range cand {
-							var tempCand Candidate
-
-							if candInfo, ok := candidate.(primitive.D); ok {
-								candMap := candInfo.Map()
-
-								tempCand.Name = candMap["name"].(string)
-								tempCand.Recipient = candMap["key"].(string)
-
-								tempPos.Candidates = append(tempPos.Candidates, tempCand)
-							}
-						}
-					}
-
-					election.Positions = append(election.Positions, tempPos)
-				}
-			}
-		}
 	}
 
 	return election, nil
 }
 
 func GetVotes(electionId string) ([]Vote, error) {
-	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
-	var block Block
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "votes")
 
 	var votes []Vote
 	var vote Vote
 
-	query := bson.M{"transaction.type": "Vote", "transaction.electionId": electionId}
+	query := bson.M{"electionId": electionId}
 
 	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
@@ -121,36 +65,12 @@ func GetVotes(electionId string) ([]Vote, error) {
 	}
 
 	for result.Next(context.TODO()) {
-		err = result.Decode(&block)
+		err = result.Decode(&vote)
 		if err != nil {
 			logger.Println("database_web", "GetElection", err.Error())
 		}
 
-		annoying_mongo_form := block.Transaction.(primitive.D)
-		mapstructure.Decode(annoying_mongo_form.Map(), &vote)
-
-		vote.Receiver = nil
-
-		if tran, ok := block.Transaction.(primitive.D); ok {
-			tranMap := tran.Map()
-
-			if votes, ok := tranMap["receivers"].(primitive.A); ok {
-				for _, v := range votes {
-
-					var candidate SelectedCandidate
-					if obj, ok := v.(primitive.D); ok {
-
-						voteInfo := obj.Map()
-						candidate.PositionId = voteInfo["positionId"].(string)
-						candidate.Recipient = voteInfo["candidateName"].(string)
-					}
-					vote.Receiver = append(vote.Receiver, candidate)
-				}
-			}
-		}
-
 		votes = append(votes, vote)
-
 	}
 
 	result.Close(context.TODO())
@@ -158,27 +78,24 @@ func GetVotes(electionId string) ([]Vote, error) {
 }
 
 func GetPermissions(public_key string) ([]string, error) {
-	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "blockchain")
-	var block Block
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "registrations")
+	var registration Registration
 	var elections []string
 
-	query := bson.M{"transaction.type": "Registration", "transaction.receiver": public_key}
+	query := bson.M{"receiver": public_key}
 	result, err := collection.Find(context.TODO(), query)
 	if err != nil {
 		logger.Println("database_web", "GetElection", err.Error())
 	}
 
 	for result.Next(context.TODO()) {
-		err = result.Decode(&block)
+		err = result.Decode(&registration)
 		if err != nil {
 			logger.Println("database_web", "GetElection", err.Error())
 		}
 
-		annoying_mongo_form := block.Transaction.(primitive.D)
-		election := annoying_mongo_form.Map()["electionId"].(string)
-
+		election := registration.Election
 		elections = append(elections, election)
-
 	}
 
 	result.Close(context.TODO())

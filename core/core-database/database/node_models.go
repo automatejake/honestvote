@@ -9,14 +9,13 @@ var Connections string = "node_list"    // Nodes on network
 var EmailRegistrants string = "email_registrants"
 
 type Block struct {
-	Index       int         `json:"index" bson:"index"`
-	Timestamp   string      `json:"timestamp" bson:"timestamp"`
-	Transaction interface{} `json:"transaction" bson:"transaction"` // DO WE WANT TO HOLD A REFERENCE OF ALL TRASNACTION HASH
-	MerkleRoot  *MerkleTree `json:"merkleRoot" bson:"merkleRoot"`
-	Validator   string      `json:"validator" bson:"validator"`
-	Signature   string      `json:"signature" bson:"signature"`
-	PrevHash    string      `json:"prevhash" bson:"prevhash"`
-	Hash        string      `json:"hash" bson:"hash"`
+	Index      int         `json:"index" bson:"index"`
+	Timestamp  string      `json:"timestamp" bson:"timestamp"`
+	MerkleRoot *MerkleTree `json:"merkleRoot" bson:"merkleRoot"`
+	Validator  string      `json:"validator" bson:"validator"`
+	Signature  string      `json:"signature" bson:"signature"`
+	PrevHash   string      `json:"prevhash" bson:"prevhash"`
+	Hash       string      `json:"hash" bson:"hash"`
 }
 
 /*
@@ -33,6 +32,7 @@ type Registration struct {
 	RecieverSig string `json:"recieverSig" bson:"senderSig"`
 	Sender      string `json:"sender" bson:"sender"`
 	Signature   string `json:"signature" bson:"signature"`
+	BlockIndex  int    `json:"blockIndex" bson:"blockIndex"`
 }
 
 type AdminSettings struct {
@@ -66,11 +66,12 @@ type AwaitingRegistration struct {
 
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
-	Type      string              `json:"type" bson:"type"`
-	Election  string              `json:"electionId" bson:"electionId"` //Data Start
-	Receiver  []SelectedCandidate `json:"receivers" bson:"receivers"`   //Data End
-	Sender    string              `json:"sender" bson:"sender"`
-	Signature string              `json:"signature" bson:"signature"`
+	Type       string              `json:"type" bson:"type"`
+	Election   string              `json:"electionId" bson:"electionId"` //Data Start
+	Receiver   []SelectedCandidate `json:"receivers" bson:"receivers"`   //Data End
+	Sender     string              `json:"sender" bson:"sender"`
+	Signature  string              `json:"signature" bson:"signature"`
+	BlockIndex int                 `json:"blockIndex" bson:"blockIndex"`
 }
 
 type SelectedCandidate struct {
@@ -89,6 +90,7 @@ type Election struct {
 	Positions    []Position `json:"positions" bson:"positions"` //Data End
 	Sender       string     `json:"sender" bson:"sender"`
 	Signature    string     `json:"signature" bson:"signature"`
+	BlockIndex   int        `json:"blockIndex" bson:"blockIndex"`
 }
 
 type Position struct {
@@ -98,8 +100,8 @@ type Position struct {
 }
 
 type Candidate struct {
-	Name      string `json:"name" bson:"name"`
 	Recipient string `json:"key" bson:"key"`
+	Name      string `json:"name" bson:"name"`
 }
 
 type Node struct {
@@ -118,7 +120,8 @@ type MerkleTree struct {
 }
 
 type MerkleNode struct {
-	Left  *MerkleNode
-	Right *MerkleNode
-	Hash  string
+	Hierarchy int //Higher number, closer to the root
+	Left      *MerkleNode
+	Right     *MerkleNode
+	Hash      string
 }

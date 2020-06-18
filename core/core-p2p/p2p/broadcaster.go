@@ -1,11 +1,9 @@
 package p2p
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"time"
 
-	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-validation/validation"
 	"github.com/jneubaum/honestvote/core/core-websocket/websocket"
@@ -25,7 +23,9 @@ func BroadcastScheduler() {
 		time := time.Now().UnixNano() / 1000000 //time in milliseconds_
 		leader := ((time - GenesisBlockTime) / Step) % ConsensusNodes
 
-		if TransactionQueue != nil && leader == 0 {
+		if len(TransactionQueue) > 0 && leader == 0 {
+			logger.Println("broadcaster.go", "BroadcastScheduler()", "Going through transactions")
+
 			// create a block from validated transactions in transaction quene
 			for i := 0; i < len(TransactionQueue); i++ {
 				transaction := Dequeue()
@@ -46,22 +46,24 @@ func BroadcastScheduler() {
 					election := &database.Election{}
 					err := json.Unmarshal(transaction_json, election)
 					if err != nil {
-						logger.Println("construct_blocks.go", "RecieveTransactions()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
-					logger.Println("construct_blocks.go", "RecieveTransactions()", "Received transaction")
-					logger.Println("construct_blocks.go", "RecieveTransactions()", election)
+					logger.Println("broadcaster.go", "BroadcastScheduler()", "Received transaction")
+					logger.Println("broadcaster.go", "BroadcastScheduler()", election)
 
 					valid, err := validation.IsValidElection(*election)
 					if valid {
-						AddToBlock(election, hex.EncodeToString(crypto.CalculateHash([]byte(election.Signature))))
+						//Add transaction to list of transactions in block and save block index to make validating later faster
+						election.BlockIndex = PreviousBlock.Index + 1
+						AddTransactionToList(*election, transaction_type.Type)
 					} else {
-						logger.Println("construct_blocks.go", "RecieveTransaction()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 				case "Registration":
 					registration := &database.Registration{}
 					err := json.Unmarshal(transaction_json, &registration)
 					if err != nil {
-						logger.Println("construct_blocks.go", "RecieveTransactions()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 
 					valid, err := validation.IsValidRegistration(*registration)
@@ -69,29 +71,37 @@ func BroadcastScheduler() {
 					if valid {
 						logger.Println("", "", "Sending Registration")
 						websocket.SendRegistration(*registration)
-						AddToBlock(registration, hex.EncodeToString(crypto.CalculateHash([]byte(registration.Signature))))
+
+						//Add transaction to list of transactions in block and save block index to make validating faster
+						registration.BlockIndex = PreviousBlock.Index + 1
+						AddTransactionToList(*registration, transaction_type.Type)
 					} else {
-						logger.Println("construct_blocks.go", "RecieveTransaction()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 				case "Vote":
 					vote := &database.Vote{}
 					err := json.Unmarshal(transaction_json, vote)
 					if err != nil {
-						logger.Println("construct_blocks.go", "RecieveTransactions()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 
 					valid, err := validation.IsValidVote(*vote)
 
 					if valid {
-						logger.Println("construct_blocks.go", "RecieveTransaction()", "Passed validation")
+						logger.Println("broadcaster.go", "BroadcastScheduler()", "Passed validation")
 						websocket.BroadcastVote(*vote)
-						AddToBlock(vote, hex.EncodeToString(crypto.CalculateHash([]byte(vote.Signature))))
+
+						//Add transaction to list of transactions in block and save block index to make validating faster
+						vote.BlockIndex = PreviousBlock.Index + 1
+						AddTransactionToList(*vote, transaction_type.Type)
 					} else {
-						logger.Println("construct_blocks.go", "RecieveTransaction()", err)
+						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 				}
 
 			}
+
+			CreateBlock()
 
 		}
 

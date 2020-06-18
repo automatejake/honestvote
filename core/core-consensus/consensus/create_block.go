@@ -9,13 +9,12 @@ import (
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey string, privKey string) (database.Block, error) {
+func GenerateBlock(prevBlock database.Block, transactions []string, pubKey string, privKey string) (database.Block, error) {
 	var newBlock database.Block
 
 	newBlock.Index = prevBlock.Index + 1
 	newBlock.Timestamp = time.Now().Format(time.RFC1123)
-	newBlock.Transaction = transaction
-	//newBlock.MerkleRoot = crypto.NewMerkleRoot(transaction)
+	newBlock.MerkleRoot = crypto.NewMerkleRoot(transactions)
 	newBlock.Validator = pubKey
 	newBlock.PrevHash = prevBlock.Hash
 
@@ -27,7 +26,7 @@ func GenerateBlock(prevBlock database.Block, transaction interface{}, pubKey str
 	hash := crypto.CalculateHash(header)
 	newBlock.Hash = hex.EncodeToString(hash)
 
-	signature, err := crypto.Sign([]byte(newBlock.Hash), privKey)
+	signature, err := crypto.Sign(hash, privKey)
 	if err != nil {
 		logger.Println("create_block.go", "GenerateBlock()", err)
 		newBlock.Signature = "None"
