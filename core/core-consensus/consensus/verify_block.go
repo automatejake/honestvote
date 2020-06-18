@@ -2,12 +2,11 @@ package consensus
 
 import (
 	"encoding/hex"
-	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
-	"github.com/jneubaum/honestvote/core/core-validation/validation"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -42,48 +41,6 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 		return false, customErr
 	}
 
-	// Iterate through transactions contained in block and make sure that they are valid
-	var honestTransaction bool
-
-	transaction := block.Transaction.(map[string]interface{})
-	switch transaction["type"] {
-	case "Election":
-		data, err := json.Marshal(transaction)
-		if err != nil {
-			logger.Println("verify_block.go", "IsBlockValid()", err)
-		}
-		var election database.Election
-		err = json.Unmarshal(data, &election)
-		honestTransaction, err = validation.IsValidElection(election)
-	case "Registration":
-		data, err := json.Marshal(transaction)
-		if err != nil {
-			logger.Println("verify_block.go", "IsBlockValid()", err)
-		}
-		var registration database.Registration
-		err = json.Unmarshal(data, &registration)
-		honestTransaction, err = validation.IsValidRegistration(registration)
-	case "Vote":
-		data, err := json.Marshal(transaction)
-		if err != nil {
-			logger.Println("verify_block.go", "IsBlockValid()", err)
-		}
-		var vote database.Vote
-		err = json.Unmarshal(data, &vote)
-		honestTransaction, err = validation.IsValidVote(vote)
-	}
-	if !honestTransaction {
-		customErr.Message = "Block contains an invalid transaction:\n |" + err.Error() + "\nInvalid block is rejected."
-		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
-		return false, customErr
-	}
-
-	// // Make sure that the merkle root is correct
-	// if CalculateMerkleRoot(block) != block.MerkleRoot {
-	// 	customErr.Message = "Block's merkle root is incorrect" + ending
-	// 	return false, customErr
-	// }
-
 	// // Make sure that the block hash is correct
 	header, err := block.Encode()
 	if err != nil {
@@ -107,8 +64,10 @@ func CheckSignature(block database.Block) bool {
 	// Make sure that the block signature is correct
 	valid, err := crypto.Verify([]byte(hash), block.Validator, block.Signature)
 	if err != nil {
+		fmt.Println(err)
 		return false
 	} else if !valid {
+		fmt.Println(valid)
 		return false
 	}
 

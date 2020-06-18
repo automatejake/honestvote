@@ -16,7 +16,7 @@ var EmailDomain string = ""
 var AdminPriv, AdminPub string
 var FileName string = "../tests/mock-data/mock_data.sh"
 var ScriptName string = "../scripts/deploy-local-chain.sh"
-var Description string = "This is for that"
+var Description string = "Vote for the charity of your choice"
 
 func main() {
 	err := os.Chdir("../../build")

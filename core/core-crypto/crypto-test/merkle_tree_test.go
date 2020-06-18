@@ -11,21 +11,17 @@ import (
 func TestNewMerkleRoot(t *testing.T) {
 	stringArray := make([]string, 0)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 49; i++ {
 		hash := crypto.CalculateHash([]byte("hey" + strconv.Itoa(i)))
 		stringArray = append(stringArray, hex.EncodeToString(hash))
 	}
 
-	t.Log(stringArray)
-
 	tree := crypto.NewMerkleRoot(stringArray)
 
-	yes := crypto.IsIntroverse(stringArray[3], tree.RootNode)
+	for i := 0; i < len(stringArray)-1; i++ {
+		yes := crypto.MerkleProof(stringArray[i], tree.RootNode)
 
-	if yes {
-		t.Log("The transaction is verified.")
-	} else {
-		t.Log("The transaction is not verified.")
+		t.Log(yes)
 	}
 }
 

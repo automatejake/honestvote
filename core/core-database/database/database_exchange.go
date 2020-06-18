@@ -22,6 +22,20 @@ func AddBlock(block Block) error {
 	return nil
 }
 
+func AddTransaction(transaction interface{}, tranType string) error {
+	//Make the block a document and add it to local database
+	collection := MongoDB.Database("honestvote").Collection(CollectionPrefix + tranType)
+
+	_, err := collection.InsertOne(context.TODO(), transaction)
+
+	if err != nil {
+		logger.Println("database_exchange.go", "UpdateBlockchain()", err)
+		return err
+	}
+
+	return nil
+}
+
 func LastIndex(client *mongo.Client) int64 {
 	collection := client.Database("honestvote").Collection(CollectionPrefix + "blockchain")
 
@@ -34,10 +48,46 @@ func LastIndex(client *mongo.Client) int64 {
 	return 0
 }
 
-func UpdateMongo(client *mongo.Client, data Block) error {
+func UpdateBlockMongo(client *mongo.Client, data Block) error {
 	collection := client.Database("honestvote").Collection(CollectionPrefix + "blockchain")
 
 	_, err := collection.InsertOne(context.TODO(), data)
+
+	if err != nil {
+		logger.Println("database_exchange.go", "UpdateMongo()", err)
+	}
+
+	return err
+}
+
+func UpdateElectionMongo(client *mongo.Client, election Election) error {
+	collection := client.Database("honestvote").Collection(CollectionPrefix + "elections")
+
+	_, err := collection.InsertOne(context.TODO(), election)
+
+	if err != nil {
+		logger.Println("database_exchange.go", "UpdateMongo()", err)
+	}
+
+	return err
+}
+
+func UpdateRegistrationMongo(client *mongo.Client, registration Registration) error {
+	collection := client.Database("honestvote").Collection(CollectionPrefix + "registrations")
+
+	_, err := collection.InsertOne(context.TODO(), registration)
+
+	if err != nil {
+		logger.Println("database_exchange.go", "UpdateMongo()", err)
+	}
+
+	return err
+}
+
+func UpdateVoteMongo(client *mongo.Client, vote Vote) error {
+	collection := client.Database("honestvote").Collection(CollectionPrefix + "votes")
+
+	_, err := collection.InsertOne(context.TODO(), vote)
 
 	if err != nil {
 		logger.Println("database_exchange.go", "UpdateMongo()", err)

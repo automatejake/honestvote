@@ -28,6 +28,9 @@ var REGISTRATION_TYPE string
 // Transactions quene holds transactions that are not yet ready to broadcast to the chain
 var TransactionQueue []interface{}
 
+//Transactions that will be added to a Block, clear when Block created
+var TransactionsInBlock []string
+
 // These are used to determine who is responsible for generating a block at any given time.  Found in broadcaster.go
 var GenesisBlockTime int64 = 0
 var Step int64 = 1
