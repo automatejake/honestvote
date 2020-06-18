@@ -21,12 +21,12 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", err.Error())
 		return
 	}
-	err = database.CheckEmailVerification(registrant)
-	if err != nil {
-		logger.Println("producer_handlers.go", "VerifyEmailHandler()", err.Error())
-		w.Write([]byte("You have already registered."))
-		return
-	}
+	// err = database.CheckEmailVerification(registrant)
+	// if err != nil {
+	// 	logger.Println("producer_handlers.go", "VerifyEmailHandler()", err.Error())
+	// 	w.Write([]byte("You have already registered."))
+	// 	return
+	// }
 
 	switch p2p.REGISTRATION_TYPE {
 	case "EXTERNAL_WHITELIST":

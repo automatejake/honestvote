@@ -14,14 +14,14 @@ func checkEmailVerification(registration AwaitingRegistration) (AwaitingRegistra
 	err := collection.FindOne(context.TODO(), query)
 	var result = registration
 	if err != nil {
-		logger.Println("email_registration.go", "IsValidRegistrationCode()", err.Error())
-	}else{
+		logger.Println("email_registration.go", "IsValidRegistrationCode()", err.Err())
+	} else {
 		registration.Verified = "true"
 	}
-	return result, err
+	return result, err.Err()
 }
 
-func SaveRegistrationCode(registrant AwaitingRegistration)  {
+func SaveRegistrationCode(registrant AwaitingRegistration) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	_, err := collection.InsertOne(context.TODO(), registrant)
 	if err != nil {
