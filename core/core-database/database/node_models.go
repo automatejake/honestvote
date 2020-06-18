@@ -62,6 +62,12 @@ type AwaitingRegistration struct {
 	SenderSig     string `json:"senderSig"`
 	Code          string `json:"code"`
 	Timestamp     string `json:"timestamp"`
+	Verified      string `json:"verified"`
+
+}
+
+func (a AwaitingRegistration) Error() string {
+	panic("implement me")
 }
 
 // valid votes have a corresponding registration transaction with the public key
