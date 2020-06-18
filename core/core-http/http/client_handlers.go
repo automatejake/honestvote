@@ -63,14 +63,11 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Println("client_handler.go", "PostVoteHandler", "Error decoding vote - "+err.Error())
 	}
 	vote.Type = "Vote"
-	v, err := json.Marshal(vote)
-	if err != nil {
-		logger.Println("client_handler.go", "PostVoteHandler", "Error converting vote to json - "+err.Error())
-	}
-
-	logger.Println("client_handlers.go", "PostVoteHandler", "Vote is being sent to the other nodes on the chain")
+	logger.Println("client_handlers.go", "PostVoteHandler", "Vote transaction is being added to the queue")
 	logger.Println("client_handlers.go", "PostVoteHandler", vote)
-	p2p.ReceiveTransaction("Vote", v)
+
+	// Add transaction to quene
+	p2p.Enqueue(vote)
 }
 
 func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
@@ -82,14 +79,11 @@ func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Println("client_handler.go", "PostElectionHandler", "Error decoding election - "+err.Error())
 	}
 	election.Type = "Election"
-	logger.Println("client_handler.go", "PostElectionHandler", "Recieved election object from client ...")
+	logger.Println("client_handler.go", "PostElectionHandler", "Election transaction is being added to the queue")
 	logger.Println("client_handler.go", "PostElectionHandler", election)
 
-	e, err := json.Marshal(election)
-	if err != nil {
-		logger.Println("client_handler.go", "PostElectionHandler", "Error converting election to json - "+err.Error())
-	}
-	p2p.ReceiveTransaction("Election", e)
+	// Add transaction to quene
+	p2p.Enqueue(election)
 
 }
 

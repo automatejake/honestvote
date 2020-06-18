@@ -11,8 +11,8 @@ var EmailRegistrants string = "email_registrants"
 type Block struct {
 	Index       int         `json:"index" bson:"index"`
 	Timestamp   string      `json:"timestamp" bson:"timestamp"`
-	Transaction interface{} `json:"transaction" bson:"transaction"` // not  included in the hash
-	MerkleRoot  string      `json:"merkleRoot" bson:"merkleRoot"`
+	Transaction interface{} `json:"transaction" bson:"transaction"` // DO WE WANT TO HOLD A REFERENCE OF ALL TRASNACTION HASH
+	MerkleRoot  *MerkleTree `json:"merkleRoot" bson:"merkleRoot"`
 	Validator   string      `json:"validator" bson:"validator"`
 	Signature   string      `json:"signature" bson:"signature"`
 	PrevHash    string      `json:"prevhash" bson:"prevhash"`
@@ -52,6 +52,7 @@ type WhiteListElectionSettings struct {
 }
 
 type AwaitingRegistration struct {
+<<<<<<< HEAD
 	Email         string `json:"emailAddress"`
 	FirstName     string `json:"firstName"`
 	LastName      string `json:"lastName"`
@@ -69,6 +70,19 @@ type AwaitingRegistration struct {
 func (a AwaitingRegistration) Error() string {
 	panic("implement me")
 }
+=======
+	Email         string `json:"emailAddress" bson: "emailAddress"`
+	FirstName     string `json:"firstName" bson: "firstName"`
+	LastName      string `json:"lastName" bson: "lastName"`
+	DateOfBirth   string `json:"dateOfBirth" bson: "DateOfBirth"`
+	ElectionName  string `json:"electionName" bson: "ElectionName"`
+	ElectionAdmin string `json:"electionAdmin" bson: "ElectionAdmin"`
+	Sender        string `json:"publicKey" bson: "Sender"`
+	SenderSig     string `json:"senderSig" bson: "SenderSig"`
+	Code          string `json:"code" bson: "code"`
+	Timestamp     string `json:"timestamp" bson: "Timestamp"`
+	Verified     string `json:"verified" bson: "verified"`}
+>>>>>>> 99c7fc274cba9e2cfccafbde23180e7488b1df79
 
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
@@ -117,4 +131,14 @@ type Node struct {
 	PublicKey    string `json:"publickey" bson:"publickey"`
 	Timestamp    string `json:"timestamp" bson:"timestamp"`
 	Signature    string `json:"signature" bson:"signature"`
+}
+
+type MerkleTree struct {
+	RootNode *MerkleNode
+}
+
+type MerkleNode struct {
+	Left  *MerkleNode
+	Right *MerkleNode
+	Hash  string
 }

@@ -100,9 +100,7 @@ func HandleConn(conn net.Conn) {
 				// calls a fn to change the role of a dishonest node(hon-117)
 				var node database.Node
 				database.MarkDishonestNode(node)
-
 				logger.Println("peer_routes.go", "HandleConn", err.Error())
-
 			}
 		default:
 			logger.Println("peer_routes.go", "HandleConn", "Recieved Bad Message")

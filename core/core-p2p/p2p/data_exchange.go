@@ -172,12 +172,7 @@ func SendRegistrationTransaction(registrant database.AwaitingRegistration) error
 
 	registration.Signature = signature
 
-	data, err := json.Marshal(registration)
-	if err != nil {
-		logger.Println("data_exchange.go", "SendRegistrationTransaction()", err)
-		return err
-	}
-
-	ReceiveTransaction("Registration", data)
+	// Add transaction to queue
+	Enqueue(registration)
 	return nil
 }

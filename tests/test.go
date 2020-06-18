@@ -2,18 +2,14 @@ package main
 
 import (
 	"fmt"
-	"reflect"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	milliseconds_now := time.Now().UnixNano() / 1000000
-	fmt.Println(milliseconds_now)
-	time.Sleep(time.Second)
-	milliseconds_later := time.Now().UnixNano() / 1000000
-	fmt.Println(reflect.TypeOf(milliseconds_now))
-	fmt.Println(milliseconds_later)
+	test := []int{1, 2, 3, 4, 5, 6}
+	test = append(test, 7)
+	fmt.Println(test[0])
+	test = test[1:]
 
 }

@@ -2,11 +2,12 @@
 <input id="input" type="text" />
 <button onclick="send()">Send</button>
 <pre id="output"></pre>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 <script>
     var input = document.getElementById("input");
     var output = document.getElementById("output");
-    var socket = new WebSocket("ws://localhost:8080/echo");
-
+    var socket = new WebSocket("ws://127.0.0.1:5000/");
+    // const socket = io("http://localhost:5000/socket.io/");
     socket.onopen = function () {
         output.innerHTML += "Status: Connected\n";
     };
