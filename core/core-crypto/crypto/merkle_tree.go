@@ -6,16 +6,24 @@ import (
 	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
+func NodeRehash(node *database.MerkleNode) string {
+	leafHashes := []byte(node.Left.Hash + node.Right.Hash)
+	rehashed := CalculateHash(leafHashes)
+	return hex.EncodeToString(rehashed)
+}
+
 //NewMerkleNode Takes in bytes and encodes bytes to hex
 func NewMerkleNode(left *database.MerkleNode, right *database.MerkleNode, data string) *database.MerkleNode {
 	node := database.MerkleNode{}
 
 	if left == nil && right == nil {
 		node.Hash = data
+		node.Hierarchy = 1
 	} else {
 		prevHashes := []byte(left.Hash + right.Hash)
 		newHash := CalculateHash(prevHashes)
 		node.Hash = hex.EncodeToString(newHash)
+		node.Hierarchy = left.Hierarchy + 1
 	}
 
 	node.Left = left
@@ -40,6 +48,10 @@ func NewMerkleRoot(data []string) *database.MerkleTree {
 	for len(nodes) != 1 {
 		var level []database.MerkleNode
 
+		if len(nodes)%2 != 0 {
+			nodes = append(nodes, nodes[len(nodes)-1])
+		}
+
 		for j := 0; j < len(nodes)-1; j += 2 {
 			node := NewMerkleNode(&nodes[j], &nodes[j+1], "")
 			level = append(level, *node)
@@ -53,16 +65,16 @@ func NewMerkleRoot(data []string) *database.MerkleTree {
 	return &tree
 }
 
-//IsIntroverse Verifies a transaction in the merkle tree
-func IsIntroverse(transaction string, node *database.MerkleNode) bool {
+//MerkleProof Verifies a transaction in the merkle tree
+func MerkleProof(transaction string, root *database.MerkleNode) bool {
 	var arr []database.MerkleNode
 
-	if node.Left != nil {
-		arr = append(arr, *node.Left)
+	if root.Left.Left != nil {
+		arr = append(arr, *root.Left)
 	}
 
-	if node.Right != nil {
-		arr = append(arr, *node.Right)
+	if root.Right.Right != nil {
+		arr = append(arr, *root.Right)
 	}
 
 	for len(arr) > 0 {
@@ -72,16 +84,70 @@ func IsIntroverse(transaction string, node *database.MerkleNode) bool {
 		arr = nil
 
 		for _, node := range tempArr {
-			if node.Hash == transaction {
-				return true
-			}
-
-			if node.Left != nil {
+			if node.Left.Left != nil {
 				arr = append(arr, *node.Left)
+			} else {
+				if node.Left.Hash == transaction {
+					rehash := NodeRehash(&node)
+					return RecursiveMerkleProof(rehash, node.Hierarchy, root)
+				}
 			}
-
-			if node.Right != nil {
+			if node.Right.Right != nil {
 				arr = append(arr, *node.Right)
+			} else {
+				if node.Right.Hash == transaction {
+					rehash := NodeRehash(&node)
+					return RecursiveMerkleProof(rehash, node.Hierarchy, root)
+				}
+			}
+		}
+	}
+
+	//Tree only has a depth of 1, check two leaves
+	if root.Left.Hash == transaction {
+		rehash := NodeRehash(root)
+		return RecursiveMerkleProof(rehash, root.Hierarchy, root)
+	} else if root.Right.Hash == transaction {
+		rehash := NodeRehash(root)
+		return RecursiveMerkleProof(rehash, root.Hierarchy, root)
+	}
+
+	return false
+}
+
+func RecursiveMerkleProof(rehash string, hierarchy int, root *database.MerkleNode) bool {
+	var arr []database.MerkleNode
+
+	if hierarchy == root.Hierarchy {
+		return rehash == root.Hash
+	}
+
+	if root.Left.Hierarchy != hierarchy && root.Right.Hierarchy != hierarchy {
+		arr = append(arr, *root.Left)
+		arr = append(arr, *root.Right)
+	} else {
+		rehash := NodeRehash(root)
+		return RecursiveMerkleProof(rehash, root.Hierarchy, root)
+	}
+
+	for len(arr) > 0 {
+		var tempArr []database.MerkleNode
+
+		tempArr = arr
+		arr = nil
+
+		for _, node := range tempArr {
+			if node.Left.Hierarchy != hierarchy || node.Right.Hierarchy != hierarchy {
+				arr = append(arr, *node.Left)
+				arr = append(arr, *node.Right)
+			} else {
+				if node.Left.Hash == rehash {
+					rehash := NodeRehash(&node)
+					return RecursiveMerkleProof(rehash, node.Hierarchy, root)
+				} else if node.Right.Hash == rehash {
+					rehash := NodeRehash(&node)
+					return RecursiveMerkleProof(rehash, node.Hierarchy, root)
+				}
 			}
 		}
 	}

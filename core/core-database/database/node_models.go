@@ -120,7 +120,8 @@ type MerkleTree struct {
 }
 
 type MerkleNode struct {
-	Left  *MerkleNode
-	Right *MerkleNode
-	Hash  string
+	Hierarchy int //Higher number, closer to the root
+	Left      *MerkleNode
+	Right     *MerkleNode
+	Hash      string
 }
