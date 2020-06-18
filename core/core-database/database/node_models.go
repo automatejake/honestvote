@@ -91,6 +91,7 @@ type Election struct {
 	Positions       []Position      `json:"positions" bson:"positions"` //Data End
 	Sender          string          `json:"sender" bson:"sender"`
 	Signature       string          `json:"signature" bson:"signature"`
+	BlockIndex      int             `json:"blockIndex" bson:"blockIndex"`
 }
 
 type ElectionOptions struct {
