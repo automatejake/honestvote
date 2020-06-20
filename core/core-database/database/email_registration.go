@@ -11,6 +11,7 @@ import (
 func CheckEmailVerification(registration AwaitingRegistration) error {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	query := bson.M{"email": registration.Email, "verified": "true"}
+<<<<<<< HEAD
 	registrate := registration
 	err := collection.FindOne(context.TODO(), query).Decode(&registrate)
 	logger.Println("email_registration.go", "CheckEmailVerification", err)
@@ -21,6 +22,16 @@ func CheckEmailVerification(registration AwaitingRegistration) error {
 		collection.UpdateOne(context.TODO(), query, bson.D{{"$set", bson.D{{"verified", "true"}}}})
 	}
 	return nil
+=======
+	err := collection.FindOne(context.TODO(), query)
+	var result = registration
+	if err != nil {
+		logger.Println("email_registration.go", "IsValidRegistrationCode()", err.Err())
+	} else {
+		registration.Verified = "true"
+	}
+	return result, err.Err()
+>>>>>>> 2b872ab7e84eb95c4d5e2bf941da68bfa9001d47
 }
 
 func SaveRegistrationCode(registrant AwaitingRegistration) {

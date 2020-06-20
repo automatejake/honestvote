@@ -84,6 +84,7 @@ type SelectedCandidate struct {
 }
 
 type Election struct {
+<<<<<<< HEAD
 	Type         string     `json:"type" bson:"type"`
 	ElectionName string     `json:"electionName" bson:"electionName"` //Data Start
 	Institution  string     `json:"institutionName" bson:"institutionName"`
@@ -94,6 +95,27 @@ type Election struct {
 	Positions    []Position `json:"positions" bson:"positions"` //Data End
 	Sender       string     `json:"sender" bson:"sender"`
 	Signature    string     `json:"signature" bson:"signature"`
+=======
+	Type            string          `json:"type" bson:"type"`
+	ElectionName    string          `json:"electionName" bson:"electionName"` //Data Start
+	Institution     string          `json:"institutionName" bson:"institutionName"`
+	Description     string          `json:"description" bson:"description"`
+	Start           string          `json:"startDate" bson:"startDate"`
+	End             string          `json:"endDate" bson:"endDate"`
+	EmailDomain     string          `json:"emailDomain" bson:"emailDomain"`
+	ElectionOptions ElectionOptions `json:"electionOptions" bson:"electionOptions"`
+	Positions       []Position      `json:"positions" bson:"positions"` //Data End
+	Sender          string          `json:"sender" bson:"sender"`
+	Signature       string          `json:"signature" bson:"signature"`
+	BlockIndex      int             `json:"blockIndex" bson:"blockIndex"`
+}
+
+type ElectionOptions struct {
+	ElectionType             string `json:"electionType" bson:"electionType"`                         // (producer nomination | default), producer nomination election is a special election declared to elect a node
+	ShowDataDuringElection   string `json:"showDataDuringElection" bson:"showDataDuringElection"`     // (during | after voting | after election end), logic handled by client
+	AllowedVotesPerVoter     int    `json:"allowedVotesPerVoter" bson:"allowedVotesPerVoter"`         // amount of votes allowed to be cast by each voter, default is 1
+	MultipleVotesPerPosition bool   `json:"multipleVotesPerPosition" bson:"multipleVotesPerPosition"` // default false
+>>>>>>> 2b872ab7e84eb95c4d5e2bf941da68bfa9001d47
 }
 
 type Position struct {
