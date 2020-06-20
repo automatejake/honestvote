@@ -9,13 +9,14 @@ var Connections string = "node_list"    // Nodes on network
 var EmailRegistrants string = "email_registrants"
 
 type Block struct {
-	Index      int         `json:"index" bson:"index"`
-	Timestamp  string      `json:"timestamp" bson:"timestamp"`
-	MerkleRoot *MerkleTree `json:"merkleRoot" bson:"merkleRoot"`
-	Validator  string      `json:"validator" bson:"validator"`
-	Signature  string      `json:"signature" bson:"signature"`
-	PrevHash   string      `json:"prevhash" bson:"prevhash"`
-	Hash       string      `json:"hash" bson:"hash"`
+	Index       int         `json:"index" bson:"index"`
+	Timestamp   string      `json:"timestamp" bson:"timestamp"`
+	Transaction interface{} `json:"transaction" bson:"transaction"` // not  included in the hash
+	MerkleRoot  string      `json:"merkleRoot" bson:"merkleRoot"`
+	Validator   string      `json:"validator" bson:"validator"`
+	Signature   string      `json:"signature" bson:"signature"`
+	PrevHash    string      `json:"prevhash" bson:"prevhash"`
+	Hash        string      `json:"hash" bson:"hash"`
 }
 
 /*
@@ -32,7 +33,6 @@ type Registration struct {
 	RecieverSig string `json:"recieverSig" bson:"senderSig"`
 	Sender      string `json:"sender" bson:"sender"`
 	Signature   string `json:"signature" bson:"signature"`
-	BlockIndex  int    `json:"blockIndex" bson:"blockIndex"`
 }
 
 type AdminSettings struct {
@@ -52,46 +52,30 @@ type WhiteListElectionSettings struct {
 }
 
 type AwaitingRegistration struct {
-<<<<<<< HEAD
-	Email         string `json:"emailAddress"`
-	FirstName     string `json:"firstName"`
-	LastName      string `json:"lastName"`
-	DateOfBirth   string `json:"dateOfBirth"`
-	ElectionName  string `json:"electionName"`
-	ElectionAdmin string `json:"electionAdmin"`
-	Sender        string `json:"publicKey"`
-	SenderSig     string `json:"senderSig"`
-	Code          string `json:"code"`
-	Timestamp     string `json:"timestamp"`
-	Verified      string `json:"verified"`
-
+	Email         string `json:"emailAddress" bson:"emailAddress"`
+	FirstName     string `json:"firstName" bson:"firstName"`
+	LastName      string `json:"lastName" bson:"lastName"`
+	DateOfBirth   string `json:"dateOfBirth" bson:"dateOfBirth"`
+	ElectionName  string `json:"electionName" bson:"electionName"`
+	ElectionAdmin string `json:"electionAdmin" bson:"electionAdmin"`
+	Sender        string `json:"publicKey" bson:"publicKey`
+	SenderSig     string `json:"senderSig" bson:"senderSig"`
+	Code          string `json:"code" bson:"code"`
+	Timestamp     string `json:"timestamp" bson:"timestamp"`
+	Verified      string `json:"verified" bson:"verified"`
 }
 
 func (a AwaitingRegistration) Error() string {
 	panic("implement me")
 }
-=======
-	Email         string `json:"emailAddress" bson: "emailAddress"`
-	FirstName     string `json:"firstName" bson: "firstName"`
-	LastName      string `json:"lastName" bson: "lastName"`
-	DateOfBirth   string `json:"dateOfBirth" bson: "DateOfBirth"`
-	ElectionName  string `json:"electionName" bson: "ElectionName"`
-	ElectionAdmin string `json:"electionAdmin" bson: "ElectionAdmin"`
-	Sender        string `json:"publicKey" bson: "Sender"`
-	SenderSig     string `json:"senderSig" bson: "SenderSig"`
-	Code          string `json:"code" bson: "code"`
-	Timestamp     string `json:"timestamp" bson: "Timestamp"`
-	Verified     string `json:"verified" bson: "verified"`}
->>>>>>> 99c7fc274cba9e2cfccafbde23180e7488b1df79
 
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
-	Type       string              `json:"type" bson:"type"`
-	Election   string              `json:"electionId" bson:"electionId"` //Data Start
-	Receiver   []SelectedCandidate `json:"receivers" bson:"receivers"`   //Data End
-	Sender     string              `json:"sender" bson:"sender"`
-	Signature  string              `json:"signature" bson:"signature"`
-	BlockIndex int                 `json:"blockIndex" bson:"blockIndex"`
+	Type      string              `json:"type" bson:"type"`
+	Election  string              `json:"electionId" bson:"electionId"` //Data Start
+	Receiver  []SelectedCandidate `json:"receivers" bson:"receivers"`   //Data End
+	Sender    string              `json:"sender" bson:"sender"`
+	Signature string              `json:"signature" bson:"signature"`
 }
 
 type SelectedCandidate struct {
@@ -110,7 +94,6 @@ type Election struct {
 	Positions    []Position `json:"positions" bson:"positions"` //Data End
 	Sender       string     `json:"sender" bson:"sender"`
 	Signature    string     `json:"signature" bson:"signature"`
-	BlockIndex   int        `json:"blockIndex" bson:"blockIndex"`
 }
 
 type Position struct {
@@ -120,8 +103,8 @@ type Position struct {
 }
 
 type Candidate struct {
-	Recipient string `json:"key" bson:"key"`
 	Name      string `json:"name" bson:"name"`
+	Recipient string `json:"key" bson:"key"`
 }
 
 type Node struct {
@@ -133,15 +116,4 @@ type Node struct {
 	PublicKey    string `json:"publickey" bson:"publickey"`
 	Timestamp    string `json:"timestamp" bson:"timestamp"`
 	Signature    string `json:"signature" bson:"signature"`
-}
-
-type MerkleTree struct {
-	RootNode *MerkleNode
-}
-
-type MerkleNode struct {
-	Hierarchy int //Higher number, closer to the root
-	Left      *MerkleNode
-	Right     *MerkleNode
-	Hash      string
 }

@@ -8,39 +8,22 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-<<<<<<< HEAD
 func CheckEmailVerification(registration AwaitingRegistration) error {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	query := bson.M{"email": registration.Email, "verified": "true"}
 	registrate := registration
-	err := collection.FindOne(context.TODO(), query).Decode(registrate)
+	err := collection.FindOne(context.TODO(), query).Decode(&registrate)
 	logger.Println("email_registration.go", "CheckEmailVerification", err)
-	if err != nil {
+	if err == nil {
 		logger.Println("email_registration.go", "CheckEmailVerification", err.Error())
 		return err
 	} else {
-		registration.Verified = "true"
+		collection.UpdateOne(context.TODO(), query, bson.D{{"$set", bson.D{{"verified", "true"}}}})
 	}
 	return nil
 }
 
 func SaveRegistrationCode(registrant AwaitingRegistration) {
-=======
-func checkEmailVerification(registration AwaitingRegistration) (AwaitingRegistration, error) {
-	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
-	query := bson.M{"email": registration.Email, "verified": "true"}
-	err := collection.FindOne(context.TODO(), query)
-	var result = registration
-	if err != nil {
-		logger.Println("email_registration.go", "IsValidRegistrationCode()", err.Error())
-	}else{
-		registration.Verified = "true"
-	}
-	return result, err
-}
-
-func SaveRegistrationCode(registrant AwaitingRegistration)  {
->>>>>>> 99c7fc274cba9e2cfccafbde23180e7488b1df79
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	_, err := collection.InsertOne(context.TODO(), registrant)
 	if err != nil {

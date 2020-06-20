@@ -15,14 +15,13 @@ import (
 func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 	SetupResponse(&w, r)
 	params := mux.Vars(r)
-
 	registrant, err := database.IsValidRegistrationCode(params["id"])
 	if err != nil {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", err.Error())
 		return
 	}
 	err = database.CheckEmailVerification(registrant)
-	if err != nil {
+	if err == nil {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", err.Error())
 		w.Write([]byte("You have already registered."))
 		return
@@ -47,7 +46,6 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				w.Write([]byte("You have registered successfully!  Go back to the app to vote."))
 			}
-
 		}
 	} else if params["verified"] == "false" {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", string(registrant.Sender)+" is not supposed to be registered to vote for "+registrant.ElectionName)
