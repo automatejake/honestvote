@@ -21,6 +21,7 @@ func HandleFullRoutes() {
 	}).Methods("GET")
 
 	//POSTS
+	Router.HandleFunc("/administrator/request-privileges/signature={signature}&publickey={publickey}", PostRequestAdminPrivileges).Methods("POST")
 	Router.HandleFunc("/election/{electionid}/vote", PostVoteHandler).Methods("POST")
 	Router.HandleFunc("/election/{electionid}/register", PostRegisterHandler).Methods("POST")
 	Router.HandleFunc("/election", PostElectionHandler).Methods("POST")

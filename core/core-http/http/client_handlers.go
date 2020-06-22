@@ -8,10 +8,24 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
+
+func PostRequestAdminPrivileges(w http.ResponseWriter, r *http.Request) {
+	SetupResponse(&w, r)
+	decoder := json.NewDecoder(r.Body)
+	var request database.RequestAdminPrivileges
+	err := decoder.Decode(&request)
+	if err != nil {
+		logger.Println("client_handler.go", "PostRegisterHandler", "Error decoding registrant - "+err.Error())
+	}
+
+	message := []byte("requesting administrator Privileges")
+	crypto.Verify(message, request.PublicKey, request.Signature)
+}
 
 func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 

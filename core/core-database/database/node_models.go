@@ -51,6 +51,14 @@ type WhiteListElectionSettings struct {
 	EligibleVoterField string `json:"eligibleVoterField" bson:"eligibleVoterField"`
 }
 
+// This is to prove the authenticity of the sender when requesting admin privelliges
+type RequestAdminPrivileges struct {
+	Message   []byte `json:"message" bson: "message"`
+	PublicKey string `json:"publickey" bson: "publickey"`
+	Signature string `json:"signature" bson: "signature"`
+}
+
+// These are voters that are waiting to be registered
 type AwaitingRegistration struct {
 	Email         string `json:"emailAddress" bson: "emailAddress"`
 	FirstName     string `json:"firstName" bson: "firstName"`
@@ -62,7 +70,8 @@ type AwaitingRegistration struct {
 	SenderSig     string `json:"senderSig" bson: "SenderSig"`
 	Code          string `json:"code" bson: "code"`
 	Timestamp     string `json:"timestamp" bson: "Timestamp"`
-	Verified     string `json:"verified" bson: "verified"`}
+	Verified      string `json:"verified" bson: "verified"`
+}
 
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
