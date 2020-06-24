@@ -14,6 +14,10 @@ import (
 var CollectionPrefix = "a_"
 var MongoConnection = database.MongoConnect("localhost")
 
+func TestPostRequestAdminPrivileges(t *testing.T) {
+
+}
+
 //error because it must write a message to the administrator
 func TestPostRegisterHandler(t *testing.T) {
 	// jsonRegistration, _ := json.Marshal(database.AwaitingRegistration{})

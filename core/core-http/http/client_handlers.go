@@ -19,13 +19,67 @@ func PostRequestAdminPrivileges(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var request database.RequestAdminPrivileges
 	err := decoder.Decode(&request)
+
+	logger.Println("client_handlers.go", "PostRequestPrivileges", request)
+
 	if err != nil {
 		logger.Println("client_handler.go", "PostRegisterHandler", "Error decoding registrant - "+err.Error())
 	}
 
-	message := []byte("requesting administrator Privileges")
-	crypto.Verify(message, request.PublicKey, request.Signature)
+	message := []byte("requesting administrator privileges")
+	valid_request, err := crypto.Verify(message, request.PublicKey, request.Signature)
+	if err != nil {
+		logger.Println("client_handler.go", "PostRegisterHandler", err)
+		return
+	}
+	if !valid_request {
+		logger.Println("client_handler.go", "PostRegisterHandler", "Invalid Signature")
+		return
+	}
+
+	logger.Println("client_handler.go", "PostRegisterHandler", "Valid signature, nominating full node as an administrator")
+	// var nomination database.Election{
+	// 	ElectionName: "",
+	// 	Institution: "",
+
+	// }
+
+	// p2p.Enqueue(nomination)
+
 }
+
+// type Election struct {
+// 	Type            string          `json:"type" bson:"type"`
+// 	ElectionName    string          `json:"electionName" bson:"electionName"` //Data Start
+// 	Institution     string          `json:"institutionName" bson:"institutionName"`
+// 	Description     string          `json:"description" bson:"description"`
+// 	Start           string          `json:"startDate" bson:"startDate"`
+// 	End             string          `json:"endDate" bson:"endDate"`
+// 	EmailDomain     string          `json:"emailDomain" bson:"emailDomain"`
+// 	ElectionOptions ElectionOptions `json:"electionOptions" bson:"electionOptions"`
+// 	Positions       []Position      `json:"positions" bson:"positions"` //Data End
+// 	Sender          string          `json:"sender" bson:"sender"`
+// 	Signature       string          `json:"signature" bson:"signature"`
+// 	BlockIndex      int             `json:"blockIndex" bson:"blockIndex"`
+// }
+
+// type ElectionOptions struct {
+// 	ElectionType             string `json:"electionType" bson:"electionType"`                         // (producer nomination | default), producer nomination election is a special election declared to elect a node
+// 	ShowDataDuringElection   string `json:"showDataDuringElection" bson:"showDataDuringElection"`     // (during | after voting | after election end), logic handled by client
+// 	AllowedVotesPerVoter     int    `json:"allowedVotesPerVoter" bson:"allowedVotesPerVoter"`         // amount of votes allowed to be cast by each voter, default is 1
+// 	MultipleVotesPerPosition bool   `json:"multipleVotesPerPosition" bson:"multipleVotesPerPosition"` // default false
+// }
+
+// type Position struct {
+// 	PositionId string      `json:"id" bson:"id"`
+// 	Name       string      `json:"displayName" bson:"displayName"`
+// 	Candidates []Candidate `json:"candidates" bson:"candidates"`
+// }
+
+// type Candidate struct {
+// 	Recipient string `json:"key" bson:"key"`
+// 	Name      string `json:"name" bson:"name"`
+// }
 
 func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 
