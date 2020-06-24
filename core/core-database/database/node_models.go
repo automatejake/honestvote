@@ -104,10 +104,11 @@ type Election struct {
 }
 
 type ElectionOptions struct {
-	ElectionType             string `json:"electionType" bson:"electionType"`                         // (producer nomination | default), producer nomination election is a special election declared to elect a node
-	ShowDataDuringElection   string `json:"showDataDuringElection" bson:"showDataDuringElection"`     // (during | after voting | after election end), logic handled by client
-	AllowedVotesPerVoter     int    `json:"allowedVotesPerVoter" bson:"allowedVotesPerVoter"`         // amount of votes allowed to be cast by each voter, default is 1
-	MultipleVotesPerPosition bool   `json:"multipleVotesPerPosition" bson:"multipleVotesPerPosition"` // default false
+	ElectionType             string `json:"electionType" bson:"electionType"`                          // (producer nomination | default), producer nomination election is a special election declared to elect a node
+	ShowDataDuringElection   string `json:"showDataDuringElection" bson:"showDataDuringElection"`      // (during | after voting | after election end), logic handled by client
+	RequireVoteEveryPosition bool   `json:"requireVoteEveryPosition" bson: "requireVoteEveryPosition"` // should a voter be requred to cast a vote for every position, boolean
+	AllowedVotesPerVoter     int    `json:"allowedVotesPerVoter" bson:"allowedVotesPerVoter"`          // amount of votes allowed to be cast by each voter, default is 1
+	MultipleVotesPerPosition bool   `json:"multipleVotesPerPosition" bson:"multipleVotesPerPosition"`  // default false
 }
 
 type Position struct {

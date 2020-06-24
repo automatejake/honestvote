@@ -1,6 +1,4 @@
 echo "Election Transaction:"
 
-curl --header "Content-Type: application/json" --request POST --data '{"message":"cmVxdWVzdGluZyBhZG1pbmlzdHJhdG9yIHByaXZpbGVnZXM=","publickey":"025575ed73799ed416f4dc9e85294d4ba34f75fc34cb3606e62e98c58cc3373669","signature":"304502203e7796c9a2e5c0a34ed5eb3140476c7f46d91a788746db5f0ab8384b50208b7202210087fd963512b4ee5ad316fcc7383466e83bb019e898af5398d0e981fc279f55cb"}' http://localhost:7003//administrator/request-privileges
-
-
+curl --header "Content-Type: application/json" --request POST --data '{"message":"cmVxdWVzdGluZyBhZG1pbmlzdHJhdG9yIHByaXZpbGVnZXM=","publickey":"029c7ba15cb5c452bd3aa39b891b7adb841493898b589916ee3306fcddc826ac10","signature":"304402201e83351f68a19340f4ae4f5137f43bb50373bfae90d305f4e5571a3a4fad98590220420419fad9122b1fd3c48a599897a537d619413028edc080c0fee8d4cca3a1dd"}' http://localhost:7003/administrator/request-privileges
 

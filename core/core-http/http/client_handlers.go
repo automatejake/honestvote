@@ -38,42 +38,48 @@ func PostRequestAdminPrivileges(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Println("client_handler.go", "PostRegisterHandler", "Valid signature, nominating full node as an administrator")
-	// var nomination database.Election{
-	// 	ElectionName: "",
-	// 	Institution: "",
 
-	// }
+	var election_options database.ElectionOptions = database.ElectionOptions{
+		ElectionType:             "producer nomination", // (producer nomination | default), producer nomination election is a special election declared to elect a node
+		ShowDataDuringElection:   "during",              // election results are shown before and after deciding on a nominee
+		AllowedVotesPerVoter:     1,                     // each voter has one vote
+		RequireVoteEveryPosition: true,                  // voter should be requred to cast a vote for every position
+		MultipleVotesPerPosition: false,
+	}
+	var candidates []database.Candidate = []database.Candidate{
+		database.Candidate{
+			Recipient: "",
+			Name:      "",
+		},
+	}
 
-	// p2p.Enqueue(nomination)
+	var positions []database.Position = []database.Position{
+		database.Position{
+			PositionId: "froiemfnojvrwotiwnvrgoivrotnivrtoivrtniovroivnrtoirtoiontino",
+			Name:       "Should " + " be admitted into the network as a trusted election administrator and honestvote admin?",
+			Candidates: candidates,
+		},
+	}
+	var nomination database.Election = database.Election{
+		ElectionName:    "",
+		Institution:     "",
+		Description:     p2p.Self.Institution + " nominating " + " as a producer node",
+		Start:           "",
+		End:             "",
+		EmailDomain:     "",
+		ElectionOptions: election_options,
+		Positions:       positions,
+	}
+
+	p2p.Enqueue(nomination)
 
 }
-
-// type Election struct {
-// 	Type            string          `json:"type" bson:"type"`
-// 	ElectionName    string          `json:"electionName" bson:"electionName"` //Data Start
-// 	Institution     string          `json:"institutionName" bson:"institutionName"`
-// 	Description     string          `json:"description" bson:"description"`
-// 	Start           string          `json:"startDate" bson:"startDate"`
-// 	End             string          `json:"endDate" bson:"endDate"`
-// 	EmailDomain     string          `json:"emailDomain" bson:"emailDomain"`
-// 	ElectionOptions ElectionOptions `json:"electionOptions" bson:"electionOptions"`
-// 	Positions       []Position      `json:"positions" bson:"positions"` //Data End
-// 	Sender          string          `json:"sender" bson:"sender"`
-// 	Signature       string          `json:"signature" bson:"signature"`
-// 	BlockIndex      int             `json:"blockIndex" bson:"blockIndex"`
-// }
 
 // type ElectionOptions struct {
 // 	ElectionType             string `json:"electionType" bson:"electionType"`                         // (producer nomination | default), producer nomination election is a special election declared to elect a node
 // 	ShowDataDuringElection   string `json:"showDataDuringElection" bson:"showDataDuringElection"`     // (during | after voting | after election end), logic handled by client
 // 	AllowedVotesPerVoter     int    `json:"allowedVotesPerVoter" bson:"allowedVotesPerVoter"`         // amount of votes allowed to be cast by each voter, default is 1
 // 	MultipleVotesPerPosition bool   `json:"multipleVotesPerPosition" bson:"multipleVotesPerPosition"` // default false
-// }
-
-// type Position struct {
-// 	PositionId string      `json:"id" bson:"id"`
-// 	Name       string      `json:"displayName" bson:"displayName"`
-// 	Candidates []Candidate `json:"candidates" bson:"candidates"`
 // }
 
 // type Candidate struct {
