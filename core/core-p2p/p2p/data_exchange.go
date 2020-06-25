@@ -210,5 +210,6 @@ func SendRegistrationTransaction(registrant database.AwaitingRegistration) error
 
 	// Add transaction to queue
 	Enqueue(registration)
+
 	return nil
 }

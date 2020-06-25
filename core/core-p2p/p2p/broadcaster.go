@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/jneubaum/honestvote/core/core-database/database"
-	"github.com/jneubaum/honestvote/core/core-validation/validation"
 	"github.com/jneubaum/honestvote/core/core-websocket/websocket"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
@@ -51,14 +50,12 @@ func BroadcastScheduler() {
 					logger.Println("broadcaster.go", "BroadcastScheduler()", "Received transaction")
 					logger.Println("broadcaster.go", "BroadcastScheduler()", election)
 
-					valid, err := validation.IsValidElection(*election)
-					if valid {
-						//Add transaction to list of transactions in block and save block index to make validating later faster
-						election.BlockIndex = PreviousBlock.Index + 1
-						AddTransactionToList(*election, transaction_type.Type)
-					} else {
-						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
-					}
+					//Add transaction to list of transactions in block and save block index to make validating later faster
+					election.BlockIndex = PreviousBlock.Index + 1
+					AddTransactionToList(*election, transaction_type.Type)
+
+					logger.Println("broadcaster.go", "BroadcastScheduler()", "Added ")
+
 				case "Registration":
 					registration := &database.Registration{}
 					err := json.Unmarshal(transaction_json, &registration)
@@ -66,18 +63,14 @@ func BroadcastScheduler() {
 						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 
-					valid, err := validation.IsValidRegistration(*registration)
+					websocket.SendRegistration(*registration)
 
-					if valid {
-						logger.Println("", "", "Sending Registration")
-						websocket.SendRegistration(*registration)
+					//Add transaction to list of transactions in block and save block index to make validating faster
+					registration.BlockIndex = PreviousBlock.Index + 1
+					AddTransactionToList(*registration, transaction_type.Type)
 
-						//Add transaction to list of transactions in block and save block index to make validating faster
-						registration.BlockIndex = PreviousBlock.Index + 1
-						AddTransactionToList(*registration, transaction_type.Type)
-					} else {
-						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
-					}
+					logger.Println("broadcaster.go", "BroadcastScheduler()", "Added registration transaction to block")
+
 				case "Vote":
 					vote := &database.Vote{}
 					err := json.Unmarshal(transaction_json, vote)
@@ -85,18 +78,15 @@ func BroadcastScheduler() {
 						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 
-					valid, err := validation.IsValidVote(*vote)
+					logger.Println("broadcaster.go", "BroadcastScheduler()", "Passed validation")
+					websocket.BroadcastVote(*vote)
 
-					if valid {
-						logger.Println("broadcaster.go", "BroadcastScheduler()", "Passed validation")
-						websocket.BroadcastVote(*vote)
+					//Add transaction to list of transactions in block and save block index to make validating faster
+					vote.BlockIndex = PreviousBlock.Index + 1
+					AddTransactionToList(*vote, transaction_type.Type)
 
-						//Add transaction to list of transactions in block and save block index to make validating faster
-						vote.BlockIndex = PreviousBlock.Index + 1
-						AddTransactionToList(*vote, transaction_type.Type)
-					} else {
-						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
-					}
+					logger.Println("broadcaster.go", "BroadcastScheduler()", "Added vote transaction to block")
+
 				}
 			}
 
