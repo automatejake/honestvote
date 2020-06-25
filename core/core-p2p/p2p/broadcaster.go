@@ -101,9 +101,9 @@ func BroadcastScheduler() {
 
 			}
 
-			CreateBlock()
-
+			if len(TransactionsInBlock) > 0 {
+				CreateBlock()
+			}
 		}
-
 	}
 }
