@@ -98,7 +98,6 @@ func BroadcastScheduler() {
 						logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 					}
 				}
-
 			}
 
 			if len(TransactionsInBlock) > 0 {
