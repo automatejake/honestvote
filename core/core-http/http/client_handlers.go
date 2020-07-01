@@ -11,6 +11,7 @@ import (
 	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-p2p/p2p"
+	"github.com/jneubaum/honestvote/core/core-validation/validation"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
@@ -169,11 +170,16 @@ func PostVoteHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Println("client_handler.go", "PostVoteHandler", "Error decoding vote - "+err.Error())
 	}
 	vote.Type = "Vote"
-	logger.Println("client_handlers.go", "PostVoteHandler", "Vote transaction is being added to the queue")
-	logger.Println("client_handlers.go", "PostVoteHandler", vote)
 
 	// Add transaction to quene
-	p2p.Enqueue(vote)
+	valid, err := validation.IsValidVote(vote)
+	if valid {
+		logger.Println("client_handlers.go", "PostVoteHandler", "Vote transaction is being added to the queue")
+		logger.Println("client_handlers.go", "PostVoteHandler", vote)
+		p2p.Enqueue(vote)
+	} else {
+		logger.Println("broadcaster.go", "BroadcastScheduler()", err)
+	}
 }
 
 func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
@@ -185,11 +191,16 @@ func PostElectionHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Println("client_handler.go", "PostElectionHandler", "Error decoding election - "+err.Error())
 	}
 	election.Type = "Election"
-	logger.Println("client_handler.go", "PostElectionHandler", "Election transaction is being added to the queue")
-	logger.Println("client_handler.go", "PostElectionHandler", election)
 
 	// Add transaction to quene
-	p2p.Enqueue(election)
+	valid, err := validation.IsValidElection(election)
+	if valid {
+		logger.Println("client_handler.go", "PostElectionHandler", "Election transaction is being added to the queue")
+		logger.Println("client_handler.go", "PostElectionHandler", election)
+		p2p.Enqueue(election)
+	} else {
+		logger.Println("client_handler.go", "PostElectionHandler", "Election transaction is invalid, not added to queue")
+	}
 
 }
 

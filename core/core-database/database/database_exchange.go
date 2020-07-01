@@ -54,7 +54,7 @@ func UpdateBlockMongo(client *mongo.Client, data Block) error {
 	_, err := collection.InsertOne(context.TODO(), data)
 
 	if err != nil {
-		logger.Println("database_exchange.go", "UpdateMongo()", err)
+		logger.Println("database_exchange.go", "UpdateBlockMongo()", err)
 	}
 
 	return err
@@ -66,7 +66,7 @@ func UpdateElectionMongo(client *mongo.Client, election Election) error {
 	_, err := collection.InsertOne(context.TODO(), election)
 
 	if err != nil {
-		logger.Println("database_exchange.go", "UpdateMongo()", err)
+		logger.Println("database_exchange.go", "UpdateElectionMongo()", err)
 	}
 
 	return err
@@ -78,7 +78,7 @@ func UpdateRegistrationMongo(client *mongo.Client, registration Registration) er
 	_, err := collection.InsertOne(context.TODO(), registration)
 
 	if err != nil {
-		logger.Println("database_exchange.go", "UpdateMongo()", err)
+		logger.Println("database_exchange.go", "UpdateRegistrationMongo()", err)
 	}
 
 	return err
@@ -90,8 +90,31 @@ func UpdateVoteMongo(client *mongo.Client, vote Vote) error {
 	_, err := collection.InsertOne(context.TODO(), vote)
 
 	if err != nil {
-		logger.Println("database_exchange.go", "UpdateMongo()", err)
+		logger.Println("database_exchange.go", "UpdateVoteMongo()", err)
 	}
 
 	return err
+}
+
+func GrabElectionsInBlock(index int) ([]Election, error) {
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "elections")
+
+	var election Election
+	var elections []Election
+
+	query := bson.M{"blockIndex": index}
+	result, err := collection.Find(context.TODO(), query)
+
+	if err != nil {
+		logger.Println("database_exchange.go", "GrabElectionsInBlock()", err)
+	}
+
+	for result.Next(context.TODO()) {
+		err := result.Decode(&election)
+		if err == nil {
+			elections = append(elections, election)
+		}
+	}
+
+	return elections, nil
 }
