@@ -13,8 +13,11 @@ var f, _ = os.OpenFile("debug.log",
 
 var logger = log.New(f, "Timestamp: ", log.LstdFlags)
 
-func Println(file_name string, function_name string, message interface{}) {
-	message_string := fmt.Sprintf("%v", message)
+func Println(file_name string, function_name string, message ...interface{}) {
+	var message_string string
+	for _, current := range message {
+		message_string += fmt.Sprintf("%v", current)
+	}
 
 	switch Mode {
 	case "All":

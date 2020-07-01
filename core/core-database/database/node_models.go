@@ -29,7 +29,7 @@ type Registration struct {
 	Type        string `json:"type" bson:"type"`
 	Election    string `json:"electionId" bson:"electionId"` //Data Start
 	Receiver    string `json:"receiver" bson:"receiver"`     //Data End
-	RecieverSig string `json:"recieverSig" bson:"senderSig"`
+	RecieverSig string `json:"recieverSig" bson:"recieverSig"`
 	Sender      string `json:"sender" bson:"sender"`
 	Signature   string `json:"signature" bson:"signature"`
 	BlockIndex  int    `json:"blockIndex" bson:"blockIndex"`

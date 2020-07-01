@@ -73,6 +73,7 @@ func PostRequestAdminPrivileges(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	var nomination database.Election = database.Election{
+		Type:            "Election",
 		ElectionName:    "Producer Nomination",
 		Institution:     request.Institution,
 		Description:     p2p.Self.Institution + " nominating " + request.Institution + " as a producer node",
@@ -95,25 +96,30 @@ func PostRequestAdminPrivileges(w http.ResponseWriter, r *http.Request) {
 	}
 
 	p2p.Enqueue(nomination)
+
 	nodes := database.FindNodes()
 
 	for _, node := range nodes {
-		if node.Role == "peer" {
+		if node.Role == "producer" {
+
 			registrant := database.Registration{
+				Type:     "Registration",
 				Election: nomination.Signature,
 				Receiver: node.PublicKey,
 				Sender:   p2p.PublicKey,
 			}
 			encoded, err := registrant.Encode()
 			if err != nil {
-
+				logger.Println("client_handler.go", "PostRegisterHandler", err)
 			}
 
 			hash := crypto.CalculateHash(encoded)
 			registrant.Signature, err = crypto.Sign([]byte(hash), p2p.PrivateKey)
 			if err != nil {
-
+				logger.Println("client_handler.go", "PostRegisterHandler", err)
 			}
+
+			logger.Println("client_handler.go", "PostRegisterHandler", "Creating a registration")
 			p2p.Enqueue(registrant)
 		}
 	}
