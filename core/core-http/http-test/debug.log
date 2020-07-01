@@ -103,3 +103,27 @@ mongo: no documents in result
 Timestamp: 2020/04/11 10:58:45 
 Function name:GetElection
 mongo: no documents in result
+Timestamp: 2020/06/30 10:51:42 
+Function name:GenerateElectionHeaders
+[48 24 19 0 19 0 19 0 19 0 19 0 48 0 48 10 19 0 19 0 2 1 0 1 1 0]
+Timestamp: 2020/06/30 10:51:42 
+Function name:Verify()
+Decoded string
+Timestamp: 2020/06/30 10:53:24 
+Function name:GenerateElectionHeaders
+[48 24 19 0 19 0 19 0 19 0 19 0 48 0 48 10 19 0 19 0 2 1 0 1 1 0]
+Timestamp: 2020/06/30 10:53:24 
+Function name:Verify()
+Decoded string
+Timestamp: 2020/06/30 10:56:25 
+Function name:GenerateElectionHeaders
+[48 24 19 0 19 0 19 0 19 0 19 0 48 0 48 10 19 0 19 0 2 1 0 1 1 0]
+Timestamp: 2020/06/30 10:56:25 
+Function name:Verify()
+Decoded string
+Timestamp: 2020/07/01 09:20:40 
+Function name:GenerateElectionHeaders
+[48 24 19 0 19 0 19 0 19 0 19 0 48 0 48 10 19 0 19 0 2 1 0 1 1 0]
+Timestamp: 2020/07/01 09:20:40 
+Function name:Verify()
+Decoded string
