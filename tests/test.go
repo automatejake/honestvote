@@ -20,9 +20,11 @@ func main() {
 	}
 
 	var request database.RequestAdminPrivileges = database.RequestAdminPrivileges{
-		PublicKey: public_key,
-		Signature: signature,
-		Message:   message,
+		PublicKey:   public_key,
+		Domain:      "bizylife.com",
+		Institution: "BizyLife",
+		Signature:   signature,
+		Message:     message,
 	}
 	fmt.Println(request)
 

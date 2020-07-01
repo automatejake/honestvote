@@ -53,9 +53,11 @@ type WhiteListElectionSettings struct {
 
 // This is to prove the authenticity of the sender when requesting admin privelliges
 type RequestAdminPrivileges struct {
-	Message   []byte `json:"message" bson: "message"`
-	PublicKey string `json:"publickey" bson: "publickey"`
-	Signature string `json:"signature" bson: "signature"`
+	Message     []byte `json:"message" bson: "message"`
+	Institution string `json:"institution" bson: "institution"`
+	Domain      string `json:"domain" bson: "domain"`
+	PublicKey   string `json:"publickey" bson: "publickey"`
+	Signature   string `json:"signature" bson: "signature"`
 }
 
 // These are voters that are waiting to be registered

@@ -25,6 +25,13 @@ func PostRequestAdminPrivileges(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Println("client_handler.go", "PostRegisterHandler", "Error decoding registrant - "+err.Error())
 	}
+	if request.Domain == "" {
+		logger.Println("client_handler.go", "PostRegisterHandler", "Domain field is empty")
+		return
+	} else if request.Institution == "" {
+		logger.Println("client_handler.go", "PostRegisterHandler", "Institution name field is empty")
+		return
+	}
 
 	message := []byte("requesting administrator privileges")
 	valid_request, err := crypto.Verify(message, request.PublicKey, request.Signature)
@@ -33,7 +40,7 @@ func PostRequestAdminPrivileges(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !valid_request {
-		logger.Println("client_handler.go", "PostRegisterHandler", "Invalid Signature")
+		logger.Println("client_handler.go", "PostRegisterHandler", "Invalid Signature for nomiation request")
 		return
 	}
 
@@ -48,44 +55,69 @@ func PostRequestAdminPrivileges(w http.ResponseWriter, r *http.Request) {
 	}
 	var candidates []database.Candidate = []database.Candidate{
 		database.Candidate{
-			Recipient: "",
-			Name:      "",
+			Recipient: "YES",
+			Name:      "YES",
+		},
+		database.Candidate{
+			Recipient: "NO",
+			Name:      "NO",
 		},
 	}
 
 	var positions []database.Position = []database.Position{
 		database.Position{
 			PositionId: "froiemfnojvrwotiwnvrgoivrotnivrtoivrtniovroivnrtoirtoiontino",
-			Name:       "Should " + " be admitted into the network as a trusted election administrator and honestvote admin?",
+			Name:       "Should " + request.Institution + " be admitted into the network as a trusted election administrator and honestvote admin?",
 			Candidates: candidates,
 		},
 	}
 	var nomination database.Election = database.Election{
-		ElectionName:    "",
-		Institution:     "",
-		Description:     p2p.Self.Institution + " nominating " + " as a producer node",
+		ElectionName:    "Producer Nomination",
+		Institution:     request.Institution,
+		Description:     p2p.Self.Institution + " nominating " + request.Institution + " as a producer node",
 		Start:           "",
 		End:             "",
-		EmailDomain:     "",
+		EmailDomain:     request.Domain,
 		ElectionOptions: election_options,
 		Positions:       positions,
 	}
 
+	encoded, err := nomination.Encode()
+	if err != nil {
+		return
+	}
+
+	hash := crypto.CalculateHash(encoded)
+	nomination.Signature, err = crypto.Sign([]byte(hash), p2p.PrivateKey)
+	if err != nil {
+		return
+	}
+
 	p2p.Enqueue(nomination)
+	nodes := database.FindNodes()
+
+	for _, node := range nodes {
+		if node.Role == "peer" {
+			registrant := database.Registration{
+				Election: nomination.Signature,
+				Receiver: node.PublicKey,
+				Sender:   p2p.PublicKey,
+			}
+			encoded, err := registrant.Encode()
+			if err != nil {
+
+			}
+
+			hash := crypto.CalculateHash(encoded)
+			registrant.Signature, err = crypto.Sign([]byte(hash), p2p.PrivateKey)
+			if err != nil {
+
+			}
+			p2p.Enqueue(registrant)
+		}
+	}
 
 }
-
-// type ElectionOptions struct {
-// 	ElectionType             string `json:"electionType" bson:"electionType"`                         // (producer nomination | default), producer nomination election is a special election declared to elect a node
-// 	ShowDataDuringElection   string `json:"showDataDuringElection" bson:"showDataDuringElection"`     // (during | after voting | after election end), logic handled by client
-// 	AllowedVotesPerVoter     int    `json:"allowedVotesPerVoter" bson:"allowedVotesPerVoter"`         // amount of votes allowed to be cast by each voter, default is 1
-// 	MultipleVotesPerPosition bool   `json:"multipleVotesPerPosition" bson:"multipleVotesPerPosition"` // default false
-// }
-
-// type Candidate struct {
-// 	Recipient string `json:"key" bson:"key"`
-// 	Name      string `json:"name" bson:"name"`
-// }
 
 func PostRegisterHandler(w http.ResponseWriter, r *http.Request) {
 
