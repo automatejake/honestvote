@@ -8,16 +8,25 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func checkEmailVerification(registration AwaitingRegistration) error {
+func CheckEmailVerification(registration AwaitingRegistration) error {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	query := bson.M{"email": registration.Email, "verified": "true"}
 	err := collection.FindOne(context.TODO(), query)
 	logger.Println("email_registration.go", "CheckEmailVerification", err)
 	if err != nil {
-		logger.Println("email_registration.go", "IsValidRegistrationCode()", err.Err())
+		logger.Println("email_registration.go", "CheckEmailVerification", err.Err())
 		return err
 	} else {
-		collection.UpdateOne(context.TODO(), query, bson.D{{"$set", bson.D{{"verified", "true"}}}})
+		update := bson.D{
+			{"$set", bson.D{
+				{"verified", "true"},
+			}},
+		}
+		updateResult, err := collection.UpdateOne(context.TODO(), query, update)
+		logger.Println("email_registration.go", "CheckEmailVerification", updateResult)
+		if err != nil {
+			logger.Println("email_registration.go", "CheckEmailVerification", err.Error)
+		}
 	}
 	return nil
 }
