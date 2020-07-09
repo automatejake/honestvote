@@ -22,13 +22,18 @@ func TestCorrespondingRegistration(t *testing.T) { //see test for AcceptConnecti
 
 // }
 
-func TestMarkDishonestNode(t *testing.T) {
+func TestEditNodeRole(t *testing.T) {
 	database.MongoDB = database.MongoConnect("localhost")
 
-	err := database.MarkDishonestNode(database.Node{})
-
+	err := database.EditNodeRole(database.Node{}, "bad actor")
 	if err != nil {
 		t.Error("There shouldn't be an error when marking a dishonest node. Error: ", err)
+		return
+	}
+
+	err = database.EditNodeRole(database.Node{}, "producer")
+	if err != nil {
+		t.Error("There shouldn't be an error when marking a node a producer node. Error: ", err)
 		return
 	}
 

@@ -1,46 +1,17 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
-	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
 func main() {
-	private_key, public_key := crypto.GenerateKeyPair()
-	message := []byte("requesting administrator privileges")
-	signature, err := crypto.Sign(message, private_key)
-	if err != nil {
-		return
-	}
+	now := time.Now().Format(time.RFC1123)
 
-	var request database.RequestAdminPrivileges = database.RequestAdminPrivileges{
-		PublicKey:   public_key,
-		Domain:      "bizylife.com",
-		Institution: "BizyLife",
-		Signature:   signature,
-		Message:     message,
-	}
-	fmt.Println(request)
+	fmt.Println(now)
 
-	json_request, err := json.Marshal(&request)
-	if err != nil {
-		return
-	}
-
-	file, err := os.Create("request-admin-priv.sh")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer file.Close()
-
-	_, _ = io.WriteString(file, "echo \"Election Transaction:\"\n\ncurl --header \"Content-Type: application/json\" --request POST --data '"+
-		string(json_request)+"' http://localhost:7003/administrator/request-privileges\n\n\n\n")
-
+	parsley, _ := time.Parse(now, ".Format(time.RFC1123)")
+	fmt.Println(parsley.Before(time.Now()))
 }

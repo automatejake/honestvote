@@ -64,8 +64,8 @@ func CheckElectionSignature(sig string) bool {
 	return true
 }
 
-func MarkDishonestNode(n Node) error {
-	n.Role = "bad actor"
+func EditNodeRole(n Node, role string) error {
+	n.Role = role
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + Connections)
 
 	_, err := collection.UpdateOne(
@@ -74,7 +74,7 @@ func MarkDishonestNode(n Node) error {
 		n,
 	)
 	if err != nil {
-		logger.Println("validation.go", "MarkDishonestNode()", err)
+		logger.Println("validation.go", "EditNodeRole()", err)
 		return err
 	}
 

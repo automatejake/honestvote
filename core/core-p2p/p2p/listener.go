@@ -21,6 +21,7 @@ func ListenConn(port string, role string) error {
 	defer listen.Close()
 
 	go BroadcastScheduler()
+	// go administrator.CompleteElection()
 	for {
 		conn, err := listen.Accept()
 		if err != nil {

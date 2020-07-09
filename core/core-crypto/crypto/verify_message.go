@@ -25,16 +25,14 @@ func Verify(hash []byte, public_key_hex string, signature_hex string) (result bo
 		logger.Println(filename, "Verify()", err)
 	}
 
-	logger.Println(filename, "Verify()", "Decompressed point to public key:")
-	logger.Println(filename, "Verify()", public_key)
+	logger.Println(filename, "Verify()", "Decompressed point to public key: ", public_key)
 
 	signature_bytes, err := hex.DecodeString(string(signature_hex))
 	if err != nil {
 		logger.Println("verify_message.go", "Verify()", err)
 		return false, err
 	}
-	logger.Println(filename, "Verify()", "Decoded signature from hex string:")
-	logger.Println(filename, "Verify()", signature_bytes)
+	logger.Println(filename, "Verify()", "Decoded signature from hex string: ", signature_bytes)
 
 	// unmarhsal signature structure to extract signature from
 	signature := new(Signature)
@@ -43,8 +41,7 @@ func Verify(hash []byte, public_key_hex string, signature_hex string) (result bo
 		logger.Println(filename, "Verify()", err)
 		return false, err
 	}
-	logger.Println(filename, "Verify()", "DER encoded signature:")
-	logger.Println(filename, "Verify()", signature)
+	logger.Println(filename, "Verify()", "DER encoded signature: ", signature)
 
 	// verify signature
 	return ecdsa.Verify(public_key, hash, signature.R, signature.S), nil

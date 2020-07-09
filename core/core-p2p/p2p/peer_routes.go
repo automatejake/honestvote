@@ -92,6 +92,35 @@ func HandleConn(conn net.Conn) {
 			case "votes":
 				var vote database.Vote
 				err := json.Unmarshal(message.Data, &vote)
+				election, err := database.GetElection(vote.Election)
+				if err != nil {
+
+				}
+				if election.ElectionOptions.ElectionType == "producer nomination" {
+					votes, err := database.GetVotes(vote.Election)
+					if err != nil {
+
+					}
+					var yay int64
+
+					for _, vote := range votes {
+						if vote.Receiver[0].Recipient == "YES" {
+							yay += 1
+						}
+					}
+
+					if yay > (ConsensusNodes / 2) {
+						node, err := database.FindNode(election.Positions[0].PositionId)
+						if err != nil {
+
+						}
+						err = database.EditNodeRole(node, "producer")
+						if err != nil {
+
+						}
+					}
+				}
+
 				if err == nil {
 					database.AddTransaction(vote, message.Type)
 				}
@@ -120,7 +149,10 @@ func HandleConn(conn net.Conn) {
 			} else {
 				// calls a fn to change the role of a dishonest node(hon-117)
 				var node database.Node
-				database.MarkDishonestNode(node)
+				database.EditNodeRole(
+					node,
+					"bad actor",
+				)
 				logger.Println("peer_routes.go", "HandleConn", err.Error())
 			}
 		default:

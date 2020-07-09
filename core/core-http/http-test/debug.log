@@ -103,3 +103,183 @@ mongo: no documents in result
 Timestamp: 2020/04/11 10:58:45 
 Function name:GetElection
 mongo: no documents in result
+Timestamp: 2020/07/01 09:51:02 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 09:51:02 
+Function name:PostVoteHandler
+{Vote  []  3046022100b2e99dcf9335cd18124c1325141bbd06f5dbeb89d630562a90ebf3de5f14b539022100b75ddedd482d81dc9f711530b8ceb7f89ac35ef825e7f2abee02d7fa9924f77b 0}
+Timestamp: 2020/07/01 09:51:02 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 09:51:43 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 09:51:43 
+Function name:PostVoteHandler
+{Vote  []  304502203f07dba66d4382248ebace0aea2e84102aa00c51023509150984ae7c53f6ce7c022100d593bdf1cf436cc8b4ab1a9debc7859f3a847415aeb127c67b5a64b0dfafcb95 0}
+Timestamp: 2020/07/01 09:51:43 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 09:52:41 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 09:52:41 
+Function name:PostVoteHandler
+{Vote  []  3045022040ca02741f26447b0093ff19a65f02efb9dbb94d25277fa79fee7ea21d92bc10022100c309d16b381fdbcfd41261ba0aa03f5e01c9568ef40955dfd83e607e2a4505e0 0}
+Timestamp: 2020/07/01 09:52:41 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 09:54:40 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 09:54:40 
+Function name:PostVoteHandler
+{Vote  []  3046022100fa76acf135ebee574e5b024a7e8124800e720bc1685d1bf63ac944828eafb649022100d57a4db0f4e1ef1d395a1a6bb77fd38c5004fa55748d831c3f3975d7c50396b2 0}
+Timestamp: 2020/07/01 09:54:40 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 09:55:47 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 09:55:47 
+Function name:PostVoteHandler
+{Vote  []  3044022022055abd516a41f9e277b4a4394d155fa54f16f5757cf658116c992afb67ee7202203bbc33ced0b250b63b8f2b3d39c344e742568619adddeae44c1a06d3e8d63a0e 0}
+Timestamp: 2020/07/01 09:55:47 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 09:56:07 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 09:56:07 
+Function name:PostVoteHandler
+{Vote  []  304402202a50c93e878196bb3690a25067345f56eeea1722eb0c76754b98a8e73a5a3343022076b042ce148c3c039244046e2b388a9e2be80eddf44a87c20d023ecb371a6fd4 0}
+Timestamp: 2020/07/01 09:56:07 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 09:56:51 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 09:56:51 
+Function name:PostVoteHandler
+{Vote  []  304602210093d379d36ec72d5ce943b38242f2a7d57f0f4e5ee1d7d22ea40c945a6246fd2e022100f98d43302d71894be06ccffcd833fc6a5991450811de3033ec6b479493532bc7 0}
+Timestamp: 2020/07/01 09:56:51 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 09:57:19 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 09:57:19 
+Function name:PostVoteHandler
+{Vote  []  3045022100ee4c0e3e3b289d6d9b0678ec0163ad4ffe4c8fd33030c570430db4f17735fda60220075779dad13b6d5f7f00b44633f7ba5a0dcbce18a51ebf2a9e1e4edb45f60765 0}
+Timestamp: 2020/07/01 09:57:19 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 09:59:26 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 09:59:26 
+Function name:PostVoteHandler
+{Vote  []  3046022100df0ba68b9347f6710bf1ee18f74b15a1aa78a20cbf6a8c9a550b0945a45bcedf022100ff547e03fe10450754a61ac307f789b2851d75463069b089ddbbb8fbc62ff6e4 0}
+Timestamp: 2020/07/01 09:59:26 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:01:25 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 10:01:25 
+Function name:PostVoteHandler
+{Vote  []  304402203855c404581a7869c1302f477ab8ed459b617b598c81f7239fbb95eebe90efad02204e9e1d2fcf6052e4d4c9baae8ea2487b8b0c1b32ec9c6366fc796f70140316a0 0}
+Timestamp: 2020/07/01 10:01:25 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:02:02 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 10:02:02 
+Function name:PostVoteHandler
+{Vote  []  3046022100ac59b833670e7077aa879d801ba882556fd6eaabef6e372c0dcec6efec6bbe9c022100a552763a7dc6b9baf6e4d6faee2bd10adebb35c0b3b5c14381d76be81e6f9d09 0}
+Timestamp: 2020/07/01 10:02:02 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:03:27 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 10:03:27 
+Function name:PostVoteHandler
+{Vote  []  30440220370c388cd6e9c956f9d2f112880d63e094513f589240d602419e4aa7b437f60402204ce078b3925e382e824aaf9dcffd663e5f4d2b58a5c7993047ca8d96755b9435 0}
+Timestamp: 2020/07/01 10:03:27 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:03:39 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 10:03:39 
+Function name:PostVoteHandler
+{Vote  []  3046022100fc54bb93ac156f765de4ed941dca96130cd8776afe9563e035d997924bbfb024022100fff0a2eb349b285760210a03cf7df66833c47266ef2ef14cba849a15b824c619 0}
+Timestamp: 2020/07/01 10:03:39 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:03:57 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 10:03:57 
+Function name:PostVoteHandler
+{Vote  []  304502206f498d1997a7e5d6bb753ff3b457ffd9089c4baa854a4348ff37f147c10cf403022100e44766c7cf431c45754fb2a8d495c513bed94b82e77b596a47d8139972ab19bb 0}
+Timestamp: 2020/07/01 10:03:57 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:04:06 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 10:04:06 
+Function name:PostVoteHandler
+{Vote  []  30450220365e8dd793a93249856baa4490e5ede537efa0ad7e3b903fbac7bf83ec61ae00022100e3ea804e029471a692d6148aeb82805caff6f0c1299c4bf92fec61015991daf0 0}
+Timestamp: 2020/07/01 10:04:06 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:04:56 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 10:04:56 
+Function name:PostVoteHandler
+{Vote  []  304402202cf4b9b036ef079c1f7c4905ff9e9ea56b807506d27d6a4d8fb92c2bd9f32c7702205a6af6b5d0c8618df085b1d4abe8c99e69b6e20750be140069252cb9c710a901 0}
+Timestamp: 2020/07/01 10:04:56 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:05:07 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 10:05:07 
+Function name:PostVoteHandler
+{Vote  []  30440220723d9f9378c675a2e4025093adfbf6b90cdf06e6fcd4d5b4a2f7389b6d5e7985022003d03d7ef6e2ea5e28b806d61e921cde0cdd15eca29a01f5fe4b78ead03397f3 0}
+Timestamp: 2020/07/01 10:05:07 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:05:18 
+Function name:PostVoteHandler
+Vote transaction is being added to the queue
+Timestamp: 2020/07/01 10:05:18 
+Function name:PostVoteHandler
+{Vote  []  3045022100befe7c13cb7807549696c525023cfdada74240bccf55b23ccd10a640d842be6202204ab8a94761df8a78e503980c0ae78be4673f0c708a1865298bf89438745d19a6 0}
+Timestamp: 2020/07/01 10:05:18 
+Function name:Enqueue()
+Enqueue transaction
+Timestamp: 2020/07/01 10:58:04 
+Function name:GenerateVoteHeaders()
+[48 4 19 0 48 0]
+Timestamp: 2020/07/01 10:58:04 
+Function name:IsValidVote()
+Generated headers
+Timestamp: 2020/07/01 10:58:04 
+Function name:Verify()
+Decoded string
+Timestamp: 2020/07/02 10:32:38 
+Function name:GenerateVoteHeaders()
+[48 4 19 0 48 0]
+Timestamp: 2020/07/02 10:32:38 
+Function name:IsValidVote()
+Generated headers
+Timestamp: 2020/07/02 10:32:38 
+Function name:Verify()
+Decoded string

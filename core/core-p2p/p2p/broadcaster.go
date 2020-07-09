@@ -30,7 +30,7 @@ func BroadcastScheduler() {
 				transaction := Dequeue()
 				transaction_json, err := json.Marshal(transaction)
 				if err != nil {
-
+					logger.Println("broadcaster.go", "BroadcastScheduler()", err)
 				}
 
 				transaction_type := &DecodeTransaction{}
@@ -90,6 +90,7 @@ func BroadcastScheduler() {
 				}
 
 			}
+			logger.Println("broadcaster.go", "BroadcastScheduler()", TransactionsInBlock)
 
 			if len(TransactionsInBlock) > 0 {
 				CreateBlock()
