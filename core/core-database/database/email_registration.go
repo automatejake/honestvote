@@ -8,14 +8,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func CheckEmailVerification(registration AwaitingRegistration) error {
+func CheckEmailVerification(registration AwaitingRegistration) bool {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + EmailRegistrants)
 	query := bson.M{"email": registration.Email, "verified": "true"}
-	err := collection.FindOne(context.TODO(), query)
+	var node Node
+	single := collection.FindOne(context.TODO(), query)
+	err := single.Decode(&node)
 	logger.Println("email_registration.go", "CheckEmailVerification", err)
-	if err != nil {
-		logger.Println("email_registration.go", "CheckEmailVerification", err.Err())
-		return err
+	if single != nil {
+		return true
 	} else {
 		update := bson.D{
 			{"$set", bson.D{
@@ -28,7 +29,7 @@ func CheckEmailVerification(registration AwaitingRegistration) error {
 			logger.Println("email_registration.go", "CheckEmailVerification", err.Error)
 		}
 	}
-	return nil
+	return false
 }
 
 func SaveRegistrationCode(registrant AwaitingRegistration) {

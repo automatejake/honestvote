@@ -21,9 +21,9 @@ func VerifyEmailHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Println("producer_handlers.go", "VerifyEmailHandler()", err.Error())
 		return
 	}
-	err = database.CheckEmailVerification(registrant)
-	if err == nil {
-		logger.Println("producer_handlers.go", "VerifyEmailHandler()", err.Error())
+	var check bool
+	check = database.CheckEmailVerification(registrant)
+	if check == false {
 		w.Write([]byte("You have already registered."))
 		return
 	}

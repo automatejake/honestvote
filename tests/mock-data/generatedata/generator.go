@@ -99,7 +99,7 @@ func GenerateMockData(admin_private_key, admin_public_key, election_name, instit
 		FirstName:     "Jacob",
 		LastName:      "Neubaum",
 		DateOfBirth:   "3/9/1999",
-		ElectionName:  election.Signature,
+		ElectionName:  "3045022100c55f0057a8c7751efd22abbba2552aa2baff4f019c91dfe9d63f7a03e927c584022056f3cce733b9fafaa3606bf184b43e1e764d0df9665921fcc4c599fd224aecce",
 		ElectionAdmin: string(election.Sender),
 		Sender:        public_key,
 		SenderSig:     "",
