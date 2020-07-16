@@ -2,19 +2,28 @@ package crypto
 
 import (
 	"encoding/hex"
-
-	"github.com/jneubaum/honestvote/core/core-database/database"
 )
 
-func NodeRehash(node *database.MerkleNode) string {
+type MerkleTree struct {
+	RootNode *MerkleNode
+}
+
+type MerkleNode struct {
+	Hierarchy int //Higher number, closer to the root
+	Left      *MerkleNode
+	Right     *MerkleNode
+	Hash      string
+}
+
+func NodeRehash(node *MerkleNode) string {
 	leafHashes := []byte(node.Left.Hash + node.Right.Hash)
 	rehashed := CalculateHash(leafHashes)
 	return hex.EncodeToString(rehashed)
 }
 
 //NewMerkleNode Takes in bytes and encodes bytes to hex
-func NewMerkleNode(left *database.MerkleNode, right *database.MerkleNode, data string) *database.MerkleNode {
-	node := database.MerkleNode{}
+func NewMerkleNode(left *MerkleNode, right *MerkleNode, data string) *MerkleNode {
+	node := MerkleNode{}
 
 	if left == nil && right == nil {
 		node.Hash = data
@@ -33,8 +42,8 @@ func NewMerkleNode(left *database.MerkleNode, right *database.MerkleNode, data s
 }
 
 //NewMerkleRoot Creates a merkle tree with the given bytes
-func NewMerkleRoot(data []string) *database.MerkleTree {
-	var nodes []database.MerkleNode
+func NewMerkleRoot(data []string) *MerkleTree {
+	var nodes []MerkleNode
 
 	if len(data)%2 != 0 {
 		data = append(data, data[len(data)-1])
@@ -46,7 +55,7 @@ func NewMerkleRoot(data []string) *database.MerkleTree {
 	}
 
 	for len(nodes) != 1 {
-		var level []database.MerkleNode
+		var level []MerkleNode
 
 		if len(nodes)%2 != 0 {
 			nodes = append(nodes, nodes[len(nodes)-1])
@@ -60,14 +69,14 @@ func NewMerkleRoot(data []string) *database.MerkleTree {
 		nodes = level
 	}
 
-	tree := database.MerkleTree{&nodes[0]}
+	tree := MerkleTree{&nodes[0]}
 
 	return &tree
 }
 
 //MerkleProof Verifies a transaction in the merkle tree
-func MerkleProof(transaction string, root *database.MerkleNode) bool {
-	var arr []database.MerkleNode
+func MerkleProof(transaction string, root *MerkleNode) bool {
+	var arr []MerkleNode
 
 	if root.Left.Left != nil {
 		arr = append(arr, *root.Left)
@@ -78,7 +87,7 @@ func MerkleProof(transaction string, root *database.MerkleNode) bool {
 	}
 
 	for len(arr) > 0 {
-		var tempArr []database.MerkleNode
+		var tempArr []MerkleNode
 
 		tempArr = arr
 		arr = nil
@@ -115,8 +124,8 @@ func MerkleProof(transaction string, root *database.MerkleNode) bool {
 	return false
 }
 
-func RecursiveMerkleProof(rehash string, hierarchy int, root *database.MerkleNode) bool {
-	var arr []database.MerkleNode
+func RecursiveMerkleProof(rehash string, hierarchy int, root *MerkleNode) bool {
+	var arr []MerkleNode
 
 	if hierarchy == root.Hierarchy {
 		return rehash == root.Hash
@@ -131,7 +140,7 @@ func RecursiveMerkleProof(rehash string, hierarchy int, root *database.MerkleNod
 	}
 
 	for len(arr) > 0 {
-		var tempArr []database.MerkleNode
+		var tempArr []MerkleNode
 
 		tempArr = arr
 		arr = nil

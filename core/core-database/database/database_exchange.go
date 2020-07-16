@@ -2,7 +2,11 @@ package database
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/asn1"
+	"encoding/hex"
 
+	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/tests/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -96,25 +100,101 @@ func UpdateVoteMongo(client *mongo.Client, vote Vote) error {
 	return err
 }
 
-func GrabElectionsInBlock(index int) ([]Election, error) {
+func GrabElectionsInBlock(block Block) (bool, error) {
 	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "elections")
 
 	var election Election
-	var elections []Election
 
-	query := bson.M{"blockIndex": index}
+	query := bson.M{"blockIndex": block.Index}
 	result, err := collection.Find(context.TODO(), query)
 
 	if err != nil {
 		logger.Println("database_exchange.go", "GrabElectionsInBlock()", err)
+		return false, err
 	}
 
 	for result.Next(context.TODO()) {
 		err := result.Decode(&election)
-		if err == nil {
-			elections = append(elections, election)
+		if err != nil {
+			logger.Println("database_exchange.go", "GrabElectionsInBlock()", err)
+			return false, err
+		}
+
+		encoded, err := asn1.Marshal(election)
+		hash32 := sha256.Sum256(encoded)
+		hexTransaction := hex.EncodeToString(hash32[:])
+
+		correct := crypto.MerkleProof(hexTransaction, block.MerkleRoot.RootNode)
+		if !correct {
+			return false, nil
 		}
 	}
 
-	return elections, nil
+	return true, nil
+}
+
+func GrabRegistrationsInBlock(block Block) (bool, error) {
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "registrations")
+
+	var registration Registration
+
+	query := bson.M{"blockIndex": block.Index}
+	result, err := collection.Find(context.TODO(), query)
+
+	if err != nil {
+		logger.Println("database_exchange.go", "GrabElectionsInBlock()", err)
+		return false, err
+	}
+
+	for result.Next(context.TODO()) {
+		err := result.Decode(&registration)
+		if err != nil {
+			logger.Println("database_exchange.go", "GrabElectionsInBlock()", err)
+			return false, err
+		}
+
+		encoded, err := asn1.Marshal(registration)
+		hash32 := sha256.Sum256(encoded)
+		hexTransaction := hex.EncodeToString(hash32[:])
+
+		correct := crypto.MerkleProof(hexTransaction, block.MerkleRoot.RootNode)
+		if !correct {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}
+
+func GrabVotesInBlock(block Block) (bool, error) {
+	collection := MongoDB.Database(DatabaseName).Collection(CollectionPrefix + "votes")
+
+	var vote Vote
+
+	query := bson.M{"blockIndex": block.Index}
+	result, err := collection.Find(context.TODO(), query)
+
+	if err != nil {
+		logger.Println("database_exchange.go", "GrabElectionsInBlock()", err)
+		return false, err
+	}
+
+	for result.Next(context.TODO()) {
+		err := result.Decode(&vote)
+		if err != nil {
+			logger.Println("database_exchange.go", "GrabElectionsInBlock()", err)
+			return false, err
+		}
+
+		encoded, err := asn1.Marshal(vote)
+		hash32 := sha256.Sum256(encoded)
+		hexTransaction := hex.EncodeToString(hash32[:])
+
+		correct := crypto.MerkleProof(hexTransaction, block.MerkleRoot.RootNode)
+		if !correct {
+			return false, nil
+		}
+	}
+
+	return true, nil
 }

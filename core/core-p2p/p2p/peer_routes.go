@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net"
 
+	"github.com/jneubaum/honestvote/core/core-validation/validation"
+
 	"github.com/jneubaum/honestvote/core/core-consensus/consensus"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/core/core-registration/registration"
@@ -80,19 +82,34 @@ func HandleConn(conn net.Conn) {
 			case "elections":
 				var election database.Election
 				err := json.Unmarshal(message.Data, &election)
-				if err == nil {
+				if err != nil {
+					logger.Println("peer_routes.go", "HandleConn()", err)
+				}
+
+				valid, err := validation.IsValidElection(election)
+				if valid && err == nil {
 					database.AddTransaction(election, message.Type)
 				}
 			case "registrations":
 				var registration database.Registration
 				err := json.Unmarshal(message.Data, &registration)
-				if err == nil {
+				if err != nil {
+					logger.Println("peer_routes.go", "HandleConn()", err)
+				}
+
+				valid, err := validation.IsValidRegistration(registration)
+				if valid && err == nil {
 					database.AddTransaction(registration, message.Type)
 				}
 			case "votes":
 				var vote database.Vote
 				err := json.Unmarshal(message.Data, &vote)
-				if err == nil {
+				if err != nil {
+					logger.Println("peer_routes.go", "HandleConn()", err)
+				}
+
+				valid, err := validation.IsValidVote(vote)
+				if valid && err == nil {
 					database.AddTransaction(vote, message.Type)
 				}
 			}

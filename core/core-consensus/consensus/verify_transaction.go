@@ -1,25 +1,30 @@
 package consensus
 
 import (
-	"github.com/jneubaum/honestvote/core/core-crypto/crypto"
 	"github.com/jneubaum/honestvote/core/core-database/database"
 	"github.com/jneubaum/honestvote/tests/logger"
 )
 
-func VerifyTransactions(index int) bool {
-	var hashedTransactions []string
+func VerifyTransactions(block database.Block) (bool, error) {
+	vElection, err := database.GrabElectionsInBlock(block)
 
-	elections, err := database.GrabElectionsInBlock(index)
-
-	if err != nil {
-		logger.Println("verify_transaction.go", "VerifyTransactions()", err)
+	if !vElection || err != nil {
+		return false, err
 	}
 
-	for _, election := range elections {
-		hash := crypto.HashTransaction(election)
-		hashedTransactions = append(hashedTransactions, hash)
+	vRegistration, err := database.GrabRegistrationsInBlock(block)
+
+	if !vRegistration || err != nil {
+		return false, err
 	}
 
-	return true
+	vVote, err := database.GrabVotesInBlock(block)
 
+	if !vVote || err != nil {
+		return false, err
+	}
+
+	logger.Println("verify_transaction.go", "VerifyTransactions()", "Everything was verified and good!")
+
+	return true, nil
 }

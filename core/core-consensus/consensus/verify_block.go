@@ -56,8 +56,8 @@ func IsBlockValid(prevBlock database.Block, block database.Block) (bool, error) 
 	}
 
 	// // Make sure the block merkle root is correct by checking all transactions
-	proof := VerifyTransactions(block.Index)
-	if !proof {
+	proof, err := VerifyTransactions(block)
+	if !proof || err != nil {
 		customErr.Message = "Block's merkle root is incorrect" + ending
 		logger.Println("verify_block.go", "IsBlockValid()", customErr.Message)
 		return false, customErr

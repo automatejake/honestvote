@@ -58,7 +58,7 @@ func CreateBlock() {
 	//Clear the list of transactions in a block for the next set
 	TransactionsInBlock = nil
 
-	logger.Println("peer_routes.go", "HandleConn()", "Empty, proposing this block.")
+	logger.Println("construct_blocks.go", "CreateBlock()", "Empty, proposing this block.")
 
 	err = database.AddBlock(block)
 	if err != nil {

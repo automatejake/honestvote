@@ -1,5 +1,7 @@
 package database
 
+import "github.com/jneubaum/honestvote/core/core-crypto/crypto"
+
 var CollectionPrefix string = ""        // Multiple nodes can work on the same host using different collection prefixes
 var DatabaseName string = "honestvote"  // Database is the same for all nodes even for a test net
 var ElectionHistory string = "election" // Elections
@@ -9,13 +11,13 @@ var Connections string = "node_list"    // Nodes on network
 var EmailRegistrants string = "email_registrants"
 
 type Block struct {
-	Index      int         `json:"index" bson:"index"`
-	Timestamp  string      `json:"timestamp" bson:"timestamp"`
-	MerkleRoot *MerkleTree `json:"merkleRoot" bson:"merkleRoot"`
-	Validator  string      `json:"validator" bson:"validator"`
-	Signature  string      `json:"signature" bson:"signature"`
-	PrevHash   string      `json:"prevhash" bson:"prevhash"`
-	Hash       string      `json:"hash" bson:"hash"`
+	Index      int                `json:"index" bson:"index"`
+	Timestamp  string             `json:"timestamp" bson:"timestamp"`
+	MerkleRoot *crypto.MerkleTree `json:"merkleRoot" bson:"merkleRoot"`
+	Validator  string             `json:"validator" bson:"validator"`
+	Signature  string             `json:"signature" bson:"signature"`
+	PrevHash   string             `json:"prevhash" bson:"prevhash"`
+	Hash       string             `json:"hash" bson:"hash"`
 }
 
 /*
@@ -62,7 +64,8 @@ type AwaitingRegistration struct {
 	SenderSig     string `json:"senderSig" bson: "SenderSig"`
 	Code          string `json:"code" bson: "code"`
 	Timestamp     string `json:"timestamp" bson: "Timestamp"`
-	Verified     string `json:"verified" bson: "verified"`}
+	Verified      string `json:"verified" bson: "verified"`
+}
 
 // valid votes have a corresponding registration transaction with the public key
 type Vote struct {
@@ -121,15 +124,4 @@ type Node struct {
 	PublicKey    string `json:"publickey" bson:"publickey"`
 	Timestamp    string `json:"timestamp" bson:"timestamp"`
 	Signature    string `json:"signature" bson:"signature"`
-}
-
-type MerkleTree struct {
-	RootNode *MerkleNode
-}
-
-type MerkleNode struct {
-	Hierarchy int //Higher number, closer to the root
-	Left      *MerkleNode
-	Right     *MerkleNode
-	Hash      string
 }
