@@ -283,3 +283,21 @@ Generated headers
 Timestamp: 2020/07/02 10:32:38 
 Function name:Verify()
 Decoded string
+Timestamp: 2020/07/18 15:16:35 
+Function name:GenerateVoteHeaders()
+[48 4 19 0 48 0]
+Timestamp: 2020/07/18 15:16:35 
+Function name:IsValidVote()
+Generated headers
+Timestamp: 2020/07/18 15:16:35 
+Function name:Verify()
+Decoded string
+Timestamp: 2020/07/18 15:20:02 
+Function name:GenerateVoteHeaders()
+[48 4 19 0 48 0]
+Timestamp: 2020/07/18 15:20:02 
+Function name:IsValidVote()
+Generated headers
+Timestamp: 2020/07/18 15:20:02 
+Function name:Verify()
+Decoded string

@@ -15,7 +15,7 @@ func CheckEmailVerification(registration AwaitingRegistration) error {
 	logger.Println("email_registration.go", "CheckEmailVerification", err)
 	if err != nil {
 		logger.Println("email_registration.go", "CheckEmailVerification", err.Err())
-		return err
+		// return err
 	} else {
 		update := bson.D{
 			{"$set", bson.D{

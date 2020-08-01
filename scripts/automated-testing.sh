@@ -1,5 +1,7 @@
 cd ../core/core-administrator/administrator-test
 
+populate-test-database.sh
+
 go test -v
 
 cd ../../core-consensus/consensus-test
