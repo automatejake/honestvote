@@ -16,7 +16,7 @@ func CheckEmailVerification(registration AwaitingRegistration) bool {
 	err := single.Decode(&node)
 	logger.Println("email_registration.go", "CheckEmailVerification", err)
 	if single != nil {
-		return true
+		return false
 	} else {
 		update := bson.D{
 			{"$set", bson.D{
@@ -29,7 +29,7 @@ func CheckEmailVerification(registration AwaitingRegistration) bool {
 			logger.Println("email_registration.go", "CheckEmailVerification", err.Error)
 		}
 	}
-	return false
+	return true
 }
 
 func SaveRegistrationCode(registrant AwaitingRegistration) {
