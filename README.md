@@ -6,11 +6,11 @@ Elections are an important fabric of modern society.  They are responsible for c
 This project was created to explore alternative methods of voting and our goal is to have West Chester University use our blockchain for student elections in the Spring of 2020.
 
 ## System Outline
-Introduction
+### Introduction
 Establish current state of election security
 Establish the most important tenets of election security: decentralization, anonymity, and transparency
 Establish the importance of accessibility
-Decentralization
+### Decentralization
 How the ideal form of Honestvote will look
 Blocks of transactions are approved by trusted institutions that validate
 A node that requests to become a proof of authority validator ought to pay a fixed one time fee to the network that deters DDoS attacks and network spam
