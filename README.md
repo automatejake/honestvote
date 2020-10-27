@@ -19,12 +19,12 @@ This project was created to explore alternative methods of voting and our goal i
 		 - Amount of auditors is dynamically determined by a formula. Purpose is so that not every single validator has to vote on every single new validator joining the system and also to limit the power of the majority. 
       - The current validator of any given block is determined by a round robin formula based on time 
       - Validators are the only ones that can declare elections 
-         -  Nodes that are not validators do not have permission to declare elections on the Honestvote network
-         - Validators must pay a network fee in order to declare an election which prevents DDoS attacks and network spam 
+       -  Nodes that are not validators do not have permission to declare elections on the Honestvote network
+       - Validators must pay a network fee in order to declare an election which prevents DDoS attacks and network spam 
        - Dishonest validators are removed from the system 
-          - If a block is proposed and contains dishonest information, a validator is removed as an administrator and is no longer allowed to declare elections 
-         - If the transaction or block signature is incorrect or comes from an identity other than the sender, the administrator privileges are revoked 
-         - If a transaction is a double spend, the administrator privileges are revoked If a transaction is for an election that has already ended, the administrator privileges are revoked
+        - If a block is proposed and contains dishonest information, a validator is removed as an administrator and is no longer allowed to declare elections 
+        - If the transaction or block signature is incorrect or comes from an identity other than the sender, the administrator privileges are revoked 
+        - If a transaction is a double spend, the administrator privileges are revoked If a transaction is for an election that has already ended, the administrator privileges are revoked
          -  If a vote does not have a corresponding registration, the administrator privileges are revoked 
          - If an administrator does not remove a dishonest validator from the system or attempts to add a validator to the system, this will result in an incorrect block causing the administrator privileges to be revoked 
          - If an administrator attempts to alter the total election history, the administrator privileges are revoked 
@@ -32,16 +32,16 @@ This project was created to explore alternative methods of voting and our goal i
          - Dishonest node is revealed to the public 
        - Any node is able to connect to Honestvote to get the most updated information for audit purposes, they just cannot automatically participate in consensus 
        - An elected body is chosen every year that is responsible for updating the security of Honestvote algorithms and encryption 
-         - Elected body is chosen by all validators in an election using Honestvote’s existing voting mechanism 
-         - Two code changes are proposed per year by this body and voted upon by all validators in the Honestvote system 
+        - Elected body is chosen by all validators in an election using Honestvote’s existing voting mechanism 
+        - Two code changes are proposed per year by this body and voted upon by all validators in the Honestvote system 
   - What Honestvote already does 
       - Blocks of transactions are approved by trusted institutions that validate 
-        - All validators vote on whether or not the validator should be allowed into the system using Honestvote’s existing voting mechanism 
-         - The current validator of any given block is determined by a round robin formula based on time Validators are the only ones that can declare elections 
-         - Nodes that are not validators do not have permission to declare elections on the Honestvote network 
-         - Dishonest validators are removed from the system 
-         - If a block is proposed and contains dishonest information, a validator is removed as an administrator and is no longer allowed to declare elections 
-         - If the transaction or block signature is incorrect or comes from an identity other than the sender, the administrator privileges are revoked If a transaction is a double spend, the administrator privileges are revoked 
+       - All validators vote on whether or not the validator should be allowed into the system using Honestvote’s existing voting mechanism 
+        - The current validator of any given block is determined by a round robin formula based on time Validators are the only ones that can declare elections 
+        - Nodes that are not validators do not have permission to declare elections on the Honestvote network 
+        - Dishonest validators are removed from the system 
+        - If a block is proposed and contains dishonest information, a validator is removed as an administrator and is no longer allowed to declare elections 
+        - If the transaction or block signature is incorrect or comes from an identity other than the sender, the administrator privileges are revoked If a transaction is a double spend, the administrator privileges are revoked 
          - If a transaction is for an election that has already ended, the administrator privileges are revoked 
          - If a vote does not have a corresponding registration, the administrator privileges are revoked 
          - If an administrator does not remove a dishonest validator from the system or attempts to add a validator to the system, this will result in an incorrect block causing the administrator privileges to be revoked 
@@ -66,20 +66,20 @@ This project was created to explore alternative methods of voting and our goal i
          - Registration data is kept in private database of administrator and connected to administrator’s consensus node, where it stay private to that consensus node 
          - No one can issue a registration transaction besides the administrator 
          - No one can dictate how a registration authority performs registration SSL makes sure information sent over the internet stays private 
-  ### Transparent 
-   - How the ideal form of Honestvote will look 
-        - Any node is able to connect to the Honestvote network and get an audit log of the entire transaction history.  
-        - This contains elections, registrations, and votes 
-        - Voters can see the election results in real time, knowing for certainty that their vote has not been tampered with 
-        - Voters can validate that their own vote has not been tampered with and was counted correctly forever 
-        - No one is able to hide election data 
-    - What Honestvote already does 
-         - Any node is able to connect to the Honestvote network and get an audit log of the entire transaction history 
-         - This contains elections, registrations, and votes 
-         - Voters can see the election results in real time, knowing for certainty that their vote has not been tampered with 
-         - Voters can validate that their own vote has not been tampered with and was counted correctly forever 
-         - No one is able to hide election data Accessible Cross platform mobile app Mobile friendly web application Voter portal is accessible from website 
-         - Very simple to navigate
+### Transparent 
+ - How the ideal form of Honestvote will look 
+   - Any node is able to connect to the Honestvote network and get an audit log of the entire transaction history.  
+   - This contains elections, registrations, and votes 
+   - Voters can see the election results in real time, knowing for certainty that their vote has not been tampered with 
+   -  Voters can validate that their own vote has not been tampered with and was counted correctly forever 
+   - No one is able to hide election data 
+- What Honestvote already does 
+   - Any node is able to connect to the Honestvote network and get an audit log of the entire transaction history 
+   - This contains elections, registrations, and votes 
+   - Voters can see the election results in real time, knowing for certainty that their vote has not been tampered with 
+   - Voters can validate that their own vote has not been tampered with and was counted correctly forever 
+   - No one is able to hide election data Accessible Cross platform mobile app Mobile friendly web application Voter portal is accessible from website 
+   - Very simple to navigate
 
 ## Communication
 
